@@ -1,0 +1,40 @@
+# azure-pipelines.yml
+trigger:
+  branches:
+    exclude:
+      - '*' 
+
+pr:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'windows-latest' 
+
+stages:
+- stage: CI_Build_Test
+  displayName: 'CI - Build and Test'
+  jobs:
+  - job: BuildAndTest
+    steps:
+    - task: UseDotNet@2
+      displayName: 'Install .NET SDK'
+      inputs:
+        version: '9.x' # Dostosuj wersję .NET
+
+    - script: dotnet restore
+      displayName: 'Restore Dependencies'
+
+    - script: dotnet build --configuration Release
+      displayName: 'Build Application'
+
+    - script: dotnet test --configuration Release --logger trx --results-directory $(Agent.TempDirectory)/TestResults
+      displayName: 'Run Unit and Integration Tests'
+
+    - task: PublishTestResults@2
+      condition: succeededOrFailed()
+      inputs:
+        testResultsFormat: 'VSTest'
+        testResultsFiles: '$(Agent.TempDirectory)/TestResults/**/*.trx'
+        publishRunAttachments: true
