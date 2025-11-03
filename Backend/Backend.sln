@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36119.2
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicTests", "BasicTests\BasicTests.csproj", "{9C0B8DD3-1494-E8A5-34A2-86863A79C4CB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MortgageComparer", "MortgageComparer\MortgageComparer.csproj", "{3E2F43F9-9C0D-6F81-AFF1-7E46D38FCADD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9C0B8DD3-1494-E8A5-34A2-86863A79C4CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C0B8DD3-1494-E8A5-34A2-86863A79C4CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C0B8DD3-1494-E8A5-34A2-86863A79C4CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C0B8DD3-1494-E8A5-34A2-86863A79C4CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E2F43F9-9C0D-6F81-AFF1-7E46D38FCADD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E2F43F9-9C0D-6F81-AFF1-7E46D38FCADD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E2F43F9-9C0D-6F81-AFF1-7E46D38FCADD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E2F43F9-9C0D-6F81-AFF1-7E46D38FCADD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
