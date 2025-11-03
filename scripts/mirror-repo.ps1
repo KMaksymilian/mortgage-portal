@@ -1,5 +1,5 @@
 echo "🔄 Cloning GitHub main branch..."
-git clone https://github.com/username/repoName.git
+git clone https://github.com/KMaksymilian/mortgage-portal.git
 cd repoName
 git checkout main
 
