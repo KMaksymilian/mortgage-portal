@@ -24,6 +24,7 @@ stages:
       inputs:
         version: '9.x' # Dostosuj wersję .NET
 
-    - script: cd Backend;
-    dotnet build;
-    dotnet test;
+    - script: |
+    cd Backend
+    dotnet build
+    dotnet test
