@@ -25,6 +25,7 @@ stages:
         version: '9.x' # Dostosuj wersję .NET
         
     - script: cd Backend
+    - script: cd MortgageComparer
 
     - script: dotnet restore
       displayName: 'Restore Dependencies'
