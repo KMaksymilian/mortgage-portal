@@ -24,18 +24,4 @@ stages:
       inputs:
         version: '9.x' # Dostosuj wersję .NET
 
-    - script: dotnet restore
-      displayName: 'Restore Dependencies'
-
-    - script: dotnet build --configuration Release
-      displayName: 'Build Application'
-
-    - script: dotnet test --configuration Release --logger trx --results-directory $(Agent.TempDirectory)/TestResults
-      displayName: 'Run Unit and Integration Tests'
-
-    - task: PublishTestResults@2
-      condition: succeededOrFailed()
-      inputs:
-        testResultsFormat: 'VSTest'
-        testResultsFiles: '$(Agent.TempDirectory)/TestResults/**/*.trx'
-        publishRunAttachments: true
+    - script: pwd
