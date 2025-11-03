@@ -24,4 +24,4 @@ stages:
       inputs:
         version: '9.x' # Dostosuj wersję .NET
 
-    - script: pwd
+    - script: ls
