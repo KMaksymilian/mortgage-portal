@@ -99,3 +99,19 @@ stages:
 #            displayName: 'Run Deployment Script'
 
 
+# ==========================================
+# Stage: Mirror main branch to Azure Repo
+# ==========================================
+- stage: MirrorMain
+  displayName: 'Mirror main branch to Azure Repo'
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+  jobs:
+  - job: MirrorMainJob
+    displayName: 'Mirror main branch'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - script:pwsh ./scripts/mirror-repo.ps1
+      displayName: 'Mirror main branch using Bash'
+      env:
+        SYSTEM_ACCESSTOKEN: $(System.AccessToken)
