@@ -1,40 +1,101 @@
-# azure-pipelines.yml
 trigger:
   branches:
-    exclude:
-      - '*' 
+    include:
+      - develop
+      - release/*
+      - main
 
 pr:
   branches:
     include:
+      - develop
+      - release/*
       - main
 
 pool:
-  vmImage: 'windows-latest' 
+  vmImage: 'windows-latest'
+
+variables:
+  buildConfiguration: 'Release'
+  artifactName: 'drop'
 
 stages:
-- stage: CI_Build_Test
-  displayName: 'CI - Build and Test'
+
+# ==========================================
+# Stage 1: Build & Unit Tests
+# ==========================================
+- stage: Build_UnitTests
+  displayName: 'Build & Unit Tests'
   jobs:
-  - job: BuildAndTest
+  - job: BuildAndUnitTests
     steps:
     - task: UseDotNet@2
       displayName: 'Install .NET SDK'
       inputs:
-        version: '9.x' # Dostosuj wersję .NET
-
-    - script: dotnet restore
-      displayName: 'Restore Dependencies'
-
-    - script: dotnet build --configuration Release
-      displayName: 'Build Application'
-
-    - script: dotnet test --configuration Release --logger trx --results-directory $(Agent.TempDirectory)/TestResults
-      displayName: 'Run Unit and Integration Tests'
+        version: '9.x'
+        
+    - script: pwsh ./scripts/test-unit.ps1
+      displayName: 'Run Unit Tests'
 
     - task: PublishTestResults@2
-      condition: succeededOrFailed()
       inputs:
         testResultsFormat: 'VSTest'
-        testResultsFiles: '$(Agent.TempDirectory)/TestResults/**/*.trx'
+        testResultsFiles: '$(Agent.TempDirectory)/TestResults/Unit/**/*.trx'
         publishRunAttachments: true
+
+# ==========================================
+# Stage 2: Integration Tests (main only)
+# ==========================================
+#- stage: Integration_Tests
+#  displayName: 'Integration Tests (main only)'
+#  condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+#  dependsOn: Build_UnitTests
+#  jobs:
+#  - job: IntegrationTests
+#    steps:
+#    - script: pwsh ./scripts/test-integration.ps1
+#      displayName: 'Run Integration Tests'
+
+#    - task: PublishTestResults@2
+#      condition: succeededOrFailed()
+#      inputs:
+#        testResultsFormat: 'VSTest'
+#        testResultsFiles: '$(Agent.TempDirectory)/TestResults/Integration/**/*.trx'
+#        publishRunAttachments: true
+
+# ==========================================
+# Stage 3: Package (main only)
+# ==========================================
+#- stage: Package
+#  displayName: 'Package Application (main only)'
+#  condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+#  dependsOn: Integration_Tests
+# jobs:
+#  - job: PackageJob
+#    steps:
+#    - script: pwsh ./scripts/publish.ps1
+#      displayName: 'Publish Artifacts'
+
+#    - task: PublishBuildArtifacts@1
+#      inputs:
+#        PathtoPublish: $(Build.ArtifactStagingDirectory)
+#        ArtifactName: $(artifactName)
+
+# ==========================================
+# Stage 4: Deploy (main only)
+# ==========================================
+#- stage: Deploy
+#  displayName: 'Deploy to Azure (main only)'
+#  condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+#  dependsOn: Package
+#  jobs:
+#  - deployment: DeployToAzure
+#    environment: 'Production'
+#    strategy:
+#      runOnce:
+#        deploy:
+#          steps:
+#          - script: pwsh ./scripts/deploy.ps1
+#            displayName: 'Run Deployment Script'
+
+
