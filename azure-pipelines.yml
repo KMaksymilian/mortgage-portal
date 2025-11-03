@@ -25,6 +25,6 @@ stages:
         version: '9.x' # Dostosuj wersję .NET
 
 - script: |
-       echo "good"
-       echo "nice"
-     displayName: 'Sample script'
+       cd Backend
+       dotnet build
+       dotnet run
