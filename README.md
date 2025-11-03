@@ -35,6 +35,7 @@ Throughout the project we use listed below naming conventions:
 9) Asynchronous methods - PascalCase + Async : 
 	`async Task GetDataAsync()`
 10) Braces statements - Each statement must have braces, braces are always in new lines after statement/code to execute
+	```csharp 
 	if(statement)
 	{
 		// code to execute
