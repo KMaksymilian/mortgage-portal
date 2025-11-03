@@ -1,0 +1,125 @@
+﻿# Plik .editorconfig
+# Upewnij się, że ta linia jest na samej górze
+root = true
+
+# Wszystkie poniższe reguły MUSZĄ znajdować się pod tym nagłówkiem
+[*.cs]
+
+# --- Reguły dotyczące nawiasów klamrowych (Twoja reguła 10) ---
+
+# Wymuś nawiasy klamrowe nawet dla pojedynczych linii (if, else, for, etc.)
+csharp_prefer_braces = true:error
+
+# Wymuś, aby otwierający nawias klamrowy był zawsze w nowej linii
+csharp_new_line_before_open_brace = all:error
+
+
+# --- Reguły nazewnictwa (Twoje reguły 1-9) ---
+
+# --- Krok 1: Definicje stylów ---
+# Styl PascalCase (np. MojaKlasa)
+dotnet_naming_style.pascal_case_style.capitalization = pascal_case
+
+# Styl camelCase (np. mojaZmienna)
+dotnet_naming_style.camel_case_style.capitalization = camel_case
+
+# Styl Interfejsu (np. IProductService)
+dotnet_naming_style.interface_style.capitalization = pascal_case
+dotnet_naming_style.interface_style.required_prefix = I
+
+# Styl pola prywatnego (np. _connectionString)
+dotnet_naming_style.private_field_style.capitalization = camel_case
+dotnet_naming_style.private_field_style.required_prefix = _
+
+# Styl metody asynchronicznej (np. GetDataAsync)
+dotnet_naming_style.async_method_style.capitalization = pascal_case
+dotnet_naming_style.async_method_style.required_suffix = Async
+
+# --- Krok 2: Definicje symboli (CO ma być sprawdzane) ---
+# (Twój błąd "unknown identifier" prawdopodobnie wynikał z braku tej sekcji)
+
+# Reguła 1: Klasy, Struktury, Enumy
+dotnet_naming_symbols.class_struct_enum_symbols.applicable_kinds = class, struct, enum
+dotnet_naming_symbols.class_struct_enum_symbols.applicable_accessibilities = *
+
+# Reguła 2: Interfejsy
+dotnet_naming_symbols.interface_symbols.applicable_kinds = interface
+dotnet_naming_symbols.interface_symbols.applicable_accessibilities = *
+
+# Reguła 3: Metody (zwykłe)
+dotnet_naming_symbols.method_symbols.applicable_kinds = method
+dotnet_naming_symbols.method_symbols.applicable_accessibilities = *
+
+# Reguła 4: Właściwości (Properties)
+dotnet_naming_symbols.property_symbols.applicable_kinds = property
+dotnet_naming_symbols.property_symbols.applicable_accessibilities = *
+
+# Reguła 5: Stałe (Consts)
+dotnet_naming_symbols.const_symbols.applicable_kinds = field
+dotnet_naming_symbols.const_symbols.required_modifiers = const
+dotnet_naming_symbols.const_symbols.applicable_accessibilities = *
+
+# Reguła 6: Zmienne lokalne
+dotnet_naming_symbols.local_symbols.applicable_kinds = local
+dotnet_naming_symbols.local_symbols.applicable_accessibilities = *
+
+# Reguła 7: Parametry metod
+dotnet_naming_symbols.parameter_symbols.applicable_kinds = parameter
+dotnet_naming_symbols.parameter_symbols.applicable_accessibilities = *
+
+# Reguła 8: Prywatne pola (nie-statyczne i nie-const)
+dotnet_naming_symbols.private_field_symbols.applicable_kinds = field
+dotnet_naming_symbols.private_field_symbols.applicable_accessibilities = private
+
+# Reguła 9: Metody asynchroniczne
+dotnet_naming_symbols.async_method_symbols.applicable_kinds = method
+dotnet_naming_symbols.async_method_symbols.required_modifiers = async
+dotnet_naming_symbols.async_method_symbols.applicable_accessibilities = *
+
+# --- Krok 3: Powiązanie symboli ze stylami (JAK ma być sprawdzane) ---
+# (Twój błąd "requires 3 more declarations" wynikał z problemów tutaj)
+
+# Reguła 1
+dotnet_naming_rule.class_struct_enum_must_be_pascal_case.symbols = class_struct_enum_symbols
+dotnet_naming_rule.class_struct_enum_must_be_pascal_case.style = pascal_case_style
+dotnet_naming_rule.class_struct_enum_must_be_pascal_case.severity = error
+
+# Reguła 2
+dotnet_naming_rule.interface_must_be_i_pascal_case.symbols = interface_symbols
+dotnet_naming_rule.interface_must_be_i_pascal_case.style = interface_style
+dotnet_naming_rule.interface_must_be_i_pascal_case.severity = error
+
+# Reguła 3
+dotnet_naming_rule.method_must_be_pascal_case.symbols = method_symbols
+dotnet_naming_rule.method_must_be_pascal_case.style = pascal_case_style
+dotnet_naming_rule.method_must_be_pascal_case.severity = error
+
+# Reguła 4
+dotnet_naming_rule.property_must_be_pascal_case.symbols = property_symbols
+dotnet_naming_rule.property_must_be_pascal_case.style = pascal_case_style
+dotnet_naming_rule.property_must_be_pascal_case.severity = error
+
+# Reguła 5
+dotnet_naming_rule.const_must_be_pascal_case.symbols = const_symbols
+dotnet_naming_rule.const_must_be_pascal_case.style = pascal_case_style
+dotnet_naming_rule.const_must_be_pascal_case.severity = error
+
+# Reguła 6
+dotnet_naming_rule.local_var_must_be_camel_case.symbols = local_symbols
+dotnet_naming_rule.local_var_must_be_camel_case.style = camel_case_style
+dotnet_naming_rule.local_var_must_be_camel_case.severity = error
+
+# Reguła 7
+dotnet_naming_rule.parameter_must_be_camel_case.symbols = parameter_symbols
+dotnet_naming_rule.parameter_must_be_camel_case.style = camel_case_style
+dotnet_naming_rule.parameter_must_be_camel_case.severity = error
+
+# Reguła 8
+dotnet_naming_rule.private_field_must_be_camel_case_with_underscore.symbols = private_field_symbols
+dotnet_naming_rule.private_field_must_be_camel_case_with_underscore.style = private_field_style
+dotnet_naming_rule.private_field_must_be_camel_case_with_underscore.severity = error
+
+# Reguła 9
+dotnet_naming_rule.async_method_must_end_with_async.symbols = async_method_symbols
+dotnet_naming_rule.async_method_must_end_with_async.style = async_method_style
+dotnet_naming_rule.async_method_must_end_with_async.severity = error
