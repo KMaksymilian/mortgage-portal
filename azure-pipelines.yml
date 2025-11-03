@@ -38,7 +38,6 @@ stages:
       displayName: 'Run Unit Tests'
 
     - task: PublishTestResults@2
-      condition: succeededOrFailed()
       inputs:
         testResultsFormat: 'VSTest'
         testResultsFiles: '$(Agent.TempDirectory)/TestResults/Unit/**/*.trx'
