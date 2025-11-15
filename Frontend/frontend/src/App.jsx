@@ -1,31 +1,34 @@
-import { useState, useEffect } from 'react';
-import './App.css'; // Możesz zostawić lub usunąć ten import
+import { Routes, Route, Link } from 'react-router-dom';
+import { useAuth } from './AuthContext';
+import LoginPage from './LoginPage.jsx';
+import ProfilePage from './ProfilePage.jsx';
+import HomePage from './HomePage.jsx'; // Stwórz prosty plik HomePage.jsx
 
 function App() {
-  // Tworzymy "stan" do przechowywania wiadomości z API
-  const [message, setMessage] = useState('');
+  const { user, logout } = useAuth();
 
-  // useEffect uruchamia kod, gdy komponent się załaduje
-  useEffect(() => {
-    // To jest zapytanie do Twojego backendu (API)
-    fetch('http://localhost:5254/api/home') // <-- WAŻNE: Sprawdź ten port!
-      .then(response => response.json())
-      .then(data => {
-        // Ustawiamy wiadomość w stanie, gdy dane nadejdą
-        setMessage(data.message); 
-      })
-      .catch(error => {
-        console.error("Błąd pobierania danych:", error);
-        setMessage("Nie udało się połączyć z API :(");
-      });
-  }, []); // Pusta tablica [] oznacza "uruchom to tylko raz"
-
-  // To jest HTML (JSX), który zobaczy użytkownik
   return (
-    <div className="App">
-      <h1>Moja aplikacja React</h1>
-      <p>Wiadomość z backendu (.NET):</p>
-      <h2>{message}</h2>
+    <div>
+      {/* Prosta nawigacja (zakładki) */}
+      <nav>
+        <Link to="/">Home</Link> | 
+        <Link to="/profile">Profil</Link> | 
+        {user ? (
+          <button onClick={logout}>Wyloguj ({user.email})</button>
+        ) : (
+          <Link to="/login">Zaloguj</Link>
+        )}
+      </nav>
+
+      <hr />
+
+      {/* Kontener na aktualnie wybraną stronę */}
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        {/* Możemy dodać "Protected Route", ale na razie prosto: */}
+        <Route path="/profile" element={<ProfilePage />} />
+      </Routes>
     </div>
   );
 }

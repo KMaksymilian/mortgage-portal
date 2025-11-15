@@ -1,6 +1,10 @@
+using System.Text;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MortgageComparer.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 namespace MortgageComparer;
 
@@ -10,8 +14,32 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Add services to the container.
         builder.Services.AddControllers();
+        builder.Services.AddNpgsql<AppDbContext>(
+            builder.Configuration.GetConnectionString("DefaultConnectionString"));
+
+        builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+                    builder.Configuration["Jwt:Key"])),
+                
+                ValidateIssuer = true,
+                ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                
+                ValidateAudience = true,
+                ValidAudience = builder.Configuration["Jwt:Audience"],
+                
+                ValidateLifetime = true
+            };
+        });
+        
         builder.Services.AddCors(options =>
         {
             options.AddPolicy("AllowReactApp", builder =>
@@ -36,7 +64,7 @@ public class Program
         app.UseRouting();
         
         app.UseCors("AllowReactApp");
-
+        
         app.UseAuthorization();
 
         app.MapControllers();

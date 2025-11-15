@@ -9,35 +9,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="99b664a8-ce11-40b8-93f8-7bfffd6fe881" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/Backend/.editorconfig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/Backend.sln" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/BasicTests/BasicTests.csproj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/BasicTests/UnitTest1.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/MortgageComparer/.idea/.idea.MortgageComparer/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/MortgageComparer/.idea/.idea.MortgageComparer/.idea/indexLayout.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/MortgageComparer/.idea/.idea.MortgageComparer/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/MortgageComparer/Controllers/HomeController.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/MortgageComparer/Models/ErrorViewModel.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/MortgageComparer/MortgageComparer.csproj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/MortgageComparer/Program.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/MortgageComparer/Properties/launchSettings.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/MortgageComparer/Views/Home/Index.cshtml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/MortgageComparer/Views/Home/Privacy.cshtml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/MortgageComparer/Views/Shared/Error.cshtml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/MortgageComparer/Views/Shared/_Layout.cshtml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/MortgageComparer/Views/Shared/_Layout.cshtml.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/MortgageComparer/Views/Shared/_ValidationScriptsPartial.cshtml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/MortgageComparer/Views/_ViewImports.cshtml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/MortgageComparer/Views/_ViewStart.cshtml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/MortgageComparer/appsettings.Development.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/MortgageComparer/appsettings.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/MortgageComparer/wwwroot/css/site.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/MortgageComparer/wwwroot/favicon.ico" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/MortgageComparer/wwwroot/js/site.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/MortgageComparer/wwwroot/lib/bootstrap/LICENSE" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/MortgageComparer/wwwroot/lib/jquery-validation-unobtrusive/LICENSE.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/MortgageComparer/wwwroot/lib/jquery-validation/LICENSE.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/MortgageComparer/wwwroot/lib/jquery/LICENSE.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Backend/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Backend/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BasicTests/BasicTests.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/BasicTests/BasicTests.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/frontend/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/frontend/src/App.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/frontend/src/main.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/frontend/src/main.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparer/Controllers/HomeController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Controllers/HomeController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparer/Models/User.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Models/User.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparer/MortgageComparer.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/MortgageComparer.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparer/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparer/appsettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/appsettings.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,6 +34,8 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/56b5e122ae4fd723ecae7aec5bf0c71d9181bebd75b4e96887f832e7d81c84/PhysicalFileProvider.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/6fa05d7dbf2e454ce78b261b422234da1f1ccedee678fd997e5ef4afe6df6e/ControllerBase.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d7adb510bfdf132ba6e4ab85f2f18731d2ad4bbb2b76cc192433d8b8f022db1c/GoogleJsonWebSignature.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4
@@ -126,7 +110,8 @@
       <workItem from="1763133295534" duration="975000" />
       <workItem from="1763134305676" duration="13000" />
       <workItem from="1763134480134" duration="6114000" />
-      <workItem from="1763144106120" duration="1759000" />
+      <workItem from="1763144106120" duration="2654000" />
+      <workItem from="1763211899254" duration="17803000" />
     </task>
     <servers />
   </component>
