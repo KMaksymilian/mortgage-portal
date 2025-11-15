@@ -26,4 +26,12 @@ public class User
          this.Email = email;
          this.GoogleUserId = googleUserId;
      }
+
+     public User(int id, string firstName, string lastName, string email)
+     {
+         this.Id = id;
+         this.FirstName = firstName;
+         this.LastName = lastName;
+         this.Email = email;
+     }
 }
