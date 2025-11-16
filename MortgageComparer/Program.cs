@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using MortgageComparer.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.EntityFrameworkCore;
 
 namespace MortgageComparer;
 
@@ -68,6 +69,11 @@ public class Program
         app.UseAuthorization();
 
         app.MapControllers();
+
+        using (var scope = app.Services.CreateScope()) {
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            db.Database.Migrate();
+        }
 
         app.Run();
     }
