@@ -7,11 +7,7 @@ function LoginPage() {
   const navigate = useNavigate();
 
   const handleGoogleSuccess = (credentialResponse) => {
-    // 1. Mamy token od Google (credentialResponse.credential)
-    console.log("Token z Google:", credentialResponse);
-
-    // 2. Wysyłamy ten token do naszego backendu
-    fetch('http://localhost:5254/api/auth/google-login', { // WAŻNY ADRES!
+    fetch('http://localhost:5254/api/auth/google-login', { 
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -20,25 +16,29 @@ function LoginPage() {
     })
     .then(res => res.json())
     .then(backendResponse => {
-      // 4. Backend zweryfikował token i odesłał nam dane usera + SWÓJ token
-      //    (np. { email: "...", token: "nasz-jwt-token" })
-      login(backendResponse); 
-      // 5. Przekieruj na stronę profilu
-      navigate('/profile'); 
+      
+      const isComplete = backendResponse.hasBirthDate;
+
+      const userData = {
+          ...backendResponse,
+          hasBirthDate: isComplete // Przepisujemy to do stanu
+      };
+
+      login(userData); 
+      
+      if (isComplete) {
+          navigate('/search'); // Jeśli ma datę -> idź do szukania
+      } else {
+          navigate('/complete-profile'); // Jeśli nie ma daty -> idź uzupełnić
+      }
     })
-    .catch(err => console.error("Błąd logowania na backendzie:", err));
+    .catch(err => console.error("Błąd logowania:", err));
   };
 
   return (
-    <div>
+    <div className="card">
       <h2>Logowanie</h2>
-      <p>Zaloguj się przez Google:</p>
-      <GoogleLogin
-        onSuccess={handleGoogleSuccess}
-        onError={() => {
-          console.log('Login Failed');
-        }}
-      />
+      <GoogleLogin onSuccess={handleGoogleSuccess} onError={() => console.log('Login Failed')} />
     </div>
   );
 }

@@ -1,4 +1,6 @@
 using System.ComponentModel.DataAnnotations;
+using MortgageComparer.Services;
+
 namespace MortgageComparer.Models;
 
 public class User
@@ -10,21 +12,22 @@ public class User
      public string LastName { get; set; }
      [Required]
      public string Email { get; set; }
-     public string GoogleUserId { get; set; }
+     public DateTime? DateOfBirth { get; set; }
+     //public List<IOffer> Offers { get; set; } = new  List<IOffer>();
      public User() 
      {
          FirstName = string.Empty;
          LastName = string.Empty;
          Email = string.Empty;
-         GoogleUserId = string.Empty;
+         DateOfBirth = null;
      }
  
-     public User(string firstName, string lastName, string email, string googleUserId)
+     public User(string firstName, string lastName, string email)
      {
          this.FirstName = firstName;
          this.LastName = lastName;
          this.Email = email;
-         this.GoogleUserId = googleUserId;
+         this.DateOfBirth = null;
      }
 
      public User(int id, string firstName, string lastName, string email)
@@ -33,5 +36,6 @@ public class User
          this.FirstName = firstName;
          this.LastName = lastName;
          this.Email = email;
+         this.DateOfBirth = null;
      }
 }

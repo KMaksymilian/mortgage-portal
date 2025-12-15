@@ -9,6 +9,7 @@ public class ExternalApiController : ControllerBase
 {
     private AppDbContext _context;
     private IConfiguration _configuration;
+    private int QuoteId { get; set; }
 
     public ExternalApiController(AppDbContext context, IConfiguration configuration)
     {
@@ -29,8 +30,8 @@ public class ExternalApiController : ControllerBase
         var tokenUrl = "https://indentitymanager.snet.com.pl/connect/token";
         var clientId = _configuration["ExternalApi:Login"];
         var clientSecret = _configuration["ExternalApi:Secret"];
-        
-        
+
+
         var requestData = new Dictionary<string, string>
         {
             { "grant_type", "client_credentials" },
@@ -41,7 +42,7 @@ public class ExternalApiController : ControllerBase
         var content = new FormUrlEncodedContent(requestData);
         using var client = new HttpClient();
         var tokenResponse = await client.PostAsync(tokenUrl, content);
-        
+
         if (!tokenResponse.IsSuccessStatusCode)
         {
             var errorContent = await tokenResponse.Content.ReadAsStringAsync();
@@ -49,13 +50,13 @@ public class ExternalApiController : ControllerBase
         }
 
         var tokenDto = await tokenResponse.Content.ReadFromJsonAsync<TokenResponseDto>();
-        
-        client.DefaultRequestHeaders.Authorization = 
+
+        client.DefaultRequestHeaders.Authorization =
             new AuthenticationHeaderValue("Bearer", tokenDto.AccessToken);
 
         var apiResponse = await client.PostAsJsonAsync("https://mini.loanbank.api.snet.com.pl/api/v1/Quote", offer);
-        
+
         var result = await apiResponse.Content.ReadAsStringAsync();
-        return Content(result,  "application/json");
+        return Content(result, "application/json");
     }
 }

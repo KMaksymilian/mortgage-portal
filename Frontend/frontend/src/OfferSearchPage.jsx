@@ -1,8 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react'; // Dodano useEffect
+import { useNavigate } from 'react-router-dom'; // Dodano useNavigate
 import { useAuth } from './AuthContext';
 
 function OfferSearchPage() {
-  const { user } = useAuth(); 
+const { user } = useAuth();
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    // 1. Jeśli użytkownik nie jest zalogowany -> login
+    if (!user) {
+        navigate('/login');
+        return;
+    }
+
+    // 2. Jeśli jest zalogowany, ale nie ma daty urodzenia -> uzupełnianie
+    // Sprawdzamy user.hasBirthDate (które pobraliśmy w AuthContext)
+    if (user.hasBirthDate === false) { 
+       navigate('/complete-profile');
+    }
+  }, [user, navigate]);
   
   // Stan formularza
   const [formData, setFormData] = useState({
@@ -30,22 +46,22 @@ function OfferSearchPage() {
     setIsLoading(true);
 
     if (!user) {
-      setError("Musisz być zalogowany.");
-      setIsLoading(false);
+      navigate('/login');
       return;
+    }
+    if (!user.hasBirthDate) { 
+       console.log("Brak daty urodzenia - przekierowanie...");
+       navigate('/complete-profile');
     }
 
     try {
-      // --- TU JEST ZMIANA ---
-      // Tworzymy strukturę idealnie pasującą do Twojego JSON-a
       const payload = {
         requestedAmount: {
-          amount: parseFloat(formData.amount - formData.ownContribution), // Zamiana tekstu na liczbę
+          amount: parseFloat(formData.amount - formData.ownContribution),
           currencyCode: "PLN"
         },
-        instalmentNumber: parseInt(formData.months) // Zamiana tekstu na liczbę całkowitą
+        instalmentNumber: parseInt(formData.months)
       };
-      // ----------------------
 
       console.log("Wysyłam JSON:", JSON.stringify(payload, null, 2)); // Podgląd w konsoli
 
@@ -135,11 +151,8 @@ function OfferSearchPage() {
       {result && (
         <div style={{ marginTop: '30px', padding: '15px', border: '1px solid #646cff', borderRadius: '8px', textAlign: 'left' }}>
           <h3>Wynik Kalkulacji:</h3>
-          
-          {/* Dostosuj wyświetlanie do tego, co API zwraca w odpowiedzi */}
           <p>Miesięczna rata: <strong>{result.instalmentAmount?.amount ?? result.instalmentAmount.amount ?? '---'} {result.instalmentAmount.currencyCode}</strong></p>
           <p>Całkowity koszt: <strong>
-      {/* Mnożymy kwotę raty z API przez liczbę miesięcy z formularza */}
       { (result.instalmentAmount?.amount * formData.months).toFixed(2)} {result.instalmentAmount?.currencyCode}
     </strong></p>
 

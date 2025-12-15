@@ -11,7 +11,7 @@ function ProfilePage() {
 
     const token = user.token; 
 
-    fetch('http://localhost:5254/api/profile/me', {
+    fetch('http://localhost:5254/api/User/me', {
       headers: {
         'Authorization': `Bearer ${token}` 
       }

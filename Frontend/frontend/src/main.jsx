@@ -6,7 +6,6 @@ import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './AuthContext';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
-// Twój Client ID z Google Cloud Console
 const GOOGLE_CLIENT_ID = "786471780812-iq2jnhgem44amino0dctajvbjp2bi052.apps.googleusercontent.com"; 
 
 ReactDOM.createRoot(document.getElementById('root')).render(

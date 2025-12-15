@@ -4,6 +4,7 @@ using System.Net.Http.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Configuration;
+using Microsoft.VisualStudio.TestPlatform.Common.Utilities;
 
 namespace BasicTests;
 
@@ -60,6 +61,9 @@ public class UnitTest1
         var result = await client.GetAsync("https://mini.loanbank.api.snet.com.pl/api/identity/claims");
         Assert.Equal(HttpStatusCode.OK, result.StatusCode);
     }
+    
+    /*[Fact]
+    public async Task ExternalApiCallShouldReturn*/
     private class TokenResponseDto
     {
         [JsonPropertyName("access_token")]
