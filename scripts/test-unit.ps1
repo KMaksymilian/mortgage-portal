@@ -1,4 +1,4 @@
-cd Backend
+cd MortgageComparer
 
 Write-Host "🔄 Restoring dependencies..."
 dotnet restore

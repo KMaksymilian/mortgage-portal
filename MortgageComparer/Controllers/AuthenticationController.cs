@@ -22,7 +22,7 @@ public class AuthenticationController : ControllerBase
         _context = context;
         _configuration = configuration;
     }
-
+    
     [HttpPost("google-login")]
     public async Task<ActionResult> GetGoogleTokenAsync([FromBody] GoogleLoginRequest request)
     {
@@ -45,7 +45,7 @@ public class AuthenticationController : ControllerBase
             user = new  User
             {
                 FirstName = validPayload.GivenName, LastName = validPayload.FamilyName,
-                Email = validPayload.Email, GoogleUserId = validPayload.Subject
+                Email = validPayload.Email,
             };
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
@@ -55,6 +55,7 @@ public class AuthenticationController : ControllerBase
         {
             Token = jwtToken,
             email = validPayload.Email,
+            hasBirthDate = user.DateOfBirth != null,
         });
     }
     private string GenerateJwtToken(User user)
@@ -71,7 +72,7 @@ public class AuthenticationController : ControllerBase
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()) 
             }),
-            Expires = DateTime.UtcNow.AddHours(1), 
+            Expires = DateTime.UtcNow.AddHours(1),
             Issuer = _configuration["Jwt:Issuer"],
             Audience = _configuration["Jwt:Audience"],
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
