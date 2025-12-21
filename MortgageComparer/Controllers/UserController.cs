@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using MortgageComparer.Data;
-using MortgageComparer.Models;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using MortgageComparer.Entities;
 
 namespace MortgageComparer.Controllers
 {
@@ -21,7 +21,7 @@ namespace MortgageComparer.Controllers
         }
         
         [HttpGet("me")]
-        public async Task<ActionResult<User>> GetMyProfileAsync()
+        public async Task<ActionResult<UserEntity>> GetMyProfileAsync()
         {
             var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
             
@@ -51,7 +51,7 @@ namespace MortgageComparer.Controllers
         public async Task<ActionResult> CheckForTheBirthDateAsync([FromBody] UserBirthDateDto user)
         {
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            User foundUser = await _context.Users.FindAsync(userId);
+            UserEntity foundUser = await _context.Users.FindAsync(userId);
             if (foundUser == null)
             {
                 return NotFound("Nie znaleziono.");

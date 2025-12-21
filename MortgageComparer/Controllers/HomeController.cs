@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using MortgageComparer.Models;
 using MortgageComparer.Data;
+using MortgageComparer.Entities;
 
 namespace MortgageComparer.Controllers;
 
@@ -17,7 +17,7 @@ public class HomeController : ControllerBase
         _context = context;
     }
     [HttpPost]
-    public async Task<ActionResult> AddUserAsync([FromBody] User? user)
+    public async Task<ActionResult> AddUserAsync([FromBody] UserEntity? user)
     {
         if (user == null)
         {
