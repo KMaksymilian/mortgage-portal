@@ -9,7 +9,7 @@ namespace MortgageComparer.Models {
         [Column(TypeName = "decimal(18,2)")]
         public decimal Amount { get; set; }
 
-        [Column(TypeName = "nvarchar(3)")]
+        [Column(TypeName = "varchar(3)")]
         public string? CurrencyCode { get; set; }
 
         protected MoneyModel() { }
