@@ -20,7 +20,7 @@ public class ExternalApiController : ControllerBase
 
 
     [HttpPost("Quote")]
-    public async Task<IActionResult> GetExternalApiOfferAsync([FromBody] OfferRequestDto offer)
+    public async Task<IActionResult> GetExternalApiOfferAsync([FromBody] CalculatorRequestModel offer)
     {
         if (offer == null || offer.RequestedAmount == null)
         {

@@ -5,10 +5,10 @@ namespace MortgageComparer.Models;
 public class TokenResponseDto
 {
     [JsonPropertyName("access_token")]
-    public string AccessToken { get; set; }
+    public required string AccessToken { get; set; }
 
     [JsonPropertyName("token_type")]
-    public string TokenType { get; set; }
+    public required string TokenType { get; set; }
 
     [JsonPropertyName("expires_in")]
     public int ExpiresIn { get; set; }

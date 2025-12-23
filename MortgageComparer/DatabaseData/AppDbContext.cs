@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using MortgageComparer.Models;
+using MortgageComparer.Entities;
 
 namespace MortgageComparer.Data;
 
@@ -16,5 +16,5 @@ public class AppDbContext : DbContext
     {
         options.UseNpgsql(Configuration.GetConnectionString("DefaultConnectionString"));
     }
-    public DbSet<User> Users { get; set; }
+    public DbSet<UserEntity> Users { get; set; }
 }

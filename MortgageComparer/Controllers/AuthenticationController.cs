@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MortgageComparer.Data;
+using MortgageComparer.Entities;
 using MortgageComparer.Models;
 
 namespace MortgageComparer.Controllers;
@@ -24,7 +25,7 @@ public class AuthenticationController : ControllerBase
     }
     
     [HttpPost("google-login")]
-    public async Task<ActionResult> GetGoogleTokenAsync([FromBody] GoogleLoginRequest request)
+    public async Task<ActionResult> GetGoogleTokenAsync([FromBody] GoogleLoginRequestModel request)
     {
         GoogleJsonWebSignature.Payload validPayload;
         try
@@ -39,10 +40,10 @@ public class AuthenticationController : ControllerBase
         {
             return BadRequest("Invalid Google Token");
         }
-        User? user = await _context.Users.FirstOrDefaultAsync((u) => u.Email == validPayload.Email);
+        UserEntity? user = await _context.Users.FirstOrDefaultAsync((u) => u.Email == validPayload.Email);
         if (user == null)
         {
-            user = new  User
+            user = new  UserEntity
             {
                 FirstName = validPayload.GivenName, LastName = validPayload.FamilyName,
                 Email = validPayload.Email,
@@ -58,7 +59,7 @@ public class AuthenticationController : ControllerBase
             hasBirthDate = user.DateOfBirth != null,
         });
     }
-    private string GenerateJwtToken(User user)
+    private string GenerateJwtToken(UserEntity user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         
