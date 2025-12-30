@@ -2,93 +2,89 @@
 using MortgageComparer.Controllers.Interfaces;
 using MortgageComparer.Services.Interfaces;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
+using MortgageComparer.Data;
+using MortgageComparer.Entities;
+/*
+using JobTypeEntity = MortgageComparer.Services.Interfaces.JobTypeEntity;
+using OfferEntity = MortgageComparer.Services.Interfaces.OfferEntity;
+using QuoteEntity = MortgageComparer.Services.Interfaces.QuoteEntity;
+*/
 
-namespace MortgageComparer.Controllers {
 
-    [Route("api/config/job-types")]
-    public class JobTypesController : Controller, IReadController<List<JobTypeEntity>, JobTypeEntity, int> {
+namespace MortgageComparer.Controllers 
+{
+    [Route("api/[controller]")]
+    public class DictionaryController : ControllerBase
+    {
+        private readonly AppDbContext _context;
+        private readonly IExternalApiService _externalApiService;
+        private readonly IUserContextService _userContextService;
+        public DictionaryController(AppDbContext context,  
+            IExternalApiService externalApiService, IUserContextService userContextService) 
+        {
+            _context = context;
+            _externalApiService = externalApiService;
+            _userContextService = userContextService;
+        }
+        [Authorize]
+        [HttpGet("DocumentAndJobTypes")]
+        public async Task<IActionResult> GetGovernmentDocumentTypesAndJobTypeAsync()
+        {
+            int? userId = _userContextService.GetUserId();
+            if (userId == null)
+            {
+                return Unauthorized("Użytkownik nie jest zalogowany.");
+            }
 
+            var user = await _context.Users
+                .Include(u => u.JobType)
+                .Include(u => u.PersonalDocument) 
+                .FirstOrDefaultAsync(u => u.Id == userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
 
-        private readonly IJobTypeService _jobTypeService;
-        public JobTypesController(IJobTypeService jobTypeService) {
-            _jobTypeService = jobTypeService;
-        }
-        public Task<ActionResult<IEnumerable<List<JobTypeEntity>>>> GetAll() {
-            throw new NotImplementedException();
-        }
+            bool dataChanged = false;
+            if (user.JobType == null)
+            {
+                JobTypeEntity userJob = await _externalApiService.GetJobTypesAsync();
+                var isInDataBase = await _context.JobTypes.FindAsync(userJob.JobTypeId);
+                user.JobType = isInDataBase ?? userJob;
+                dataChanged = true;
+            }
 
-        public Task<ActionResult<JobTypeEntity>> GetById([FromRoute] int id) {
-            throw new NotImplementedException();
-        }
-    }
+            if (user.PersonalDocument == null)
+            {
+                PersonalDocumentTypeEntity userDocument = await _externalApiService.GetDocumentTypesAsync();
+                var isInDataBase = await _context.DocumentTypes.FindAsync(userDocument.PersonalDocumentId);
+                user.PersonalDocument = isInDataBase ?? userDocument;
+                dataChanged = true;
+            }
 
-    public class DocumentTypesController : Controller, IReadController<List<DocumentTypeEntity>, DocumentTypeEntity, int> {
-        private readonly IDocumentService _documentService;
+            if (dataChanged)
+            {
+                await _context.SaveChangesAsync();
+            }
+            var response = new 
+            {
+                firstName = user.FirstName,
+                lastName = user.LastName,
+                email = user.Email,
+                birthDate = user.DateOfBirth,
+                job = new {
+                    name = user.JobType?.Name,
+                    description = user.JobType?.Description
+                },
+                document = new {
+                    name = user.PersonalDocument?.Name,
+                    description = user.PersonalDocument?.Description
+                }
+            };
 
-        public DocumentTypesController(IDocumentService documentService) {
-            _documentService = documentService;
-        }
-        public Task<ActionResult<IEnumerable<List<DocumentTypeEntity>>>> GetAll() {
-            throw new NotImplementedException();
-        }
-
-        public Task<ActionResult<DocumentTypeEntity>> GetById([FromRoute] int id) {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class QuoteController : Controller, IReadController<List<QuoteEntity>, QuoteEntity, int>, ICreateController {
-        private readonly IQuoteService _quoteService;
-        public QuoteController(IQuoteService quoteService) {
-            _quoteService = quoteService;
-        }
-
-        public Task<ActionResult> AddAsync([FromBody] object? dto) {
-            throw new NotImplementedException();
-        }
-
-        public Task<ActionResult<IEnumerable<List<QuoteEntity>>>> GetAll() {
-            throw new NotImplementedException();
-        }
-        public Task<ActionResult<QuoteEntity>> GetById([FromRoute] int id) {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class OfferController : Controller, IReadController<List<OfferEntity>, OfferEntity, int>, ICreateController{
-        private readonly IOfferService _offerService;
-        public OfferController(IOfferService offerService) {
-            _offerService = offerService;
-        }
-
-        public Task<ActionResult> AddAsync([FromBody] object? dto) {
-            throw new NotImplementedException();
-        }
-
-        public Task<ActionResult<IEnumerable<List<OfferEntity>>>> GetAll() {
-            throw new NotImplementedException();
-        }
-        public Task<ActionResult<OfferEntity>> GetById([FromRoute] int id) {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class DocumentController : Controller, IReadController<List<DocumentEntity>, DocumentEntity, int>, ICreateController{
-        private readonly IDocumentService _documentService;
-        public DocumentController(IDocumentService documentService) {
-            _documentService = documentService;
-        }
-
-        public Task<ActionResult> AddAsync([FromBody] object? dto) {
-            throw new NotImplementedException();
-        }
-
-        public Task<ActionResult<IEnumerable<List<DocumentEntity>>>> GetAll() {
-            throw new NotImplementedException();
-        }
-        public Task<ActionResult<DocumentEntity>> GetById([FromRoute] int id) {
-            throw new NotImplementedException();
+            return Ok(response);
         }
     }
-
 }

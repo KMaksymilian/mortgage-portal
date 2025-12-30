@@ -10,18 +10,14 @@
   <component name="ChangeListManager">
     <list default="true" id="99b664a8-ce11-40b8-93f8-7bfffd6fe881" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Backend/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Backend/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/frontend/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/frontend/src/App.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/frontend/src/OfferSearchPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/frontend/src/OfferSearchPage.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Frontend/frontend/src/ProfilePage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/frontend/src/ProfilePage.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MortgageComparer/Controllers/ExternalApiController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Controllers/ExternalApiController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparer/DatabaseData/AppDbContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/DatabaseData/AppDbContext.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparer/Entities/JobTypeEntity.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Entities/JobTypeEntity.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparer/Controllers/JobTypesController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Controllers/JobTypesController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MortgageComparer/Entities/OfferEntity.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Entities/OfferEntity.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparer/Entities/PersonalDocumentTypeEntitycs.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Entities/PersonalDocumentTypeEntity.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparer/Entities/QuoteEntityl.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Entities/QuoteEntity.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparer/Entities/UserEntity.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Entities/UserEntity.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparer/Migrations/20251223133332_NewEntities.Designer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparer/Migrations/20251223133332_NewEntities.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparer/Migrations/AppDbContextModelSnapshot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Migrations/AppDbContextModelSnapshot.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparer/Models/PersonalDocumentModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Models/PersonalDocumentModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparer/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparer/Services/Interfaces/IJobTypeService.cs" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,7 +60,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "b8af4411-e70e-4564-a3a6-4ca657f72453.executor": "Debug",
-    "git-widget-placeholder": "feature-offer",
+    "git-widget-placeholder": "feature-pastOffers",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -133,7 +129,7 @@
       <workItem from="1765574169185" duration="6137000" />
       <workItem from="1765826551018" duration="7948000" />
       <workItem from="1767032075522" duration="7157000" />
-      <workItem from="1767088023238" duration="7717000" />
+      <workItem from="1767088023238" duration="16708000" />
     </task>
     <servers />
   </component>

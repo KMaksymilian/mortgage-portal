@@ -16,7 +16,7 @@ function ProfilePage() {
         // WAŻNE: Upewnij się, że ten adres pasuje do Twojego kontrolera w C#
         // Jeśli Twój kontroler ma [Route("api/[controller]")], a metoda [HttpGet("DocumentAndJobTypes")]
         // to adres będzie: http://localhost:5254/api/User/DocumentAndJobTypes
-        const response = await fetch('http://localhost:5254/api/ExternalApi/DocumentAndJobTypes', {
+        const response = await fetch('http://localhost:5254/api/Dictionary/DocumentAndJobTypes', {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${user.token}`,
