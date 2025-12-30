@@ -17,4 +17,7 @@ public class AppDbContext : DbContext
         options.UseNpgsql(Configuration.GetConnectionString("DefaultConnectionString"));
     }
     public DbSet<UserEntity> Users { get; set; }
+    public DbSet<OfferEntity> Offers { get; set; }
+    public DbSet<JobTypeEntity> JobTypes { get; set; }
+    public DbSet<PersonalDocumentTypeEntity> DocumentTypes { get; set; }
 }

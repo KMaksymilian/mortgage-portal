@@ -7,6 +7,7 @@ namespace MortgageComparer.Entities {
 
     [Table("Quotes")]
     public class QuoteEntity : BasicEntity {
+        public int QuoteId { get; set; }
 
         public required MoneyModel TotalAmountToPay { get; set; }
 

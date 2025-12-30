@@ -10,20 +10,18 @@
   <component name="ChangeListManager">
     <list default="true" id="99b664a8-ce11-40b8-93f8-7bfffd6fe881" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Backend/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Backend/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BasicTests/UnitTest1.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BasicTests/UnitTest1.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/frontend/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/frontend/src/App.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/frontend/src/AuthContext.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/frontend/src/AuthContext.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/frontend/src/LoginPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/frontend/src/LoginPage.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/frontend/src/OfferSearchPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/frontend/src/OfferSearchPage.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Frontend/frontend/src/ProfilePage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/frontend/src/ProfilePage.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/frontend/src/main.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/frontend/src/main.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparer/Controllers/AuthenticationController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Controllers/AuthenticationController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MortgageComparer/Controllers/ExternalApiController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Controllers/ExternalApiController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparer/Controllers/ProfileController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Controllers/UserController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparer/DatabaseData/AppDbContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/DatabaseData/AppDbContext.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparer/Entities/JobTypeEntity.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Entities/JobTypeEntity.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparer/Entities/OfferEntity.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Entities/OfferEntity.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparer/Entities/PersonalDocumentTypeEntitycs.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Entities/PersonalDocumentTypeEntity.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparer/Entities/QuoteEntityl.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Entities/QuoteEntity.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparer/Entities/UserEntity.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Entities/UserEntity.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparer/Migrations/20251223133332_NewEntities.Designer.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparer/Migrations/20251223133332_NewEntities.cs" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/MortgageComparer/Migrations/AppDbContextModelSnapshot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Migrations/AppDbContextModelSnapshot.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparer/Models/User.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Models/User.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparer/MortgageComparer.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/MortgageComparer.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparer/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparer/Models/PersonalDocumentModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Models/PersonalDocumentModel.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,14 +42,12 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="mock://C:/Studia/dotNET/mortgage-portal/MortgageComparer/Models/TokenResponseDto.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Studia/dotNET/mortgage-portal/MortgageComparer/Models/TokenResponseDto.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MortgageComparer/DatabaseData/AppDbContext.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/8e66f04ba16b486987555f197901fea241910/e0/0ec527e3/IActionResult.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/f97a7aacf07f4dcfb4b5abaf07ce590918930/ea/7b63729c/ClaimTypes.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/56b5e122ae4fd723ecae7aec5bf0c71d9181bebd75b4e96887f832e7d81c84/PhysicalFileProvider.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/6fa05d7dbf2e454ce78b261b422234da1f1ccedee678fd997e5ef4afe6df6e/ControllerBase.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d7adb510bfdf132ba6e4ab85f2f18731d2ad4bbb2b76cc192433d8b8f022db1c/GoogleJsonWebSignature.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://OfferAdapter.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4
@@ -63,12 +59,12 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    ".NET Launch Settings Profile.MortgageComparer: http.executor": "Run",
+    ".NET Launch Settings Profile.MortgageComparer: http.executor": "Debug",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "b8af4411-e70e-4564-a3a6-4ca657f72453.executor": "Debug",
-    "git-widget-placeholder": "feature",
+    "git-widget-placeholder": "feature-offer",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -136,6 +132,8 @@
       <workItem from="1765549142464" duration="900000" />
       <workItem from="1765574169185" duration="6137000" />
       <workItem from="1765826551018" duration="7948000" />
+      <workItem from="1767032075522" duration="7157000" />
+      <workItem from="1767088023238" duration="7717000" />
     </task>
     <servers />
   </component>
@@ -143,6 +141,17 @@
     <option name="version" value="3" />
   </component>
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
   </component>
