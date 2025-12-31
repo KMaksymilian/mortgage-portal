@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,8 +21,9 @@ public class OfferController : ControllerBase
         _userContextService = userContextService;
     }
 
-    [HttpGet]
+    // Zwracanie danych frontendowi, żeby mógł wypisać
     [Authorize]
+    [HttpGet]
     public async Task<IActionResult> GetOffersAsync()
     {
         int? userId =  _userContextService.GetUserId();
@@ -44,4 +46,76 @@ public class OfferController : ControllerBase
             .ToListAsync();
         return Ok(result);
     }
+
+    /*[Authorize]
+    [HttpPost("path")]
+    public async Task<IActionResult> PostOfferToExternalApiAsync([FromBody] QuoteDto quote)
+    {
+        var userId =  _userContextService.GetUserId();
+        if (userId == null)
+        {
+            return Unauthorized("Użytkownnik nie jest zalogowany.");
+        }
+        UserEntity user = await _context.Users.FindAsync(userId);
+        if (user == null)
+        {
+            return BadRequest("Brak użytkownika w bazie");
+        }
+        var quoteId = quote.QuoteId;
+        PersonalDataDto personalData = new PersonalDataDto()
+        {
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            BirthDate = user.DateOfBirth.ToString()
+        };
+        
+        var data = new
+        {
+            quoteId = quote.QuoteId,
+            personalData = personalData,
+            
+        }
+        using var client = new HttpClient();
+        
+        var apiResponse = await client.PostAsJsonAsync("https://mini.loanbank.api.snet.com.pl/api/v1/Offer",
+            data);
+        
+    }*/
+    public class QuoteDto
+    {
+        public int QuoteId { get; set; }
+    }
+
+    public class PersonalDataDto
+    {
+        [JsonPropertyName("firstName")]
+        public string FirstName { get; set; }
+        [JsonPropertyName("lastName")]
+        public string LastName { get; set; }
+        [JsonPropertyName("birthDate")]
+        public string BirthDate { get; set; }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -10,14 +10,9 @@
   <component name="ChangeListManager">
     <list default="true" id="99b664a8-ce11-40b8-93f8-7bfffd6fe881" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Backend/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Backend/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/frontend/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/frontend/src/App.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/frontend/src/OfferSearchPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/frontend/src/OfferSearchPage.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/frontend/src/ProfilePage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/frontend/src/ProfilePage.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparer/Controllers/ExternalApiController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Controllers/ExternalApiController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparer/Controllers/JobTypesController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Controllers/JobTypesController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparer/Entities/OfferEntity.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Entities/OfferEntity.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparer/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparer/Services/Interfaces/IJobTypeService.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparer/Controllers/OfferController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Controllers/OfferController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparer/Entities/UserEntity.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Entities/UserEntity.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparer/Migrations/AppDbContextModelSnapshot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Migrations/AppDbContextModelSnapshot.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,28 +48,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    ".NET Launch Settings Profile.MortgageComparer: http.executor": "Debug",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "b8af4411-e70e-4564-a3a6-4ca657f72453.executor": "Debug",
-    "git-widget-placeholder": "feature-pastOffers",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;.NET Launch Settings Profile.MortgageComparer: http.executor&quot;: &quot;Debug&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;b8af4411-e70e-4564-a3a6-4ca657f72453.executor&quot;: &quot;Debug&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature-pastOffers&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
-      "EditorConfig",
-      "Angular2Svg"
+  &quot;keyToStringList&quot;: {
+    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
+      &quot;EditorConfig&quot;,
+      &quot;Angular2Svg&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected=".NET Launch Settings Profile.MortgageComparer: http">
     <configuration name="MortgageComparer: http" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/MortgageComparer/MortgageComparer.csproj" />
@@ -129,7 +124,8 @@
       <workItem from="1765574169185" duration="6137000" />
       <workItem from="1765826551018" duration="7948000" />
       <workItem from="1767032075522" duration="7157000" />
-      <workItem from="1767088023238" duration="16708000" />
+      <workItem from="1767088023238" duration="17320000" />
+      <workItem from="1767184268890" duration="2299000" />
     </task>
     <servers />
   </component>
