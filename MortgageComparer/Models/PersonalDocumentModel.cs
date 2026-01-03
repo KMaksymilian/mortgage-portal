@@ -10,5 +10,7 @@ namespace MortgageComparer.Models {
         [Required]
         [MaxLength(50)]
         public required string Number { get; set; }
+
+        public string Description { get; set; }
     }
 }

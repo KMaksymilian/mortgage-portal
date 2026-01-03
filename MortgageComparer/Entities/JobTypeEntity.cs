@@ -2,10 +2,10 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MortgageComparer.Entities {
-    [Table("JobTypes")]
     public class JobTypeEntity {
         [Key]
-        public int Id { get; set; }
+        public int JobTypeId { get; set; }
         public required string Name { get; set; }
+        public string Description { get; set; }
     }
 }

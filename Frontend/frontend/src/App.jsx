@@ -5,6 +5,7 @@ import ProfilePage from './ProfilePage.jsx';
 import HomePage from './HomePage.jsx';
 import OfferSearchPage from './OfferSearchPage.jsx'; // <--- 1. IMPORT
 import CompleteProfilePage from './BirthDateSite.jsx';
+import PastOffersPage from './PastOffersPage.jsx';
 
 function App() {
   const { user, logout } = useAuth();
@@ -14,10 +15,12 @@ function App() {
       <nav>
         <Link to="/">Home</Link> | 
         
-        {/* Menu dla zalogowanych */}
         {user ? (
           <>
-            <Link to="/search">Wyszukaj Ofertę</Link> | {/* <--- 2. LINK */}
+            <Link to="/search">Kalkulator</Link> | 
+            {/* 2. DODAJ LINK W MENU */}
+            <Link to="/history">Historia Ofert</Link> | 
+            
             <Link to="/profile">Profil</Link> | 
             <button onClick={logout} style={{ marginLeft: '10px' }}>Wyloguj ({user.email})</button>
           </>
@@ -34,6 +37,9 @@ function App() {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/search" element={<OfferSearchPage />} />
         <Route path="/complete-profile" element={<CompleteProfilePage />} />
+        
+        {/* 3. DODAJ SCIEŻKĘ W ROUTERZE */}
+        <Route path="/history" element={<PastOffersPage />} />
       </Routes>
     </div>
   );

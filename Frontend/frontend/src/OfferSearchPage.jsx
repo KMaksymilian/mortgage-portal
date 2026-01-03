@@ -65,7 +65,7 @@ const { user } = useAuth();
 
       console.log("Wysyłam JSON:", JSON.stringify(payload, null, 2)); // Podgląd w konsoli
 
-      const response = await fetch('http://localhost:5254/Quote', {
+      const response = await fetch('http://localhost:5254/api/ExternalApi/Quote', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

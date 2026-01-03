@@ -20,15 +20,13 @@ public class UserEntity : BasicEntity {
     public required string Email { get; set; }
 
     public DateTime? DateOfBirth { get; set; }
-
-    public JobDetailsModel? JobDetails { get; set; }
-
-    [ForeignKey(nameof(JobDetails.JobTypeId))]
-    public virtual JobTypeEntity? JobType { get; set; }
     
-    public PersonalDocumentModel? PersonalDocument { get; set; }
-
-    [ForeignKey(nameof(PersonalDocument.TypeId))]
-    public PersonalDocumentTypeEntitycs? PersonalDocumentType { get; set; }
+    public int? JobTypeId { get; set; }
+    [ForeignKey(nameof(JobTypeId))]
+    public JobTypeEntity? JobType { get; set; }
+    
+    public int? DocumentId { get; set; }
+    [ForeignKey(nameof(DocumentId))]
+    public PersonalDocumentTypeEntity? PersonalDocument { get; set; }
 
 }

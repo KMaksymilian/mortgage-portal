@@ -1,4 +1,4 @@
-﻿using MortgageComparer.Controllers;
+/*using MortgageComparer.Controllers;
 
 namespace MortgageComparer.Services.Interfaces {
     public interface IJobTypeService : IReadService<JobTypeEntity, int> { }
@@ -16,4 +16,4 @@ namespace MortgageComparer.Services.Interfaces {
     public interface IDocumentService : IReadService<DocumentEntity, int>, IWriteService<DocumentEntity, int> { }
     public class DocumentEntity : BasicEntity { }
 
-}
+}*/

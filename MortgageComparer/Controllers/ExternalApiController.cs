@@ -1,24 +1,38 @@
+using System.Net;
 using System.Net.Http.Headers;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MortgageComparer.Data;
+using MortgageComparer.Entities;
 using MortgageComparer.Models;
+using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
+using MortgageComparer.Controllers.Interfaces;
+using MortgageComparer.Services.Interfaces;
+using JsonSerializerOptions = System.Text.Json.JsonSerializerOptions;
 
 namespace MortgageComparer.Controllers;
 
+[ApiController]
+[Route("api/[controller]")]
 public class ExternalApiController : ControllerBase
 {
-    private AppDbContext _context;
-    private IConfiguration _configuration;
-    private int QuoteId { get; set; }
+    private readonly AppDbContext _context;
+    private readonly IConfiguration _configuration;
+    private readonly IExternalApiService _externalApiService;
+    private readonly IUserContextService _userContextService;
 
-    public ExternalApiController(AppDbContext context, IConfiguration configuration)
+    public ExternalApiController(AppDbContext context, IConfiguration configuration,
+        IExternalApiService externalApiService, IUserContextService userContextService)
     {
         _context = context;
-
         _configuration = configuration;
+        _externalApiService = externalApiService;
+        _userContextService = userContextService;
     }
 
-
+    [Authorize]
     [HttpPost("Quote")]
     public async Task<IActionResult> GetExternalApiOfferAsync([FromBody] CalculatorRequestModel offer)
     {
@@ -27,36 +41,35 @@ public class ExternalApiController : ControllerBase
             return BadRequest("Invalid data");
         }
 
-        var tokenUrl = "https://indentitymanager.snet.com.pl/connect/token";
-        var clientId = _configuration["ExternalApi:Login"];
-        var clientSecret = _configuration["ExternalApi:Secret"];
-
-
-        var requestData = new Dictionary<string, string>
+        int? userId = _userContextService.GetUserId();
+        if (userId == null)
         {
-            { "grant_type", "client_credentials" },
-            { "client_id", clientId },
-            { "client_secret", clientSecret },
-            { "scope", "MiNI.LoanBank.API" }
-        };
-        var content = new FormUrlEncodedContent(requestData);
-        using var client = new HttpClient();
-        var tokenResponse = await client.PostAsync(tokenUrl, content);
-
-        if (!tokenResponse.IsSuccessStatusCode)
-        {
-            var errorContent = await tokenResponse.Content.ReadAsStringAsync();
-            return StatusCode(500, errorContent);
+            return Unauthorized("Użytkownik nie jest zalogowany.");
         }
-
-        var tokenDto = await tokenResponse.Content.ReadFromJsonAsync<TokenResponseDto>();
+        
+        using var client = new HttpClient();
+        var tokenDto = await _externalApiService.GetTokenAsync();
+        
 
         client.DefaultRequestHeaders.Authorization =
-            new AuthenticationHeaderValue("Bearer", tokenDto.AccessToken);
+            new AuthenticationHeaderValue("Bearer", tokenDto);
 
         var apiResponse = await client.PostAsJsonAsync("https://mini.loanbank.api.snet.com.pl/api/v1/Quote", offer);
 
         var result = await apiResponse.Content.ReadAsStringAsync();
+        var jsonSettings = new JsonSerializerOptions()
+        {
+            PropertyNameCaseInsensitive = true
+        };
+        var response = JsonSerializer.Deserialize<ExternalRequestResponse>(result, jsonSettings);
+        OfferEntity offerEntity = new OfferEntity
+        {
+            UserId = (int)userId,
+            QuoteId = response.QuoteId,
+            RequestedMoney = offer.RequestedAmount
+        };
+        _context.Offers.Add(offerEntity);
+        await _context.SaveChangesAsync();
         return Content(result, "application/json");
     }
 }

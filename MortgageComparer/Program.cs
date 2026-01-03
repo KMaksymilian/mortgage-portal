@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
+using MortgageComparer.Services;
+using MortgageComparer.Services.Interfaces;
 
 
 namespace MortgageComparer;
@@ -18,6 +20,10 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         builder.Services.AddControllers();
+        builder.Services.AddHttpContextAccessor();
+        builder.Services.AddScoped<IUserContextService, UserContextService>();
+        builder.Services.AddScoped<IExternalApiService, ExternalApiService>();
+        builder.Services.AddHttpClient();
         builder.Services.AddNpgsql<AppDbContext>(
             builder.Configuration.GetConnectionString("DefaultConnectionString"));
 
