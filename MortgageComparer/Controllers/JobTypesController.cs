@@ -48,21 +48,6 @@ namespace MortgageComparer.Controllers
             }
 
             bool dataChanged = false;
-            if (user.JobType == null)
-            {
-                JobTypeEntity userJob = await _externalApiService.GetJobTypesAsync();
-                var isInDataBase = await _context.JobTypes.FindAsync(userJob.JobTypeId);
-                user.JobType = isInDataBase ?? userJob;
-                dataChanged = true;
-            }
-
-            if (user.PersonalDocument == null)
-            {
-                PersonalDocumentTypeEntity userDocument = await _externalApiService.GetDocumentTypesAsync();
-                var isInDataBase = await _context.DocumentTypes.FindAsync(userDocument.PersonalDocumentId);
-                user.PersonalDocument = isInDataBase ?? userDocument;
-                dataChanged = true;
-            }
 
             if (dataChanged)
             {

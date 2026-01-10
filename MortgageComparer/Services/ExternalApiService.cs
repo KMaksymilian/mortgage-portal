@@ -86,4 +86,5 @@ public class ExternalApiService : IExternalApiService
         var token = await response.Content.ReadFromJsonAsync<TokenResponseDto>();
         return token?.AccessToken;
     }
+    
 }

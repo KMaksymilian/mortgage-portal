@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using MortgageComparer.Data;
 using MortgageComparer.Entities;
 using MortgageComparer.Models;
+using MortgageComparer.Services.Interfaces;
 
 namespace MortgageComparer.Controllers;
 
@@ -17,11 +18,13 @@ public class AuthenticationController : ControllerBase
 {
     private AppDbContext _context;
     private readonly IConfiguration _configuration;
+    private readonly IExternalApiService _externalApiService;
 
-    public AuthenticationController(AppDbContext context, IConfiguration configuration)
+    public AuthenticationController(AppDbContext context, IConfiguration configuration,  IExternalApiService externalApiService)
     {
         _context = context;
         _configuration = configuration;
+        _externalApiService = externalApiService;
     }
     
     [HttpPost("google-login")]
@@ -48,6 +51,20 @@ public class AuthenticationController : ControllerBase
                 FirstName = validPayload.GivenName, LastName = validPayload.FamilyName,
                 Email = validPayload.Email,
             };
+            // zmockowane dane, to do: zmienić to
+            if (user.JobType == null)
+            {
+                JobTypeEntity userJob = await _externalApiService.GetJobTypesAsync();
+                var isInDataBase = await _context.JobTypes.FindAsync(userJob.JobTypeId);
+                user.JobType = isInDataBase ?? userJob;
+            }
+
+            if (user.PersonalDocument == null)
+            {
+                PersonalDocumentTypeEntity userDocument = await _externalApiService.GetDocumentTypesAsync();
+                var isInDataBase = await _context.DocumentTypes.FindAsync(userDocument.PersonalDocumentId);
+                user.PersonalDocument = isInDataBase ?? userDocument;
+            }
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
         }
