@@ -12,7 +12,7 @@ public class OfferEntity : BasicEntity {
     public int UserId { get; set; }
     [ForeignKey(nameof(UserId))]
     public virtual UserEntity? User { get; set; }
-    public int QuoteId { get; set; }
+    public int QuoteId { get; set; } 
     
 
     [MaxLength(50)]
@@ -22,8 +22,8 @@ public class OfferEntity : BasicEntity {
 
     [MaxLength(500)]
     public string? StatusDescription { get; set; }
-    
-    public int? BankPercentage { get; set; }
+    public byte[]? ContractData { get; set; }
+    public double? BankPercentage { get; set; }
     public required MoneyModel RequestedMoney { get; set; }
     public MoneyModel? MonthlyInstallment { get; set; }
     
