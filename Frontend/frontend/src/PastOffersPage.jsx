@@ -103,25 +103,26 @@ const handleDownloadContract = async (offerId) => {
                     <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '600px' }}>
                         <thead>
                             <tr style={{ borderBottom: '2px solid #444', textAlign: 'left', color: '#888' }}>
-                                <th style={{ padding: '15px' }}>Data</th>
-                                <th style={{ padding: '15px' }}>Kwota</th>
-                                <th style={{ padding: '15px' }}>Rata</th>
-                                <th style={{ padding: '15px' }}>Status</th>
-                                <th style={{ padding: '15px', textAlign: 'center' }}>Dokumenty</th>
+                                <th style={{ padding: '30px' }}>Data utworzenia</th>
+                                <th style={{ padding: '30px' }}>Kwota</th>
+                                <th style={{ padding: '30px' }}>Rata</th>
+                                <th style={{ padding: '30px' }}>Status</th>
+                                <th style={{ padding: '30px', textAlign: 'center' }}>Dokumenty</th>
+                                <th stle={{padding: '30px', textAling: 'cented'}}>Podpisz umowę</th>
                             </tr>
                         </thead>
                         <tbody>
                             {offers.map((offer) => (
                                 <tr key={offer.id} style={{ borderBottom: '1px solid #333' }}>
                                     <td style={{ padding: '15px' }}>
-                                        {new Date(offer.date).toLocaleDateString()}
+                                        {new Date(offer.createDate).toLocaleDateString()}
                                     </td>
                                     <td style={{ padding: '15px', fontWeight: 'bold' }}>
-                                        {offer.amount} {offer.currency}
+                                        {offer.loanAmount} {offer.currencycode}
                                     </td>
                                     <td style={{ padding: '15px' }}>
                                         {/* Zakładam, że w GET /Offers zwracasz to pole, jeśli nie - usuń */}
-                                        {offer.monthlyInstallment ? `${offer.monthlyInstallment} PLN` : '-'}
+                                        {offer.monthlyInstallment ? `${offer.monthlyInstallment} ${offer.currencycode}` : '-'}
                                     </td>
                                     <td style={{ padding: '15px' }}>
                                         <span style={{ 
@@ -153,7 +154,7 @@ const handleDownloadContract = async (offerId) => {
                                             onMouseOver={(e) => downloadingId !== offer.id && (e.target.style.transform = 'scale(1.05)')}
                                             onMouseOut={(e) => downloadingId !== offer.id && (e.target.style.transform = 'scale(1)')}
                                         >
-                                            {downloadingId === offer.id ? 'Pobieranie...' : '📥 Pobierz Umowę'}
+                                            {offer.Completed ? "Podpisana" : "Pobierz umowę"}
                                         </button>
                                     </td>
                                 </tr>

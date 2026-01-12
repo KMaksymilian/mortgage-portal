@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MortgageComparer.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
@@ -21,8 +22,11 @@ public class Program
 
         builder.Services.AddControllers();
         builder.Services.AddHttpContextAccessor();
-        builder.Services.AddScoped<IUserContextService, UserContextService>();
+        builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<IExternalApiService, ExternalApiService>();
+        builder.Services.AddScoped<IOfferService, OfferService>();
+        builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+        builder.Services.AddScoped<IJobTypeService, JobTypeService>();
         builder.Services.AddHttpClient();
         builder.Services.AddNpgsql<AppDbContext>(
             builder.Configuration.GetConnectionString("DefaultConnectionString"));

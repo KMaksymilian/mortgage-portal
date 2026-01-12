@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MortgageComparer.Entities;
+using MortgageComparer.Services.Interfaces;
 
 namespace MortgageComparer.Controllers
 {
@@ -13,58 +14,73 @@ namespace MortgageComparer.Controllers
     [Authorize]
     public class UserController : ControllerBase
     {
-        private AppDbContext _context;
+        private IUserService _userService;
 
-        public UserController(AppDbContext context)
+        public UserController(IUserService userService)
         {
-            _context = context;
+            _userService = userService;
         }
         
         [HttpGet("me")]
-        public async Task<ActionResult<UserEntity>> GetMyProfileAsync()
+        public async Task<ActionResult<UserProfileDto>> GetMyProfileAsync()
         {
-            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            
-            if (userIdString == null)
-            {
-                return Unauthorized();
-            }
-            
-            var userId = int.Parse(userIdString);
-            
-            var user = await _context.Users.FindAsync(userId);
 
-            if (user == null)
+            UserProfileDto user;
+            try
             {
-                return NotFound("Nie znaleziono użytkownika.");
+                user = await _userService.GetProfileAsync();
+                return Ok(user);
             }
-            return Ok(new 
+            catch (Exception ex)
             {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-                HasBirthDate = user.DateOfBirth != null,
-            });
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("BirthDate")]
         public async Task<ActionResult> CheckForTheBirthDateAsync([FromBody] UserBirthDateDto user)
         {
-            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            UserEntity foundUser = await _context.Users.FindAsync(userId);
-            if (foundUser == null)
+            try
             {
-                return NotFound("Nie znaleziono.");
+                await _userService.UpdateBirthdayAsync(user);
+                return Ok("Zaktualizowano datę");
             }
-            // PostgreSQL przyjmuje tylko UTC time
-            foundUser.DateOfBirth = user.BirthDate.ToUniversalTime();
-            await _context.SaveChangesAsync();
-            return Ok("Zaktualizowano datę");
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPost]
+        public async Task<ActionResult> AddUserAsync([FromBody] UserEntity? user)
+        {
+            if (user == null)
+            {
+                return BadRequest("Brak danych użytkownika");
+            }
+
+            UserEntity newUser;
+            try
+            {
+                newUser = await _userService.AddUserAsync(user);
+                return Ok(newUser);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 
     public class UserBirthDateDto
     {
         public DateTime BirthDate { get; set; }
+    }
+
+    public class UserProfileDto
+    {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+        public bool HasBirthDate { get; set; } 
     }
 }
