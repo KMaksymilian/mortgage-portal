@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MortgageComparer.Entities;
+using MortgageComparer.Models;
 
 namespace MortgageComparer.Data;
 
@@ -23,4 +24,6 @@ public class AppDbContext : DbContext
     public DbSet<JobTypeEntity> JobTypes { get; set; }
     public DbSet<PersonalDocumentTypeEntity> DocumentTypes { get; set; }
     public DbSet<QuoteEntity> Quotes { get; set; }
+    public DbSet<Quote> OurApiQuotes { get; set; }
+    public DbSet<ApiOfferEntity> OurApiOffers { get; set; }
 }

@@ -19,6 +19,7 @@ public class UserEntity : BasicEntity {
     [EmailAddress]
     [MaxLength(255)]
     public required string Email { get; set; }
+    // To do: Zaimplementować podawanie pensji oraz w czym zarabis przez użytkownika, na razie zmockowane dane
 
     public DateTime? DateOfBirth { get; set; }
     

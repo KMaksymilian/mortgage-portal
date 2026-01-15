@@ -1,30 +1,31 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-#pragma warning disable IDE1006
+
 #nullable disable
 
 namespace MortgageComparer.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class AddedQuoteTable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Users",
+                name: "OurApiQuotes",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    FirstName = table.Column<string>(type: "text", nullable: false),
-                    LastName = table.Column<string>(type: "text", nullable: false),
-                    Email = table.Column<string>(type: "text", nullable: false),
-                    GoogleUserId = table.Column<string>(type: "text", nullable: false)
+                    Amount = table.Column<decimal>(type: "numeric", nullable: false),
+                    Installments = table.Column<int>(type: "integer", nullable: false),
+                    Currency = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.PrimaryKey("PK_OurApiQuotes", x => x.Id);
                 });
         }
 
@@ -32,9 +33,7 @@ namespace MortgageComparer.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "OurApiQuotes");
         }
     }
 }
-
-#pragma warning restore IDE1006
