@@ -17,5 +17,6 @@
 
         // 6. Odrzucenie oferty (Dla Użytkownika)
         string GetRejection(string userName, string reason);
+        string GetContractSigningReminder(string firstName);
     }
 }

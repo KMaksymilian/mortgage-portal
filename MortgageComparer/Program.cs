@@ -29,8 +29,11 @@ public class Program
         builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
         builder.Services.AddScoped<IJobTypeService, JobTypeService>();
         builder.Services.AddHttpClient();
-        builder.Services.AddNpgsql<AppDbContext>(
-            builder.Configuration.GetConnectionString("DefaultConnectionString"));
+        //builder.Services.AddNpgsql<AppDbContext>(
+        //    builder.Configuration.GetConnectionString("DefaultConnectionString"));
+
+        builder.Services.AddDbContext<AppDbContext>(options =>
+            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnectionString")));
 
         builder.Services.AddAuthentication(options =>
         {
@@ -69,6 +72,7 @@ public class Program
         });
         builder.Services.AddTransient<IEmailService, SendGridEmailService>();
         builder.Services.AddTransient<IEmailTemplateService, MockEmailTemplateService>();
+        builder.Services.AddHostedService<ReminderWorker>();
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.

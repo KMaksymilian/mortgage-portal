@@ -109,5 +109,17 @@ namespace MortgageComparer.Services {
             </body>
             </html>";
         }
+
+        public string GetContractSigningReminder(string userName) {
+            var content = $@"
+        <p>Cześć <strong>{userName}</strong>,</p>
+        <p>Zauważyliśmy, że Twoja umowa kredytowa została przygotowana 3 dni temu, ale wciąż nie została podpisana.</p>
+        <div style='background-color: #fff3cd; padding: 15px; border-radius: 5px; margin: 15px 0; color: #856404;'>
+            <strong>Uwaga:</strong> Masz łącznie 10 dni na podpisanie dokumentów. Po tym czasie oferta wygaśnie.
+        </div>
+        <p>Zaloguj się do panelu, aby dokończyć proces.</p>";
+
+            return GetBaseHtml("Przypomnienie: Twoja umowa czeka! ⏳", content);
+        }
     }
 }
