@@ -9,7 +9,11 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
 using MortgageComparer.Services;
+using MortgageComparer.Services.BackgroundLogic;
 using MortgageComparer.Services.Interfaces;
+using MortgageComparer.Workers;
+using MortgageComparer.Workers;
+using System.Text;
 
 
 namespace MortgageComparer;
@@ -28,8 +32,11 @@ public class Program
         builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
         builder.Services.AddScoped<IJobTypeService, JobTypeService>();
         builder.Services.AddHttpClient();
-        builder.Services.AddNpgsql<AppDbContext>(
-            builder.Configuration.GetConnectionString("DefaultConnectionString"));
+        //builder.Services.AddNpgsql<AppDbContext>(
+        //    builder.Configuration.GetConnectionString("DefaultConnectionString"));
+
+        builder.Services.AddDbContext<AppDbContext>(options =>
+            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnectionString")));
 
         builder.Services.AddAuthentication(options =>
         {
@@ -62,6 +69,15 @@ public class Program
                     .AllowAnyMethod();
             });
         });
+
+
+
+
+        builder.Services.AddScoped<ICleanupService, CleanupService>();
+        builder.Services.AddHostedService<CleanupWorker>();
+
+
+        
 
         var app = builder.Build();
 
