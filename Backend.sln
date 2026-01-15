@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicTests", "BasicTests\Ba
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MortgageComparer", "MortgageComparer\MortgageComparer.csproj", "{3E2F43F9-9C0D-6F81-AFF1-7E46D38FCADD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MortgageComparerAPI", "MortgageComparerAPI\MortgageComparerAPI.csproj", "{A60CEAE0-60A4-485A-9B80-3D42D6886BAE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{3E2F43F9-9C0D-6F81-AFF1-7E46D38FCADD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3E2F43F9-9C0D-6F81-AFF1-7E46D38FCADD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3E2F43F9-9C0D-6F81-AFF1-7E46D38FCADD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A60CEAE0-60A4-485A-9B80-3D42D6886BAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A60CEAE0-60A4-485A-9B80-3D42D6886BAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A60CEAE0-60A4-485A-9B80-3D42D6886BAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A60CEAE0-60A4-485A-9B80-3D42D6886BAE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
