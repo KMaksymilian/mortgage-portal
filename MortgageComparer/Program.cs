@@ -1,15 +1,16 @@
-using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using MortgageComparer.Data;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Microsoft.EntityFrameworkCore;
+using MortgageComparer.Data;
 using MortgageComparer.Services;
 using MortgageComparer.Services.Interfaces;
+using SendGrid.Extensions.DependencyInjection;
+using System.Text;
 
 
 namespace MortgageComparer;
@@ -28,8 +29,11 @@ public class Program
         builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
         builder.Services.AddScoped<IJobTypeService, JobTypeService>();
         builder.Services.AddHttpClient();
-        builder.Services.AddNpgsql<AppDbContext>(
-            builder.Configuration.GetConnectionString("DefaultConnectionString"));
+        //builder.Services.AddNpgsql<AppDbContext>(
+        //    builder.Configuration.GetConnectionString("DefaultConnectionString"));
+
+        builder.Services.AddDbContext<AppDbContext>(options =>
+            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnectionString")));
 
         builder.Services.AddAuthentication(options =>
         {
@@ -63,6 +67,12 @@ public class Program
             });
         });
 
+        builder.Services.AddSendGrid(options => {
+            options.ApiKey = builder.Configuration["SendGrid:ApiKey"];
+        });
+        builder.Services.AddTransient<IEmailService, SendGridEmailService>();
+        builder.Services.AddTransient<IEmailTemplateService, MockEmailTemplateService>();
+        builder.Services.AddHostedService<ReminderWorker>();
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
