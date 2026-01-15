@@ -5,11 +5,12 @@ namespace MortgageComparer.StatesMachine {
     public enum OfferStatus {
         Created = 0,        
         Pending = 1,        
-        Approved = 2,       
-        Rejected = 3,       
-        ContractSigned = 4, 
-        Completed = 5,      
-        Canceled = 6        
+        Approved = 2,      
+        Rejected = 3, 
+        ReadyToBeSigned = 4,
+        ContractSigned = 5,
+        Completed = 6,      
+        Canceled = 7        
     }
     public interface IOfferStateMachine {
         public void Submit();

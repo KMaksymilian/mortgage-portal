@@ -33,7 +33,7 @@ public class ExternalApiService : IExternalApiService
         int randomNumber = new Random().Next(0, count);
         JobTypeEntity userJob = new JobTypeEntity
         {
-            JobTypeId = jobResult[randomNumber].JobTypeId,
+            Id = jobResult[randomNumber].Id,
             Name = jobResult[randomNumber].Name,
             Description = jobResult[randomNumber].Description
         };
@@ -56,7 +56,7 @@ public class ExternalApiService : IExternalApiService
         int randomNumber = new Random().Next(0, count);
         PersonalDocumentTypeEntity userJob = new PersonalDocumentTypeEntity()
         {
-            PersonalDocumentId = documentResult[randomNumber].PersonalDocumentId,
+            Id = documentResult[randomNumber].Id,
             Name = documentResult[randomNumber].Name,
             Description = documentResult[randomNumber].Description
         };
@@ -86,4 +86,5 @@ public class ExternalApiService : IExternalApiService
         var token = await response.Content.ReadFromJsonAsync<TokenResponseDto>();
         return token?.AccessToken;
     }
+    
 }

@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using MortgageComparer.Data;
 using MortgageComparer.Entities;
 using MortgageComparer.Models;
+using MortgageComparer.Services.Interfaces;
 
 namespace MortgageComparer.Controllers;
 
@@ -15,71 +16,17 @@ namespace MortgageComparer.Controllers;
 [Route("api/auth")]
 public class AuthenticationController : ControllerBase
 {
-    private AppDbContext _context;
-    private readonly IConfiguration _configuration;
+    private readonly IAuthenticationService _authenticationService;
 
-    public AuthenticationController(AppDbContext context, IConfiguration configuration)
+    public AuthenticationController(IAuthenticationService authenticationService)
     {
-        _context = context;
-        _configuration = configuration;
+        _authenticationService = authenticationService;
     }
     
     [HttpPost("google-login")]
     public async Task<ActionResult> GetGoogleTokenAsync([FromBody] GoogleLoginRequestModel request)
     {
-        GoogleJsonWebSignature.Payload validPayload;
-        try
-        {
-            validPayload = await GoogleJsonWebSignature.ValidateAsync(request.Token);
-        }
-        catch (InvalidJwtException)
-        {
-            return BadRequest("Invalid Google Token");
-        }
-        if (validPayload == null)
-        {
-            return BadRequest("Invalid Google Token");
-        }
-        UserEntity? user = await _context.Users.FirstOrDefaultAsync((u) => u.Email == validPayload.Email);
-        if (user == null)
-        {
-            user = new  UserEntity
-            {
-                FirstName = validPayload.GivenName, LastName = validPayload.FamilyName,
-                Email = validPayload.Email,
-            };
-            await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
-        }
-        var jwtToken = GenerateJwtToken(user);
-        return Ok(new
-        {
-            Token = jwtToken,
-            email = validPayload.Email,
-            hasBirthDate = user.DateOfBirth != null,
-        });
-    }
-    private string GenerateJwtToken(UserEntity user)
-    {
-        var tokenHandler = new JwtSecurityTokenHandler();
-        
-        var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
-        
-        var tokenDescriptor = new SecurityTokenDescriptor
-        {
-            Subject = new ClaimsIdentity(new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()) 
-            }),
-            Expires = DateTime.UtcNow.AddHours(1),
-            Issuer = _configuration["Jwt:Issuer"],
-            Audience = _configuration["Jwt:Audience"],
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-        };
-
-        var token = tokenHandler.CreateToken(tokenDescriptor);
-        return tokenHandler.WriteToken(token);
+        var result = await _authenticationService.GetGoogleTokenAsync(request);
+        return Ok(result);
     }
 }

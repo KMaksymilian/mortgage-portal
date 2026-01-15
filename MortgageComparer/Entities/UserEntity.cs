@@ -1,6 +1,7 @@
 using MortgageComparer.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MortgageComparer.Entities;
 
@@ -20,9 +21,6 @@ public class UserEntity : BasicEntity {
     public required string Email { get; set; }
     // To do: Zaimplementować podawanie pensji oraz w czym zarabis przez użytkownika, na razie zmockowane dane
 
-    public int Income { get; set; } = 10000;
-    public string IncomeCurrencyCode { get; set; } = "PLN";
-
     public DateTime? DateOfBirth { get; set; }
     
     public int? JobTypeId { get; set; }
@@ -32,5 +30,11 @@ public class UserEntity : BasicEntity {
     public int? DocumentId { get; set; }
     [ForeignKey(nameof(DocumentId))]
     public PersonalDocumentTypeEntity? PersonalDocument { get; set; }
+    // To do: Zaimplementować to lepiej, na razie mockup
+    public DateTime JobStartDate { get; set; } =  DateTime.UtcNow;
+    public DateTime JobEndDate { get; set; } =  DateTime.UtcNow;
+    public int Income { get; set; }= 10000;
+    public string IncomeCurrCode { get; set; } = "PLN";
+
 
 }

@@ -38,7 +38,7 @@ function App() {
         <Route path="/search" element={<OfferSearchPage />} />
         <Route path="/complete-profile" element={<CompleteProfilePage />} />
         
-        {/* 3. DODAJ SCIEŻKĘ W ROUTERZE */}
+        {}
         <Route path="/history" element={<PastOffersPage />} />
       </Routes>
     </div>

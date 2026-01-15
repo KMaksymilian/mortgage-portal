@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace MortgageComparer.Entities {
     public class JobTypeEntity {
         [Key]
-        public int JobTypeId { get; set; }
+        public int Id { get; set; }
         public required string Name { get; set; }
         public string Description { get; set; }
     }
