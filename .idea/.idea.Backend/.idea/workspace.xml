@@ -12,20 +12,10 @@
   <component name="ChangeListManager">
     <list default="true" id="99b664a8-ce11-40b8-93f8-7bfffd6fe881" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Backend/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Backend/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparer/DatabaseData/AppDbContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/DatabaseData/AppDbContext.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MortgageComparer/Entities/ApiOfferEntity.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Entities/ApiOfferEntity.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparer/Entities/ApiUserEntity.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Entities/ApiUserEntity.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparer/Entities/UserEntity.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Entities/UserEntity.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MortgageComparer/Migrations/AppDbContextModelSnapshot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Migrations/AppDbContextModelSnapshot.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparerAPI/Controllers/AuthController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparerAPI/Controllers/AuthController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparerAPI/Controllers/ConfigController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparerAPI/Controllers/ConfigController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MortgageComparerAPI/Controllers/OfferController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparerAPI/Controllers/OfferController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparerAPI/Controllers/QuoteController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparerAPI/Controllers/QuoteController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparerAPI/Models/ApiLoginRequest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparerAPI/Models/ApiLoginRequest.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparerAPI/Models/PostOfferRequest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Models/PostOfferRequest.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparerAPI/Services/ApiAuthService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparerAPI/Services/ApiAuthService.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MortgageComparerAPI/Services/ApiOfferService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparerAPI/Services/ApiOfferService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparerAPI/Services/Interfaces/IApiAuthService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparerAPI/Services/Interfaces/IApiAuthService.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MortgageComparerAPI/Services/Interfaces/IApiOfferService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparerAPI/Services/Interfaces/IApiOfferService.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -174,7 +164,7 @@
       <workItem from="1765826551018" duration="7948000" />
       <workItem from="1767032075522" duration="7157000" />
       <workItem from="1767088023238" duration="16708000" />
-      <workItem from="1768551055319" duration="12973000" />
+      <workItem from="1768551055319" duration="14046000" />
     </task>
     <servers />
   </component>

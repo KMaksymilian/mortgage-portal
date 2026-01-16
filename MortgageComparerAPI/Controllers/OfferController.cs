@@ -59,4 +59,22 @@ public class OfferController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+
+    [HttpPost("{offerId}/document/{key}/upload")]
+    public async Task<IActionResult> UploadContractAsync([FromForm] IFormFile file, int offerId, string key)
+    {
+        if (file == null || file.Length == 0)
+        {
+            return BadRequest();
+        }
+        try
+        {
+            await _offerService.PostContractAsync(file, offerId, key);
+            return Ok();
+        }
+        catch (BadHttpRequestException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 }

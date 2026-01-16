@@ -98,16 +98,26 @@ public class ApiOfferService : IApiOfferService
         var templatePath = Path.Combine(Directory.GetCurrentDirectory(), "ContractTemplate.txt");
         string content = System.IO.File.ReadAllText(templatePath);
         content = content.Replace("{{DaneDoUmowy}}", offer.User.FirstName  + " " + offer.User.LastName);
+        var contract = Encoding.UTF8.GetBytes(content);
+        offer.Contract = contract;
+        await  _context.SaveChangesAsync();
         return new CustomFile()
         {
-            FileContents = Encoding.UTF8.GetBytes(content),
+            FileContents = contract,
             FileName = $"Umowa_{offerId}.txt",
             ContentType = "text/plain"
         };
     }
-    public Task PostContractAsync(ContractOfferRequest request)
+
+    public async Task PostContractAsync(IFormFile file, int offerId, string key)
     {
-        
+        var offer = await _context.OurApiOffers.FirstOrDefaultAsync(o => o.Id == offerId);
+        using (var memoryStream = new MemoryStream())
+        {
+            await file.CopyToAsync(memoryStream);
+            offer.SignedContract = memoryStream.ToArray();
+            await _context.SaveChangesAsync();
+        }
     }
     /*
     public Task CompleteProccess(GetOfferRequest request)

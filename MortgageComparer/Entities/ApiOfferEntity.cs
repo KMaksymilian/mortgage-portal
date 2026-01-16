@@ -23,6 +23,6 @@ public class ApiOfferEntity
     public DateTime RequestedDate { get; set; }
     public DateTime UpdatedDate { get; set; }
     public string DocumentKey { get; set; }
-    public byte[]? Document { get; set; }
-    public byte[]? SignedDocument { get; set; }
+    public byte[]? Contract { get; set; }
+    public byte[]? SignedContract { get; set; }
 }
