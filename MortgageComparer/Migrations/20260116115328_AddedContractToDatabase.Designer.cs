@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MortgageComparer.Data;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MortgageComparer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260116115328_AddedContractToDatabase")]
+    partial class AddedContractToDatabase
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,7 +33,7 @@ namespace MortgageComparer.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<byte[]>("Contract")
+                    b.Property<byte[]>("Document")
                         .HasColumnType("bytea");
 
                     b.Property<string>("DocumentKey")
@@ -63,7 +66,7 @@ namespace MortgageComparer.Migrations
                     b.Property<int>("RequestedPeriodInMonths")
                         .HasColumnType("integer");
 
-                    b.Property<byte[]>("SignedContract")
+                    b.Property<byte[]>("SignedDocument")
                         .HasColumnType("bytea");
 
                     b.Property<DateTime>("UpdatedDate")

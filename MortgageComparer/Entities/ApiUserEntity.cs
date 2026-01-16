@@ -1,10 +1,40 @@
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using MortgageComparer.Models;
+using MortgageComparerAPI.Models;
 
 namespace MortgageComparer.Entities;
 
 public class ApiUserEntity
 {
-    public PersonalDataModel PersonalData { get; set; }
-    public PersonalDocumentModel GovernmentDocument { get; set; }
-    public JobDetailsModel JobDetails { get; set; }
+    [Key]
+    public int Id { get; set; }
+    public string Email { get; set; }
+    public string? FirstName { get; set; } = null!;
+    public string? LastName { get; set; } = null!;
+    public string? BirthDate { get; set; }
+    public int? DocTypeId { get; set; }
+    
+    [MaxLength(50)]
+    public string? Number { get; set; }
+    [JsonPropertyName("typeId")]
+    public int? JobTypeId { get; set; }
+    [JsonPropertyName("jobStartDate")]
+    public DateTime? StartDate { get; set; }
+    [JsonPropertyName("jobEndDate")]
+    public DateTime? EndDate { get; set; }
+    public MoneyModel? Income { get; set; }
+
+    public void UpdateUser(PostOfferRequest request)
+    {
+        this.FirstName = request.User.PersonalData.FirstName;
+        this.LastName = request.User.PersonalData.LastName;
+        this.BirthDate = request.User.PersonalData.BirthDate;
+        this.DocTypeId = request.User.GovernmentDocument.TypeId;
+        this.Number = request.User.GovernmentDocument.Number;
+        this.JobTypeId = request.User.JobDetails.JobTypeId;
+        this.StartDate = request.User.JobDetails.StartDate;
+        this.EndDate = request.User.JobDetails.EndDate;
+        this.Income = request.User.JobDetails.Income;
+    }
 }
