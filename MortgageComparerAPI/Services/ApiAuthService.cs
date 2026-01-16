@@ -2,6 +2,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using MortgageComparer.Data;
+using MortgageComparer.Entities;
 using MortgageComparerAPI.Models;
 
 namespace MortgageComparerAPI.Services;
@@ -9,16 +11,32 @@ namespace MortgageComparerAPI.Services;
 public class ApiAuthService : IApiAuthService
 {
     private readonly IConfiguration _configuration;
+    private AppDbContext _dbContext;
 
-    public ApiAuthService(IConfiguration configuration)
+    public ApiAuthService(IConfiguration configuration,  AppDbContext dbContext)
     {
         _configuration = configuration;
+        _dbContext = dbContext;
     }
-    public ApiLoginResponse Authenticate(ApiLoginRequest request)
+    public async Task<ApiLoginResponse> Authenticate(ApiLoginRequest request)
     {
         if (request.ClientSecret != "12345")
         {
             throw new UnauthorizedAccessException("Unauthorized");
+        }
+        if (!request.Email.Contains("@"))
+        {
+            throw new UnauthorizedAccessException("Wrong email");
+        }
+        var user = _dbContext.OurApiUsers.FirstOrDefault(u => u.Email == request.Email);
+        if (user == null)
+        {
+            user = new ApiUserEntity()
+            {
+                Email = request.Email,
+            };
+            await _dbContext.OurApiUsers.AddAsync(user);
+            await _dbContext.SaveChangesAsync();
         }
         var settings = _configuration.GetSection("JwtToken");
         var stringKey = settings["SecretKey"];
@@ -26,7 +44,8 @@ public class ApiAuthService : IApiAuthService
 
         var claims = new List<Claim>
         {
-            new Claim(JwtRegisteredClaimNames.Sub, "Druga grupa"),
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Email,  user.Email),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
         };
         var tokenDescriptor = new SecurityTokenDescriptor

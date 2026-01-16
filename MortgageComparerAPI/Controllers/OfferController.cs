@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MortgageComparer.Services.Interfaces;
@@ -7,7 +8,7 @@ using MortgageComparerAPI.Services;
 namespace MortgageComparerAPI.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/[controller]/x")]
 [Authorize]
 public class OfferController : ControllerBase
 {
@@ -17,13 +18,41 @@ public class OfferController : ControllerBase
     {
         _offerService = offerService;
     }
-    [HttpPost]
-    public async Task<IActionResult> PostOfferAsync([FromBody] PostOfferRequest request)
+    [HttpPost("quote/{quoteId}")]
+    public async Task<IActionResult> PostOfferAsync([FromBody] PostOfferRequest request, int quoteId)
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        try
+        {
+            var res = await _offerService.PostOfferAsync(request, userId, quoteId);
+            return Ok(res);
+        }
+        catch (BadHttpRequestException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+    [HttpGet("{offerId}")]
+    public async Task<IActionResult> GetOfferAsync(int offerId)
     {
         try
         {
-            var res = await _offerService.PostOfferAsync(request);
+            var res = await _offerService.GetOfferByIdAsync(offerId);
             return Ok(res);
+        }
+        catch (BadHttpRequestException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet("{offerId}/document/{key}")]
+    public async Task<IActionResult> GenerateContractAsync(int offerId, string key)
+    {
+        try
+        {
+            var res = await _offerService.GetContractAsync(offerId, key);
+            return File(res.FileContents, res.ContentType, res.FileName);
         }
         catch (BadHttpRequestException ex)
         {

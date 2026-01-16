@@ -6,7 +6,7 @@ using MortgageComparerAPI.Services;
 namespace MortgageComparerAPI.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/[controller]/x")]
 [Authorize]
 public class QuoteController : ControllerBase
 {

@@ -1,11 +1,19 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using MortgageComparer.Models;
 
 namespace MortgageComparer.Entities;
 
 public class ApiOfferEntity
 {
+    [Key]
     public int Id { get; set; }
     public int QuoteId { get; set; }
+    [ForeignKey("QuoteId")]
+    public virtual Quote Quote { get; set; }
+    public int UserId { get; set; }
+    [ForeignKey("UserId")]
+    public virtual ApiUserEntity User { get; set; }
     public double Percentage { get; set; }
     public int MonthlyInstallementAmount { get; set; }
     public string MonthlyInstallementCurrency { get; set; }
@@ -15,4 +23,6 @@ public class ApiOfferEntity
     public DateTime RequestedDate { get; set; }
     public DateTime UpdatedDate { get; set; }
     public string DocumentKey { get; set; }
+    public byte[]? Document { get; set; }
+    public byte[]? SignedDocument { get; set; }
 }

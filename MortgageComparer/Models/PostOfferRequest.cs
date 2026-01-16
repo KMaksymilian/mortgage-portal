@@ -5,6 +5,5 @@ namespace MortgageComparerAPI.Models;
 
 public class PostOfferRequest
 {
-    public int QuoteId { get; set; }
-    public ApiUserEntity User { get; set; }
+    public ApiUserModel User { get; set; }
 }

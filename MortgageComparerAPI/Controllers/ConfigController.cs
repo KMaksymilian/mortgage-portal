@@ -6,7 +6,7 @@ using MortgageComparerAPI.Models;
 namespace MortgageComparerAPI.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/[controller]/x")]
 [Authorize]
 public class ConfigController : ControllerBase
 {
