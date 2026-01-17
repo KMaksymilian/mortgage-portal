@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-
+#pragma warning disable IDE1006
 #nullable disable
 
 namespace MortgageComparer.Migrations
@@ -36,3 +36,5 @@ namespace MortgageComparer.Migrations
         }
     }
 }
+
+#pragma warning restore IDE1006

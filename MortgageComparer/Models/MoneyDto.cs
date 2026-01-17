@@ -12,7 +12,7 @@ namespace MortgageComparer.Models {
         [Column(TypeName = "varchar(3)")]
         public string? CurrencyCode { get; set; }
 
-        protected MoneyDto() { }
+        public MoneyModel() { }
 
         public MoneyDto(decimal amount, string? currencyCode) {
             Amount = amount;
