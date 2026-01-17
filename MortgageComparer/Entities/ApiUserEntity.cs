@@ -23,18 +23,18 @@ public class ApiUserEntity
     public DateTime? StartDate { get; set; }
     [JsonPropertyName("jobEndDate")]
     public DateTime? EndDate { get; set; }
-    public MoneyModel? Income { get; set; }
+    public MoneyDto? Income { get; set; }
 
     public void UpdateUser(PostOfferRequest request)
     {
-        this.FirstName = request.User.PersonalData.FirstName;
-        this.LastName = request.User.PersonalData.LastName;
-        this.BirthDate = request.User.PersonalData.BirthDate;
-        this.DocTypeId = request.User.GovernmentDocument.TypeId;
-        this.Number = request.User.GovernmentDocument.Number;
-        this.JobTypeId = request.User.JobDetails.JobTypeId;
-        this.StartDate = request.User.JobDetails.StartDate;
-        this.EndDate = request.User.JobDetails.EndDate;
-        this.Income = request.User.JobDetails.Income;
+        this.FirstName = request.PersonalData.FirstName;
+        this.LastName = request.PersonalData.LastName;
+        this.BirthDate = request.PersonalData.BirthDate;
+        this.DocTypeId = request.GovernmentDocument.TypeId;
+        this.Number = request.GovernmentDocument.Number;
+        this.JobTypeId = request.JobDetails.JobTypeId;
+        this.StartDate = request.JobDetails.StartDate;
+        this.EndDate = request.JobDetails.EndDate;
+        this.Income = request.JobDetails.Income;
     }
 }

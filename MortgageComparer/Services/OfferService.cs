@@ -5,38 +5,42 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Google;
 using Microsoft.EntityFrameworkCore;
+using MortgageComparer.BankLogic;
 using MortgageComparer.Controllers;
 using MortgageComparer.Data;
 using MortgageComparer.Entities;
 using MortgageComparer.Models;
 using MortgageComparer.Services.Interfaces;
 using MortgageComparer.StatesMachine;
+using MortgageComparerAPI.Models;
 
 namespace MortgageComparer.Services;
 
 public class OfferService : IOfferService
 {
+    private readonly BankAggregator _banks;
     private readonly AppDbContext _context;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IExternalApiService _externalApiService;
     private readonly IUserService _userService;
     public OfferService(AppDbContext context,  IHttpClientFactory httpClientFactory,
-        IExternalApiService externalApiService,  IUserService userContextService)
+        IExternalApiService externalApiService,  IUserService userContextService,
+        BankAggregator banks)
     {
         _context = context;
         _httpClientFactory = httpClientFactory;
         _externalApiService = externalApiService;
         _userService = userContextService;
+        _banks = banks;
     }
     
-    public async Task<OfferSummaryDto> ProcessLoanApplicationAsync(CalculatorRequestModel model)
+    public async Task<List<OfferSummaryDto>> ProcessLoanApplicationAsync(PostQuoteRequest model)
     {
         var userId = _userService.GetUserId();
         if (userId == null)
         {
             throw new DataException("Użytkownik nie istnieje w bazie");
         }
-        var token = await _externalApiService.GetTokenAsync();
         
         var user = await GetUserByIdAsync(userId.Value);
         if (user == null)
@@ -44,22 +48,68 @@ public class OfferService : IOfferService
             throw new Exception("Użytkownik niekompletny lub nie istnieje");
         }
         
-        var tempOffer = await QuoteExternalApiOfferAsync(model, userId.Value, token);
+        var quotes = await _banks.PostQuotesFromAllBanksAsync(model);
         
-        var finalOffer = await OfferPostToExternalApiAsync(tempOffer, user, token);
-        
-        _context.Offers.Add(finalOffer);
-        await _context.SaveChangesAsync();
+        var offerEntities = await CreateOfferEntitiesAsync(quotes, user, model);
+        List<OfferSummaryDto> offerSummaries = new List<OfferSummaryDto>();
 
-        
-        return new OfferSummaryDto
+        foreach (var offer in offerEntities)
         {
-            InternalId = finalOffer.Id,
-            Amount = finalOffer.RequestedMoney.Amount,
-            MonthlyInstallment = finalOffer.MonthlyInstallment.Amount,
-            Currency = finalOffer.MonthlyInstallment.CurrencyCode,
-            Percentage = finalOffer.BankPercentage.Value
-        };
+            offer.UserId = userId.Value;
+            _context.Offers.Add(offer);   
+        }
+        await _context.SaveChangesAsync();
+        foreach (var offer in offerEntities)
+        {
+            offerSummaries.Add(new OfferSummaryDto()
+            {
+                BankName = offer.BankName,
+                InternalId = offer.Id,
+                Amount = offer.RequestedMoney?.Amount ?? 0,
+                MonthlyInstallment = offer.MonthlyInstallment?.Amount ?? 0,
+                Currency = offer.MonthlyInstallment?.CurrencyCode ?? "PLN",
+                Percentage = offer.BankPercentage ?? 0
+            });
+        }
+
+        return offerSummaries;
+    }
+    private async Task<List<OfferEntity>> CreateOfferEntitiesAsync(IEnumerable<PostQuoteResponse> quotes, 
+        UserEntity user, PostQuoteRequest originalRequest)
+    {
+        var bankResponses = await _banks.PostOfferFromAllBanksAsync(quotes, user);
+        
+        var entities = new List<OfferEntity>();
+
+        foreach (var response in bankResponses)
+        {
+            decimal amountVal = originalRequest.RequestedAmount?.Amount ?? 0;
+            string currencyVal = originalRequest.RequestedAmount?.CurrencyCode ?? "PLN";
+            var freshRequestedMoney = new MoneyDto(amountVal, currencyVal);
+
+            var freshInstallment = new MoneyDto(response.InstalementAmount?.Amount ?? 0,
+                response.InstalementAmount?.CurrencyCode ?? "PLN");
+            var entity = new OfferEntity
+            {
+                QuoteId = response.QuoteId,
+                BankName = response.BankName,
+                ExternalBankOfferId = response.OfferId.ToString(),
+                MonthlyInstallment = response.InstalementAmount,
+                CreateDate = response.CreateDate,
+                RequestedMoney = freshRequestedMoney,
+                DocumentLink = response.DocumentLink,
+                BankPercentage = response.Percentage
+            };
+
+            if (response.DocumentLinkValidDate != null)
+            {
+                entity.ContractLinkValidDate = DateTime.Parse(response.DocumentLinkValidDate).ToUniversalTime();
+            }
+
+            entities.Add(entity);
+        }
+        
+        return entities;
     }
     
     public async Task<List<OfferDto>> OffersFromDatabaseAsync()
@@ -95,10 +145,9 @@ public class OfferService : IOfferService
             .FirstOrDefaultAsync(u => u.Id == userId);
     }
     
-    private async Task<OfferEntity> QuoteExternalApiOfferAsync(CalculatorRequestModel offer, int? userId,
-        string tokenDto)
+    private async Task<IEnumerable<PostQuoteResponse>> QuoteExternalApiOfferAsync(PostQuoteRequest offer, int? userId)
     {
-        var client =  _httpClientFactory.CreateClient();
+        /*var client =  _httpClientFactory.CreateClient();
         
         client.DefaultRequestHeaders.Authorization =
             new AuthenticationHeaderValue("Bearer", tokenDto);
@@ -113,21 +162,17 @@ public class OfferService : IOfferService
         {
             PropertyNameCaseInsensitive = true
         };
-        var response = JsonSerializer.Deserialize<ExternalRequestResponse>(result, jsonSettings);
-        OfferEntity newOffer = new OfferEntity
-        {
-            QuoteId = response.QuoteId,
-            UserId = (int)userId,
-            RequestedMoney = offer.RequestedAmount
-        };
-        return newOffer;
+        var response = JsonSerializer.Deserialize<PostQuoteResponse>(result, jsonSettings);*/
+        var response = await _banks.PostQuotesFromAllBanksAsync(offer);
+        return response;
     }
 
-    private async Task<OfferEntity> OfferPostToExternalApiAsync(OfferEntity newOffer, UserEntity user,
-        string? tokenDto)
+    /*private async Task<List<OfferEntity>> OfferPostToExternalApiAsync(IEnumerable<PostQuoteResponse> quoteResponses, UserEntity user,
+                 PostQuoteRequest quoteRequest)
     {
-        var client = _httpClientFactory.CreateClient();
-        int quoteId = newOffer.QuoteId;
+        
+        /*var client = _httpClientFactory.CreateClient();
+        int quoteId = quoteResponse.QuoteId;
 
         PersonalDataModel personalData = new PersonalDataModel
         {
@@ -146,20 +191,25 @@ public class OfferService : IOfferService
             JobTypeId = (int)user.JobTypeId,
             StartDate = user.JobStartDate,
             EndDate = user.JobEndDate,
-            Income = new MoneyModel(user.Income, user.IncomeCurrCode)
+            Income = new MoneyDto(user.Income, user.IncomeCurrCode)
         };
-        var data = new
+        PostOfferRequest data = new PostOfferRequest()
         {
-            quoteId = quoteId,
-            personalData = personalData,
-            governmentDocument = governmentDocument,
-            jobDetails = jobDetails
+            QuoteId = quoteId,
+            PersonalData = personalData,
+            GovernmentDocument = governmentDocument,
+            JobDetails = jobDetails
         };
         
         client.DefaultRequestHeaders.Authorization =
             new AuthenticationHeaderValue("Bearer", tokenDto);
         
-        var apiResponse = await client.PostAsJsonAsync("https://mini.loanbank.api.snet.com.pl/api/v1/Offer", data);
+        var options = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
+        var apiResponse = await client.PostAsJsonAsync("https://mini.loanbank.api.snet.com.pl/api/v1/Offer",
+            data, options);
 
         var result = await apiResponse.Content.ReadAsStringAsync();
         if (!apiResponse.IsSuccessStatusCode)
@@ -170,52 +220,46 @@ public class OfferService : IOfferService
         {
             PropertyNameCaseInsensitive = true
         };
-        var response = JsonSerializer.Deserialize<PostOfferResponseDto>(result, jsonSettings);
-        
-        newOffer.ExternalBankOfferId = response.OfferId.ToString();
-        newOffer.MonthlyInstallment = response.InstalementAmount;
-        newOffer.CreateDate = response.CreateDate;
-        
-        var getResponse = await GetOfferDetailsAsync(user.Id, client, quoteId, newOffer, tokenDto);
-        
-        if (getResponse == null || getResponse.DocumentLink == null || getResponse.DocumentLinkValidDate == null)
+        var response = JsonSerializer.Deserialize<PostOfferResponse>(result, jsonSettings);#1#
+        List<OfferEntity> offerResponses = new List<OfferEntity>();
+        var postOfferResponse = await _banks.PostOfferFromAllBanksAsync(quoteResponses, user);
+        foreach (var response in postOfferResponse)
         {
-            throw new Exception("Problem z zewnętrznym api");
+                OfferEntity newOffer = new OfferEntity()
+                {
+                    BankName = response.BankName,
+                    ExternalBankOfferId = response.OfferId.ToString(),
+                    MonthlyInstallment = response.InstalementAmount,
+                    CreateDate = response.CreateDate,
+                    RequestedMoney = quoteRequest.RequestedAmount,
+                };
+        
+                var getResponse = await GetOfferDetailsAsync(newOffer);
+        
+                if (getResponse == null || getResponse.DocumentLink == null || getResponse.DocumentLinkValidDate == null)
+                {
+                    throw new Exception("Problem z zewnętrznym api");
+                }
+        
+                newOffer.DocumentLink = getResponse.DocumentLink;
+                var documentValidDate = DateTime.Parse(getResponse.DocumentLinkValidDate).ToUniversalTime();
+
+                newOffer.ContractLinkValidDate = documentValidDate;
+                newOffer.BankPercentage = getResponse.Percentage;
+                
+                offerResponses.Add(newOffer);
         }
         
-        newOffer.DocumentLink = getResponse.DocumentLink;
-        var documentValidDate = DateTime.Parse(getResponse.DocumentLinkValidDate).ToUniversalTime();
-
-        newOffer.ContractLinkValidDate = documentValidDate;
-        newOffer.BankPercentage = getResponse.Percentage;
-        
-        return newOffer;
-    }
-    private async Task<GetOfferOfferIdResponseDto?> GetOfferDetailsAsync(int? userId, HttpClient client, int quoteId
-        , OfferEntity offer, string tokenDto)
+        return offerResponses;
+    }*/
+    private async Task<List<GetOfferByIdResponse?>> GetOfferDetailsAsync(OfferEntity offer)
     {
-        
-        client.DefaultRequestHeaders.Authorization =
-            new AuthenticationHeaderValue("Bearer", tokenDto);
-        
-        var apiResponse = await client.GetAsync(
-            $"https://mini.loanbank.api.snet.com.pl/api/v1/Offer/{offer.ExternalBankOfferId}");
-        
-        var result = await apiResponse.Content.ReadAsStringAsync();
-        if (!apiResponse.IsSuccessStatusCode)
-        {
-            return null;
-        }
-        var jsonSettings = new JsonSerializerOptions()
-        {
-            PropertyNameCaseInsensitive = true
-        };
-        var response = JsonSerializer.Deserialize<GetOfferOfferIdResponseDto>(result, jsonSettings);
+        var getOfferByIdResponse = await _banks.GetOfferByIdFromAllBanksAsync(offer);
 
-        return response;
+        return getOfferByIdResponse;
     }
 
-    public async Task<FileResultDto> AcceptOfferAsync(int quoteId)
+    public async Task<ContractDataDto> AcceptOfferAsync(int quoteId)
     {
         var userId = _userService.GetUserId();
         if (userId == null)
@@ -255,7 +299,7 @@ public class OfferService : IOfferService
         offer.ContractData = result;
         offer.Status = OfferStatus.ReadyToBeSigned;
 
-        FileResultDto fileResult = new FileResultDto
+        ContractDataDto contractData = new ContractDataDto
         {
             Content = result,
             FileName = "text/plain",
@@ -263,7 +307,7 @@ public class OfferService : IOfferService
         };
         await UpdateDatabaseAsync(offer);
         
-        return fileResult;
+        return contractData;
     }
 
     private async Task UpdateDatabaseAsync(OfferEntity offer)
@@ -283,45 +327,13 @@ public class OfferDto
     public DateTime CreateDate { get; set; }
     public string Status { get; set; }
 }
-public class PostOfferResponseDto
-{
-    public int InternalId { get; set; }
-    [JsonPropertyName("offerId")]
-    public int OfferId { get; set; }
-    [JsonPropertyName("instalmentAmount")]
-    public MoneyModel InstalementAmount { get; set; }
-    [JsonPropertyName("createDate")]
-    public DateTime CreateDate { get; set; }
-}
-public class GetOfferOfferIdResponseDto
-{
-    public int Id { get; set; }
-    public double Percentage { get; set; }
-    public MoneyModel MonthlyInstallment { get; set; }
-    public MoneyModel RequestedAmount { get; set; }
-    public int RequestedPeriodInMonth { get; set; }
-    public int StatusId { get; set; }
-    public string StatusDescription { get; set; }
-    public int InquireId  { get; set; }
-    public string CreateDate { get; set; }
-    public string UpdateDate { get; set; }
-    public string? ApprovedBy  { get; set; }
-    public string? DocumentLink { get; set; }
-    public string? DocumentLinkValidDate { get; set; }
-}
 
 public class OfferSummaryDto
 {
+    public string BankName { get; set; }
     public int InternalId { get; set; }
     public decimal Amount { get; set; }
     public decimal MonthlyInstallment { get; set; }
     public string Currency { get; set; }
     public double Percentage { get; set; }
-}
-
-public class FileResultDto
-{
-    public byte[] Content { get; set; }
-    public string FileName { get; set; }
-    public string ContentType { get; set; }
 }

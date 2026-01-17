@@ -1,6 +1,8 @@
+using MortgageComparer.Models;
+
 namespace MortgageComparer.Services.Interfaces;
 
 public interface IJobTypeService
 {
-    public Task<JobTypeDocumentDto> GetJobAndDocumentAsync();
+    public Task<GetJobAndDocumentResponse> GetJobAndDocumentAsync();
 }

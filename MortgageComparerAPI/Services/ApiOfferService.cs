@@ -43,7 +43,7 @@ public class ApiOfferService : IApiOfferService
             QuoteId = quoteId,
             UserId = userId,
             Percentage = 15f,
-            MonthlyInstallementAmount = (int)Math.Round((double)quote.AmountToPay * 1.1),
+            MonthlyInstallementAmount = (int)Math.Round((double)quote.AmountToPay * 1.1) / quote.Installments,
             MonthlyInstallementCurrency = quote.Currency,
 
             RequestedAmount = quote.RequestedAmount,

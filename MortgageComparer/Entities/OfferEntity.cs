@@ -14,7 +14,7 @@ public class OfferEntity : BasicEntity {
     public virtual UserEntity? User { get; set; }
     public int QuoteId { get; set; } 
     
-
+    public string BankName { get; set; }
     [MaxLength(50)]
     public string? ExternalBankOfferId { get; set; }
 
@@ -24,8 +24,8 @@ public class OfferEntity : BasicEntity {
     public string? StatusDescription { get; set; }
     public byte[]? ContractData { get; set; }
     public double? BankPercentage { get; set; }
-    public required MoneyModel RequestedMoney { get; set; }
-    public MoneyModel? MonthlyInstallment { get; set; }
+    public required MoneyDto RequestedMoney { get; set; }
+    public MoneyDto? MonthlyInstallment { get; set; }
     
 
     [MaxLength(500)]

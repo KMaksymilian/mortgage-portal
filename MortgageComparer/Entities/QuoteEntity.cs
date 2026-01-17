@@ -10,7 +10,7 @@ namespace MortgageComparer.Entities {
         public int QuoteId { get; set; }
         public int RequestedMonths { get; set; }
 
-        public required MoneyModel TotalAmountToPay { get; set; }
+        public required MoneyDto TotalAmountToPay { get; set; }
 
         [Range(1, 480)] 
         public int InstalmentNumber { get; set; }

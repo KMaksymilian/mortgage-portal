@@ -48,6 +48,7 @@ public class AuthenticationService : IAuthenticationService
                 Email = validPayload.Email,
             };
             // zmockowane dane, to do: zmienić to
+            // Zakładamy, że wszystkie api będą miały te same zawody i dokumenty
             if (user.JobType == null)
             {
                 JobTypeEntity userJob = await _externalApiService.GetJobTypesAsync();

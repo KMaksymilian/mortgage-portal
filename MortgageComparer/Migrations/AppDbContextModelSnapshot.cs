@@ -155,6 +155,10 @@ namespace MortgageComparer.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("BankName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<double?>("BankPercentage")
                         .HasColumnType("double precision");
 
@@ -326,7 +330,7 @@ namespace MortgageComparer.Migrations
 
             modelBuilder.Entity("MortgageComparer.Entities.ApiUserEntity", b =>
                 {
-                    b.OwnsOne("MortgageComparer.Models.MoneyModel", "Income", b1 =>
+                    b.OwnsOne("MortgageComparer.Models.MoneyDto", "Income", b1 =>
                         {
                             b1.Property<int>("ApiUserEntityId")
                                 .HasColumnType("integer");
@@ -356,7 +360,7 @@ namespace MortgageComparer.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("MortgageComparer.Models.MoneyModel", "MonthlyInstallment", b1 =>
+                    b.OwnsOne("MortgageComparer.Models.MoneyDto", "MonthlyInstallment", b1 =>
                         {
                             b1.Property<int>("OfferEntityId")
                                 .HasColumnType("integer");
@@ -375,7 +379,7 @@ namespace MortgageComparer.Migrations
                                 .HasForeignKey("OfferEntityId");
                         });
 
-                    b.OwnsOne("MortgageComparer.Models.MoneyModel", "RequestedMoney", b1 =>
+                    b.OwnsOne("MortgageComparer.Models.MoneyDto", "RequestedMoney", b1 =>
                         {
                             b1.Property<int>("OfferEntityId")
                                 .HasColumnType("integer");

@@ -16,7 +16,7 @@ public class ApiOfferEntity
     public virtual ApiUserEntity User { get; set; }
     public double Percentage { get; set; }
     public int MonthlyInstallementAmount { get; set; }
-    public string MonthlyInstallementCurrency { get; set; }
+    public string MonthlyInstallementCurrency { get; set; } = "PLN";
     public int RequestedAmount { get; set; }
     public string RequestedCurrency { get; set; }
     public int RequestedPeriodInMonths { get; set; }

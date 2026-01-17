@@ -5,21 +5,14 @@
 namespace MortgageComparer.Migrations
 {
     /// <inheritdoc />
-    public partial class UserIncomeAndIncomeCurrencyCodeAdded : Migration
+    public partial class AddedBankNametoOffers : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<int>(
-                name: "Income",
-                table: "Users",
-                type: "integer",
-                nullable: false,
-                defaultValue: 0);
-
             migrationBuilder.AddColumn<string>(
-                name: "IncomeCurrencyCode",
-                table: "Users",
+                name: "BankName",
+                table: "Offers",
                 type: "text",
                 nullable: false,
                 defaultValue: "");
@@ -29,12 +22,8 @@ namespace MortgageComparer.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Income",
-                table: "Users");
-
-            migrationBuilder.DropColumn(
-                name: "IncomeCurrencyCode",
-                table: "Users");
+                name: "BankName",
+                table: "Offers");
         }
     }
 }
