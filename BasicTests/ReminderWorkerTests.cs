@@ -54,9 +54,8 @@ public class ReminderWorkerTests {
         // Oferta 1: Stara (> 3 dni) -> Powinna dostać maila
         var oldOffer = new OfferEntity {
             Id = 1,
-            UserId = 1,
-            // User = user, <--- EF Core sam powiąże po UserId, nie musisz przypisywać obiektu jeśli dodajesz go do kontekstu
-            QuoteId = 99,
+            User = user,
+            Quote = quote,
             Status = OfferStatus.Approved,
             UpdateDate = DateTime.UtcNow.AddDays(-4),
             RequestedMoney = new MoneyModel { Amount = 1000, CurrencyCode = "PLN" }
@@ -65,9 +64,8 @@ public class ReminderWorkerTests {
         // Oferta 2: Nowa (1 dzień) -> Nie powinna dostać maila
         var freshOffer = new OfferEntity {
             Id = 2,
-            UserId = 1,
-            // User = user,
-            QuoteId = 99,
+            User = user,
+            Quote = quote,
             Status = OfferStatus.Approved,
             UpdateDate = DateTime.UtcNow.AddDays(-1),
             RequestedMoney = new MoneyModel { Amount = 1000, CurrencyCode = "PLN" }
