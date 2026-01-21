@@ -13,7 +13,9 @@ public class OfferEntity : BasicEntity {
     [ForeignKey(nameof(UserId))]
     public virtual UserEntity? User { get; set; }
     public int QuoteId { get; set; } 
-    
+
+    [ForeignKey(nameof(QuoteId))]
+    public virtual QuoteEntity Quote { get; set; }
 
     [MaxLength(50)]
     public string? ExternalBankOfferId { get; set; }
