@@ -21,7 +21,7 @@ namespace MortgageComparer.Services.BackgroundLogic {
             var expirationThreshold = DateTime.UtcNow.AddDays(-_expirationThreshold);
 
             int deletedCount = await _context.Offers
-                .Where(o => o.CreateDate < expirationThreshold
+                .Where(o => o.UpdateDate < expirationThreshold
                         && (o.Status == OfferStatus.Rejected || o.Status == OfferStatus.Canceled))
                 .ExecuteDeleteAsync(stoppingToken);
 
