@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MortgageComparer.Models;
 using MortgageComparerAPI.Models;
 using MortgageComparerAPI.Services;
 
@@ -18,11 +19,17 @@ public class QuoteController : ControllerBase
     }
 
     [HttpPost("quote")]
-    public async Task<IActionResult> QuotePostAsync([FromBody] QuoteRequest quoteRequest)
+    public async Task<IActionResult> QuotePostAsync([FromBody] PostQuoteRequest quoteRequest)
     {
+        QuoteRequest quote = new QuoteRequest
+        {
+            Amount = (int)quoteRequest.RequestedAmount.Amount,
+            InstallmentsCount = quoteRequest.InstalmentNumber,
+            Currency = quoteRequest.RequestedAmount.CurrencyCode
+        };
         try
         {
-            var res = await _apiQuoteService.ApiPostQuote(quoteRequest);
+            var res = await _apiQuoteService.ApiPostQuote(quote);
             return Ok(res);
         }
         catch (BadHttpRequestException ex)

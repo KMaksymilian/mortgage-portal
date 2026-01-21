@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MortgageComparer.Data;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MortgageComparer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260117134543_AddedBankNametoOffers")]
+    partial class AddedBankNametoOffers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -226,37 +229,6 @@ namespace MortgageComparer.Migrations
                     b.ToTable("DocumentTypes");
                 });
 
-            modelBuilder.Entity("MortgageComparer.Entities.QuoteEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("InstalmentNumber")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("QuoteId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RequestedMonths")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("StatusDescription")
-                        .HasColumnType("text");
-
-                    b.Property<int>("StatusId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Quotes");
-                });
-
             modelBuilder.Entity("MortgageComparer.Entities.UserEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -435,31 +407,6 @@ namespace MortgageComparer.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("MortgageComparer.Entities.QuoteEntity", b =>
-                {
-                    b.OwnsOne("MortgageComparer.Models.MoneyModel", "TotalAmountToPay", b1 =>
-                        {
-                            b1.Property<int>("QuoteEntityId")
-                                .HasColumnType("integer");
-
-                            b1.Property<decimal>("Amount")
-                                .HasColumnType("decimal(18,2)");
-
-                            b1.Property<string>("CurrencyCode")
-                                .HasColumnType("varchar(3)");
-
-                            b1.HasKey("QuoteEntityId");
-
-                            b1.ToTable("Quotes");
-
-                            b1.WithOwner()
-                                .HasForeignKey("QuoteEntityId");
-                        });
-
-                    b.Navigation("TotalAmountToPay")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("MortgageComparer.Entities.UserEntity", b =>

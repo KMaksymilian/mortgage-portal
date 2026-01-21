@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Microsoft.Extensions.Caching.Memory;
 using MortgageComparer.Entities;
 using MortgageComparer.Models;
 using MortgageComparer.Services.Interfaces;
@@ -19,7 +20,7 @@ public class ExternalApiService : IExternalApiService
     public async Task<JobTypeEntity> GetJobTypesAsync()
     {
         var tokenDto =  await GetTokenAsync();
-        using var client = new HttpClient();
+        var client = _httpClientFactory.CreateClient();
         var jobApiResponse = 
             await client.GetAsync("https://mini.loanbank.api.snet.com.pl/api/v1/Dictionary/jobTypes");
 
@@ -42,7 +43,7 @@ public class ExternalApiService : IExternalApiService
     public async Task<PersonalDocumentTypeEntity> GetDocumentTypesAsync()
     {
         var tokenDto =  await GetTokenAsync();
-        using var client = new HttpClient();
+        var client = _httpClientFactory.CreateClient();
         var documentApiResponse = 
             await client.GetAsync("https://mini.loanbank.api.snet.com.pl/api/v1/Dictionary/governmentDocumentTypes");
 
@@ -64,7 +65,6 @@ public class ExternalApiService : IExternalApiService
     }
     public async Task<string?> GetTokenAsync()
     {
-
         var tokenUrl = "https://indentitymanager.snet.com.pl/connect/token";
         var clientId = _configuration["ExternalApi:Login"];
         var clientSecret = _configuration["ExternalApi:Secret"];

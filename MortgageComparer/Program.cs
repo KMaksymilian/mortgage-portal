@@ -7,6 +7,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MortgageComparer.Data;
+using MortgageComparer.BankLogic;
+using MortgageComparer.BankLogic.Banks;
+using MortgageComparer.BankProviders;
+using MortgageComparer.BankLogic.Banks;
+using MortgageComparer.BankProviders.Banks;
 using MortgageComparer.Services;
 using MortgageComparer.Services.BackgroundLogic;
 using MortgageComparer.Services.Interfaces;
@@ -31,12 +36,19 @@ public class Program
         builder.Services.AddScoped<IOfferService, OfferService>();
         builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
         builder.Services.AddScoped<IJobTypeService, JobTypeService>();
-        builder.Services.AddHttpClient();
-        //builder.Services.AddNpgsql<AppDbContext>(
-        //    builder.Configuration.GetConnectionString("DefaultConnectionString"));
-
-        builder.Services.AddDbContext<AppDbContext>(options =>
-            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnectionString")));
+        builder.Services.AddScoped<IBank, OurBank>();
+        builder.Services.AddScoped<IBank, LecturerBank>();
+        builder.Services.AddScoped<BankAggregator>();
+        builder.Services.AddHttpClient("LecturerBankApi", client =>
+        {
+            client.BaseAddress = new Uri("https://mini.loanbank.api.snet.com.pl/api/");
+        });
+        builder.Services.AddHttpClient("OurBankApi", client =>
+        {
+            client.BaseAddress = new Uri("http://localhost:5046/api/");
+        });
+        builder.Services.AddNpgsql<AppDbContext>(
+            builder.Configuration.GetConnectionString("DefaultConnectionString"));
 
         builder.Services.AddAuthentication(options =>
         {

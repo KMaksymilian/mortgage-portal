@@ -65,8 +65,17 @@ function OfferSearchPage() {
       const data = await response.json();
       
       // Pakujemy w tablicę dla spójności renderowania (nawet jak to jeden obiekt)
-      const resultsArray = data ? [data] : [];
-      setOffersList(resultsArray);
+      // NOWY KOD (POPRAWNY):
+      // Backend zwraca już tablicę, więc przypisujemy ją bezpośrednio.
+      // Dla bezpieczeństwa sprawdzamy czy to na pewno tablica.
+      if (Array.isArray(data)) {
+          setOffersList(data);
+      } else if (data) {
+          // Jeśli backend zwróciłby jednak pojedynczy obiekt (np. błąd lub jedną ofertę bez tablicy)
+          setOffersList([data]);
+      } else {
+          setOffersList([]);
+}
 
     } catch (err) {
       console.error(err);

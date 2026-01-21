@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MortgageComparer.BankLogic;
 using MortgageComparer.Models;
 using MortgageComparer.Services;
 using MortgageComparer.Services.Interfaces;
@@ -34,26 +35,26 @@ public class OfferController : ControllerBase
 
     [Authorize]
     [HttpPost("Quote")]
-    public async Task<IActionResult> PostOfferAsync([FromBody] CalculatorRequestModel offer)
+    public async Task<IActionResult> PostOfferAsync([FromBody] PostQuoteRequest offer)
     {
         if (offer == null)
         {
             return BadRequest("Invalid data");
         }
         
-        OfferSummaryDto newOffer = await _offerService.ProcessLoanApplicationAsync(offer);
+        List<OfferSummaryDto> newOffers = await _offerService.ProcessLoanApplicationAsync(offer);
         
-        return Ok(newOffer);
+        return Ok(newOffers);
     }
     
     [HttpPost("accept")]
     public async Task<IActionResult> AcceptOfferAsync([FromBody] int quoteId)
     {
-        FileResultDto fileResult;
+        ContractDataDto contractData;
         try
         {
-            fileResult = await _offerService.AcceptOfferAsync(quoteId);
-            return File(fileResult.Content, fileResult.FileName, fileResult.ContentType);
+            contractData = await _offerService.AcceptOfferAsync(quoteId);
+            return File(contractData.Content, contractData.FileName, contractData.ContentType);
         }
         catch (Exception ex)
         {
