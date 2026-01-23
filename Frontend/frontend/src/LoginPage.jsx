@@ -6,34 +6,33 @@ function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleGoogleSuccess = (credentialResponse) => {
-    fetch('http://localhost:5254/api/auth/google-login', { 
+const handleGoogleSuccess = async (credentialResponse) => {
+  try {
+    const res = await fetch('/api/auth/google-login', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ token: credentialResponse.credential })
-    })
-    .then(res => res.json())
-    .then(backendResponse => {
-      
-      const isComplete = backendResponse.hasBirthDate;
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: credentialResponse.credential }),
+    });
 
-      const userData = {
-          ...backendResponse,
-          hasBirthDate: isComplete // Przepisujemy to do stanu
-      };
+    if (!res.ok) {
+      const msg = await res.text();
+      throw new Error(msg || 'Błąd logowania');
+    }
 
-      login(userData); 
-      
-      if (isComplete) {
-          navigate('/search'); // Jeśli ma datę -> idź do szukania
-      } else {
-          navigate('/complete-profile'); // Jeśli nie ma daty -> idź uzupełnić
-      }
-    })
-    .catch(err => console.error("Błąd logowania:", err));
-  };
+    const backendResponse = await res.json();
+    const isComplete = !!backendResponse.hasBirthDate;
+
+    const userData = {
+      ...backendResponse,
+      hasBirthDate: isComplete,
+    };
+
+    login(userData);
+    navigate(isComplete ? '/search' : '/complete-profile');
+  } catch (err) {
+    console.error('Błąd logowania:', err);
+  }
+};
 
   return (
     <div className="card">
