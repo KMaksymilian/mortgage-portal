@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from './AuthContext'; // Upewnij się, że ścieżka do AuthContext jest poprawna
+import { useAuth } from './AuthContext';
 
 function OfferSearchPage() {
   const { user } = useAuth();
@@ -46,7 +46,7 @@ function OfferSearchPage() {
         instalmentNumber: parseInt(formData.months)
       };
 
-      const response = await fetch('http://localhost:5254/api/Offer/Quote', {
+      const response = await fetch('/api/Offer/Quote', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json', 
@@ -61,13 +61,8 @@ function OfferSearchPage() {
         throw new Error(errorText || `Błąd serwera: ${response.status}`);
       }
 
-      // Backend zwraca teraz lekki, płaski obiekt JSON
       const data = await response.json();
       
-      // Pakujemy w tablicę dla spójności renderowania (nawet jak to jeden obiekt)
-      // NOWY KOD (POPRAWNY):
-      // Backend zwraca już tablicę, więc przypisujemy ją bezpośrednio.
-      // Dla bezpieczeństwa sprawdzamy czy to na pewno tablica.
       if (Array.isArray(data)) {
           setOffersList(data);
       } else if (data) {
@@ -92,7 +87,7 @@ function OfferSearchPage() {
     setError(null);
 
     try {
-        const response = await fetch('http://localhost:5254/api/Offer/accept', {
+        const response = await fetch('/api/Offer/accept', {
             method: 'POST',
             headers: { 
                 'Content-Type': 'application/json', 
@@ -209,8 +204,6 @@ function OfferSearchPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           {offersList.map((offer, index) => {
               
-              // === DATA MAPPING DO NOWEGO BACKENDU ===
-              // Backend zwraca teraz płaski obiekt: { internalId, amount, monthlyInstallment, percentage, currency }
               
               const monthlyInstallment = offer.monthlyInstallment || 0;
               const loanAmount = offer.amount || 0;

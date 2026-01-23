@@ -13,8 +13,8 @@ function CompleteProfilePage() {
     setError(null);
 
     try {
-      const response = await fetch('http://localhost:5254/api/User/BirthDate', {
-        method: 'POST', // Zgodnie z Twoim kontrolerem
+      const response = await fetch('/api/User/BirthDate', {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${user.token}`
@@ -26,11 +26,8 @@ function CompleteProfilePage() {
         throw new Error('Nie udało się zapisać daty.');
       }
 
-      // SUKCES!
-      // 1. Odświeżamy kontekst, żeby aplikacja wiedziała, że user ma już datę
       await refreshUserData();
-      
-      // 2. Przekierowujemy z powrotem do szukania ofert
+ 
       navigate('/search'); 
 
     } catch (err) {
