@@ -53,10 +53,7 @@ public class CleanupServiceTests {
         var quote = new QuoteEntity {
             QuoteId = 1,
             CreatedAt = DateTime.UtcNow.AddDays(-20),
-            TotalAmountToPay = new MoneyModel {
-                Amount = 5000,
-                CurrencyCode = "PLN"
-            }
+            TotalAmountToPay = new MoneyDto(5000, "PLN")
         };
 
         context.Users.Add(user);
@@ -72,7 +69,7 @@ public class CleanupServiceTests {
                 QuoteId = quote.QuoteId,
                 CreateDate = oldDate,
                 Status = OfferStatus.Rejected,
-                RequestedMoney = new MoneyModel { Amount = 1000, CurrencyCode = "PLN" }
+                RequestedMoney = new MoneyDto (1000, "PLN")
             },
             
             // Powinno zostać usunięte (Stare + Canceled)
@@ -82,7 +79,7 @@ public class CleanupServiceTests {
                 QuoteId = quote.QuoteId,
                 CreateDate = oldDate,
                 Status = OfferStatus.Canceled,
-                RequestedMoney = new MoneyModel { Amount = 1000, CurrencyCode = "PLN" }
+                RequestedMoney = new MoneyDto (1000, "PLN")
             },
             
             // Powinno zostać (Status Completed nie jest usuwalny w tej logice)
@@ -92,7 +89,7 @@ public class CleanupServiceTests {
                 QuoteId = quote.QuoteId,
                 CreateDate = oldDate,
                 Status = OfferStatus.Completed,
-                RequestedMoney = new MoneyModel { Amount = 1000, CurrencyCode = "PLN" }
+                RequestedMoney = new MoneyDto (1000, "PLN")
             },
 
             // Powinno zostać (Status Created - może zbyt wcześnie na usunięcie?)
@@ -102,7 +99,7 @@ public class CleanupServiceTests {
                 QuoteId = quote.QuoteId,
                 CreateDate = oldDate,
                 Status = OfferStatus.Created,
-                RequestedMoney = new MoneyModel { Amount = 1000, CurrencyCode = "PLN" }
+                RequestedMoney = new MoneyDto (1000, "PLN")
             },
             
             // Powinno zostać (Zbyt nowa data)
@@ -112,7 +109,7 @@ public class CleanupServiceTests {
                 QuoteId = quote.QuoteId,
                 CreateDate = newDate,
                 Status = OfferStatus.Rejected,
-                RequestedMoney = new MoneyModel { Amount = 1000, CurrencyCode = "PLN" }
+                RequestedMoney = new MoneyDto (1000, "PLN")
             }
         });
         await context.SaveChangesAsync();
@@ -143,19 +140,19 @@ public class CleanupServiceTests {
         var quoteToDelete = new QuoteEntity {
             QuoteId = 1,
             CreatedAt = oldDate,
-            TotalAmountToPay = new MoneyModel { Amount = 1000, CurrencyCode = "PLN" }
+            TotalAmountToPay = new MoneyDto(1000, "PLN")
         };
 
         var quoteWithOffer = new QuoteEntity {
             QuoteId = 2,
             CreatedAt = oldDate,
-            TotalAmountToPay = new MoneyModel { Amount = 1000, CurrencyCode = "PLN" }
+            TotalAmountToPay = new MoneyDto(1000, "PLN")
         };
 
         var quoteNew = new QuoteEntity {
             QuoteId = 3,
             CreatedAt = newDate,
-            TotalAmountToPay = new MoneyModel { Amount = 1000, CurrencyCode = "PLN" }
+            TotalAmountToPay = new MoneyDto(1000, "PLN")
         };
 
         context.Quotes.AddRange(quoteToDelete, quoteWithOffer, quoteNew);
@@ -174,7 +171,7 @@ public class CleanupServiceTests {
             QuoteId = 2,
             CreateDate = DateTime.UtcNow,
             Status = OfferStatus.Created,
-            RequestedMoney = new MoneyModel { Amount = 1000, CurrencyCode = "PLN" }
+            RequestedMoney = new MoneyDto(1000, "PLN")
         });
 
         await context.SaveChangesAsync();
