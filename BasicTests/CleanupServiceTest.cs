@@ -53,7 +53,7 @@ public class CleanupServiceTests {
         var quote = new QuoteEntity {
             QuoteId = 1,
             CreatedAt = DateTime.UtcNow.AddDays(-20),
-            TotalAmountToPay = new MoneyDto(5000, "PLN")
+            InstalmentAmount = new MoneyDto(5000, "PLN")
         };
 
         context.Users.Add(user);
@@ -140,19 +140,19 @@ public class CleanupServiceTests {
         var quoteToDelete = new QuoteEntity {
             QuoteId = 1,
             CreatedAt = oldDate,
-            TotalAmountToPay = new MoneyDto(1000, "PLN")
+            InstalmentAmount = new MoneyDto(1000, "PLN")
         };
 
         var quoteWithOffer = new QuoteEntity {
             QuoteId = 2,
             CreatedAt = oldDate,
-            TotalAmountToPay = new MoneyDto(1000, "PLN")
+            InstalmentAmount = new MoneyDto(1000, "PLN")
         };
 
         var quoteNew = new QuoteEntity {
             QuoteId = 3,
             CreatedAt = newDate,
-            TotalAmountToPay = new MoneyDto(1000, "PLN")
+            InstalmentAmount = new MoneyDto(1000, "PLN")
         };
 
         context.Quotes.AddRange(quoteToDelete, quoteWithOffer, quoteNew);

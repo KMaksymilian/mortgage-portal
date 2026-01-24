@@ -43,9 +43,9 @@ public class ReminderWorkerTests {
         // B. Quote
         var quote = new QuoteEntity {
             QuoteId = 99,
-            TotalAmountToPay = new MoneyDto(12000, "PLN"),
-            InstalmentNumber = 24,
-            StatusId = 1,
+            InstalmentAmount = new MoneyDto(12000, "PLN"),
+            Months = 24,
+
             CreatedAt = DateTime.UtcNow.AddDays(-10)
         };
 
