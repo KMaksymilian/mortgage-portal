@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
@@ -41,6 +42,10 @@ public class Program
         builder.Services.AddScoped<IOfferService, OfferService>();
         builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
         builder.Services.AddScoped<IJobTypeService, JobTypeService>();
+      
+        builder.Services.AddDbContext<AppDbContext>(options =>
+            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnectionString")));
+
         builder.Services.AddScoped<IOfferService2, BankEmployeeOfferService>();
         builder.Services.AddScoped<IBank, OurBank>();
         builder.Services.AddScoped<IBank, LecturerBank>();
@@ -54,8 +59,8 @@ public class Program
         {
             client.BaseAddress = new Uri("http://localhost:5046/api/");
         });
-        builder.Services.AddNpgsql<AppDbContext>(
-            builder.Configuration.GetConnectionString("DefaultConnectionString"));
+
+
 
         builder.Services.AddAuthentication(options =>
         {
@@ -89,14 +94,14 @@ public class Program
             });
         });
 
-
-
-
         builder.Services.AddScoped<ICleanupService, CleanupService>();
         builder.Services.AddHostedService<CleanupWorker>();
 
-
-        
+        builder.Services.AddAzureClients(clientBuilder =>
+        {
+            clientBuilder.AddBlobServiceClient(builder.Configuration["AzureStorage:ConnectionString"]);
+        });
+        builder.Services.AddTransient<IFileStorageService, AzureBlobStorageService>();
 
         builder.Services.AddSendGrid(options => {
             options.ApiKey = builder.Configuration["SendGrid:ApiKey"];
@@ -104,6 +109,7 @@ public class Program
         builder.Services.AddTransient<IEmailService, SendGridEmailService>();
         builder.Services.AddTransient<IEmailTemplateService, MockEmailTemplateService>();
         builder.Services.AddHostedService<ReminderWorker>();
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
