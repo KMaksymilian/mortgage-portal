@@ -106,10 +106,10 @@ public class QuoteService : IQuoteService
             RequestedMoney = new MoneyDto(quote.RequestedAmount, "PLN"),
             ExternalBankOfferId = response.OfferId.ToString(),
             MonthlyInstallment = response.InstalementAmount,
-            CreateDate = response.CreateDate.ToUniversalTime(),
+            CreatedAt = response.CreateDate.ToUniversalTime(),
             DocumentLink = response.DocumentLink,
             BankPercentage = response.Percentage,
-            Status = OfferStatus.ReadyToBeSigned
+            Status = OfferStatus.Approved
         };
         _context.Offers.Add(finalOffer);
     

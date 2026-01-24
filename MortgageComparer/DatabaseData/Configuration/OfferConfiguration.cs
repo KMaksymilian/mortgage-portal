@@ -10,10 +10,10 @@ namespace MortgageComparer.Data.Configurations {
             builder.HasIndex(o => o.UserId)
                    .HasDatabaseName("IX_Offers_UserId");
 
-            builder.HasIndex(o => o.UpdateDate)
+            builder.HasIndex(o => o.UpdatedAt)
                    .HasDatabaseName("IX_Offers_UpdateDate");
 
-            builder.HasIndex(o => o.CreateDate)
+            builder.HasIndex(o => o.CreatedAt)
                    .HasDatabaseName("IX_Offers_CreateDate");
 
             builder.HasIndex(o => o.Status)

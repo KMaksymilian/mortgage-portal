@@ -12,8 +12,8 @@ namespace MortgageComparer.DataTransferObjects {
 
         public OfferDto(BasicOfferEntity offerEntity) {
             Id = offerEntity.Id;
-            LoanAmount = offerEntity.Quote.TotalAmountToPay.Amount;
-            Currencycode = offerEntity.Quote.TotalAmountToPay.CurrencyCode;
+            LoanAmount = offerEntity.Quote.InstalmentAmount.Amount;
+            Currencycode = offerEntity.Quote.InstalmentAmount.CurrencyCode;
             MonthlyInstallment = 0;
             IsContractSigned = offerEntity.SingedBy != null;
             CreateDate = offerEntity.CreatedAt;

@@ -101,7 +101,7 @@ public class OfferController : ControllerBase
             return NotFound();
         }
         
-        offer.Status = OfferStatus.ReadyToBeSigned; 
+        offer.Status = OfferStatus.Approved; 
 
         await _context.SaveChangesAsync();
         return Ok();
