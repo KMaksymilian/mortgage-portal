@@ -1,26 +1,23 @@
-﻿using MortgageComparer.Entities;
+﻿using MortgageComparer.DataTransferObjects;
+using MortgageComparer.Models;
 
-namespace MortgageComparer.DataTransferObjects {
-    public class OfferDto {
-        public int Id { get; set; }
-        public decimal LoanAmount { get; set; }
-        public decimal MonthlyInstallment { get; set; }
-        public string? Currencycode { get; set; }
-        public bool IsContractSigned { get; set; }
-        public DateTime CreateDate { get; set; }
-        public string Status { get; set; }
+public class OfferDto {
+    // Powiązanie z zapytaniem
+    public required QuoteDto QuoteDto { get; set; }
 
-        public OfferDto(BasicOfferEntity offerEntity) {
-            Id = offerEntity.Id;
-            LoanAmount = offerEntity.Quote.InstalmentAmount.Amount;
-            Currencycode = offerEntity.Quote.InstalmentAmount.CurrencyCode;
-            MonthlyInstallment = 0;
-            IsContractSigned = offerEntity.SingedBy != null;
-            CreateDate = offerEntity.CreatedAt;
-            Status = offerEntity.Status.ToString();
-        }
+    // Dane użytkownika potrzebne do wniosku
+    public PersonalDataModel? PersonalDataModel { get; set; }
+    public PersonalDocumentModel? PersonalDocumentModel { get; set; }
+    public JobDetailsModel? JobDetails { get; set; }
 
-        public OfferDto() { }
-    }
-
+    // Dane wyjściowe 
+    public string? OfferId { get; set; }
+    public string? BankName { get; set; }
+    public DateTime? CreatedAt { get; set; }
+    public double Percentage { get; internal set; }
+    public DateTime? DocumentLinkValidDate { get; internal set; }
+    public string? DocumentLink { get; internal set; }
+    public DateTime? UpdatedAt { get; internal set; }
+    public string? StatusDescription { get; internal set; }
+    public string? ApprovedBy { get; internal set; }
 }

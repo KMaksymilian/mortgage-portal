@@ -23,7 +23,7 @@ public class ApiUserEntity
     public DateTime? StartDate { get; set; }
     [JsonPropertyName("jobEndDate")]
     public DateTime? EndDate { get; set; }
-    public MoneyDto? Income { get; set; }
+    public MoneyModel? Income { get; set; }
 
     public void UpdateUser(PostOfferRequest request)
     {

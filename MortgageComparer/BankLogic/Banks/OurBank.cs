@@ -34,7 +34,7 @@ public class OurBank : IBank
         {
             BankName = Name,
             ExternalBankQuoteId = response.QuoteId,
-            InstalmentAmount = new MoneyDto(response.TotalAmountToPay.Amount, response.TotalAmountToPay.Currency),
+            InstalmentAmount = new MoneyModel(response.TotalAmountToPay.Amount, response.TotalAmountToPay.Currency),
             CreatedDate = DateTime.UtcNow
         };
     }
@@ -60,7 +60,7 @@ public class OurBank : IBank
             JobTypeId = 1,
             StartDate = user.JobStartDate,
             EndDate = user.JobEndDate,
-            Income = new MoneyDto(user.Income.Value, user.IncomeCurrCode)
+            Income = new MoneyModel(user.Income.Value, user.IncomeCurrCode)
         };
         PostOfferRequest data = new PostOfferRequest()
         {
@@ -120,8 +120,8 @@ public class OurBank : IBank
         {
             Id = res.Id,
             Percentage = res.Percentage,
-            MonthlyInstallment = new MoneyDto(new decimal(res.MonthlyInstallementAmount), res.MonthlyInstallementCurrency),
-            RequestedAmount = new MoneyDto(res.RequestedAmount, res.RequestedCurrency),
+            MonthlyInstallment = new MoneyModel(new decimal(res.MonthlyInstallementAmount), res.MonthlyInstallementCurrency),
+            RequestedAmount = new MoneyModel(res.RequestedAmount, res.RequestedCurrency),
             RequestedPeriodInMonth = res.RequestedPeriodInMonths,
             CreateDate = res.CreatedAt.ToString("yyyy-MM-dd"),
             UpdateDate = res.CreatedAt.ToString("yyyy-MM-dd"),
@@ -144,7 +144,7 @@ public class OurBank : IBank
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
         return token?.AccessToken;
     }
-    private record OurBankPostQuoteResponse(int QuoteId, MoneyDto InstalmentAmount, DateTime CreatedDate);
+    private record OurBankPostQuoteResponse(int QuoteId, MoneyModel InstalmentAmount, DateTime CreatedDate);
 
     public async Task<GetOfferByIdResponse?> GetOfferDetailsByIdAsync(int externalOfferId)
     {

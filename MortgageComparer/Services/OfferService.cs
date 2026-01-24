@@ -86,9 +86,9 @@ public class OfferService : IOfferService
         {
             decimal amountVal = originalRequest.RequestedAmount?.Amount ?? 0;
             string currencyVal = originalRequest.RequestedAmount?.CurrencyCode ?? "PLN";
-            var freshRequestedMoney = new MoneyDto(amountVal, currencyVal);
+            var freshRequestedMoney = new MoneyModel(amountVal, currencyVal);
 
-            var freshInstallment = new MoneyDto(response.InstalementAmount?.Amount ?? 0,
+            var freshInstallment = new MoneyModel(response.InstalementAmount?.Amount ?? 0,
                 response.InstalementAmount?.CurrencyCode ?? "PLN");
             var entity = new OfferEntity
             {

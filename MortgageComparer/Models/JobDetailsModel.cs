@@ -11,6 +11,6 @@ namespace MortgageComparer.Models {
         public DateTime StartDate { get; set; }
         [JsonPropertyName("jobEndDate")]
         public DateTime EndDate { get; set; }
-        public required MoneyDto Income { get; set; }
+        public required MoneyModel Income { get; set; }
     }
 }

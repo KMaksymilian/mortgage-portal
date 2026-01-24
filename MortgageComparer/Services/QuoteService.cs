@@ -25,7 +25,7 @@ public class QuoteService : IQuoteService
 
         PostQuoteRequest request = new PostQuoteRequest
         {
-            RequestedAmount = new MoneyDto(amountToPay, "PLN"),
+            RequestedAmount = new MoneyModel(amountToPay, "PLN"),
             InstalmentNumber = quoteRequest.Months
         };
         var bankResponses = await _banks.PostQuotesFromAllBanksAsync(request);
@@ -40,7 +40,7 @@ public class QuoteService : IQuoteService
             {
                 BankName = response.BankName,
                 QuoteId = response.ExternalBankQuoteId,
-                InstalmentAmount = new MoneyDto(response.InstalmentAmount.Amount,
+                InstalmentAmount = new MoneyModel(response.InstalmentAmount.Amount,
                     response.InstalmentAmount.CurrencyCode),
                 ExternalQuoteId = response.ExternalBankQuoteId,
                 RequestedAmount = quoteRequest.Amount,
@@ -103,7 +103,7 @@ public class QuoteService : IQuoteService
             QuoteId = quote.Id,
             BankName = response.BankName,
             UserId = userId,
-            RequestedMoney = new MoneyDto(quote.RequestedAmount, "PLN"),
+            RequestedMoney = new MoneyModel(quote.RequestedAmount, "PLN"),
             ExternalBankOfferId = response.OfferId.ToString(),
             MonthlyInstallment = response.InstalementAmount,
             CreatedAt = response.CreateDate.ToUniversalTime(),
