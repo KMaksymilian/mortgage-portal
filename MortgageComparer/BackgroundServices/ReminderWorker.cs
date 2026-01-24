@@ -30,7 +30,7 @@ public class ReminderWorker : BackgroundService {
                     // --- Logika dla Użytkownika (Approved = czeka na podpis) ---
                     var forgottenOffers = await context.Offers
                         .Include(o => o.User)
-                        .Where(o => o.Status == OfferStatus.Approved && o.UpdateDate < threshold)
+                        .Where(o => o.Status == OfferStatus.Approved && o.UpdatedAt < threshold)
                         .ToListAsync(stoppingToken);
 
                     foreach (var offer in forgottenOffers) {
@@ -53,11 +53,11 @@ public class ReminderWorker : BackgroundService {
                     var stalledOffersBank = await context.Offers
                         .Include(o => o.User)
                         .Where(o => (o.Status == OfferStatus.Pending || o.Status == OfferStatus.ContractSigned)
-                                    && o.UpdateDate < threshold)
+                                    && o.UpdatedAt < threshold)
                         .ToListAsync(stoppingToken);
 
                     foreach (var offer in stalledOffersBank) {
-                        var adminBody = templateService.GetNewApplicationAlert(offer.Id, offer.User.FirstName, offer.CreateDate);
+                        var adminBody = templateService.GetNewApplicationAlert(offer.Id, offer.User.FirstName, offer.CreatedAt);
                         await emailService.SendEmailAsync("admin@bank.pl", "Wniosek czeka na decyzję!", adminBody);
                     }
                 }

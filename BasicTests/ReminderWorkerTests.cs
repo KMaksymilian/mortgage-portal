@@ -57,8 +57,9 @@ public class ReminderWorkerTests {
             User = user,
             Quote = quote,
             Status = OfferStatus.Approved,
-            UpdateDate = DateTime.UtcNow.AddDays(-4),
+            UpdatedAt = DateTime.UtcNow.AddDays(-4),
             RequestedMoney = new MoneyDto(1000, "PLN")
+
         };
 
         // Oferta 2: Nowa (1 dzień) -> Nie powinna dostać maila
@@ -67,8 +68,9 @@ public class ReminderWorkerTests {
             User = user,
             Quote = quote,
             Status = OfferStatus.Approved,
-            UpdateDate = DateTime.UtcNow.AddDays(-1),
+            UpdatedAt = DateTime.UtcNow.AddDays(-1),
             RequestedMoney = new MoneyDto(1000, "PLN")
+
         };
 
         // Dodajemy wszystko do kontekstu
@@ -113,7 +115,7 @@ public class ReminderWorkerTests {
             // Logika wyciągnięta z workera
             var forgottenOffers = await db.Offers
                 .Include(o => o.User)
-                .Where(o => o.Status == OfferStatus.Approved && o.UpdateDate < threshold)
+                .Where(o => o.Status == OfferStatus.Approved && o.UpdatedAt < threshold)
                 .ToListAsync();
 
             foreach (var offer in forgottenOffers) {

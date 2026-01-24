@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using MortgageComparer.BankLogic;
 using MortgageComparer.Controllers;
 using MortgageComparer.Data;
+using MortgageComparer.DataTransferObjects;
 using MortgageComparer.Entities;
 using MortgageComparer.Models;
 using MortgageComparer.Services.Interfaces;
@@ -95,7 +96,7 @@ public class OfferService : IOfferService
                 BankName = response.BankName,
                 ExternalBankOfferId = response.OfferId.ToString(),
                 MonthlyInstallment = response.InstalementAmount,
-                CreateDate = response.CreateDate,
+                CreatedAt = response.CreateDate,
                 RequestedMoney = freshRequestedMoney,
                 DocumentLink = response.DocumentLink,
                 BankPercentage = response.Percentage
@@ -121,8 +122,8 @@ public class OfferService : IOfferService
         }
         var result = await _context.Offers
             .Where(o => o.UserId == userId && o.ExternalBankOfferId != null 
-                    && (o.Status == OfferStatus.ReadyToBeSigned || o.Status == OfferStatus.Completed))
-            .OrderByDescending(o => o.CreateDate)
+                    && (o.Status == OfferStatus.Approved || o.Status == OfferStatus.Completed))
+            .OrderByDescending(o => o.CreatedAt)
             .Select(o => new OfferDto
                 {
                 Id = o.Id, 
@@ -130,7 +131,7 @@ public class OfferService : IOfferService
                 MonthlyInstallment = o.MonthlyInstallment != null ?  o.MonthlyInstallment.Amount : 0,
                 Currencycode  = o.RequestedMoney.CurrencyCode, 
                 IsContractSigned = o.ContractData != null, 
-                CreateDate = o.CreateDate,
+                CreateDate = o.CreatedAt,
                 Status = o.Status.ToString(),
                 })
                 .ToListAsync();
@@ -297,7 +298,7 @@ public class OfferService : IOfferService
         }
 
         offer.ContractData = result;
-        offer.Status = OfferStatus.ReadyToBeSigned;
+        offer.Status = OfferStatus.Approved;
 
         ContractDataDto contractData = new ContractDataDto
         {
@@ -310,23 +311,21 @@ public class OfferService : IOfferService
         return contractData;
     }
 
+    public async Task<List<ApiOfferEntity>?> GetAllOurBankOffersAsync()
+    {
+        return await _context.OurApiOffers.ToListAsync();
+    }
+
+
     private async Task UpdateDatabaseAsync(OfferEntity offer)
     {
         _context.Offers.Update(offer);
         await _context.SaveChangesAsync();
     }
+
+
 }
 
-public class OfferDto
-{
-    public int Id { get; set; }
-    public decimal LoanAmount { get; set; }
-    public decimal MonthlyInstallment { get; set; }
-    public string? Currencycode { get; set; }
-    public bool IsContractSigned { get; set; }
-    public DateTime CreateDate { get; set; }
-    public string Status { get; set; }
-}
 
 public class OfferSummaryDto
 {

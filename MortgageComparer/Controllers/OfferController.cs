@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MortgageComparer.BankLogic;
+using MortgageComparer.DataTransferObjects;
 using MortgageComparer.Data;
 using MortgageComparer.Models;
 using MortgageComparer.Services;

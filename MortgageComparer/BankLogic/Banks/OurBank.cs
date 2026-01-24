@@ -123,8 +123,8 @@ public class OurBank : IBank
             MonthlyInstallment = new MoneyDto(new decimal(res.MonthlyInstallementAmount), res.MonthlyInstallementCurrency),
             RequestedAmount = new MoneyDto(res.RequestedAmount, res.RequestedCurrency),
             RequestedPeriodInMonth = res.RequestedPeriodInMonths,
-            CreateDate = res.RequestedDate.ToString("yyyy-MM-dd"),
-            UpdateDate = res.RequestedDate.ToString("yyyy-MM-dd"),
+            CreateDate = res.CreatedAt.ToString("yyyy-MM-dd"),
+            UpdateDate = res.CreatedAt.ToString("yyyy-MM-dd"),
             DocumentLink = res.DocumentKey,
         };
     }
