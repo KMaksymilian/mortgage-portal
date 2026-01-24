@@ -5,24 +5,25 @@
 namespace MortgageComparer.Migrations
 {
     /// <inheritdoc />
-    public partial class RemovedContractNameFromOffer : Migration
+    public partial class AddedBankNametoOffers : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "Contract",
-                table: "Offers");
+            migrationBuilder.AddColumn<string>(
+                name: "BankName",
+                table: "Offers",
+                type: "text",
+                nullable: false,
+                defaultValue: "");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "Contract",
-                table: "Offers",
-                type: "text",
-                nullable: true);
+            migrationBuilder.DropColumn(
+                name: "BankName",
+                table: "Offers");
         }
     }
 }

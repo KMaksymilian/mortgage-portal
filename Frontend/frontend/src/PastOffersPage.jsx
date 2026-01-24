@@ -8,10 +8,8 @@ function UserHistoryPage() {
     
     const [offers, setOffers] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [downloadingId, setDownloadingId] = useState(null); // Do obsługi spinnera na przycisku
+    const [downloadingId, setDownloadingId] = useState(null);
 
-    // 1. POBIERANIE LISTY OFERT (GET)
-    // To pobiera listę ofert, ale BEZ zawartości plików (żeby było szybko)
     useEffect(() => {
         if (!user) {
             navigate('/login');
@@ -20,7 +18,7 @@ function UserHistoryPage() {
 
         const fetchOffers = async () => {
             try {
-                const response = await fetch('http://localhost:5254/api/Offer', {
+                const response = await fetch('/api/Offer', {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${user.token}`,
@@ -44,12 +42,11 @@ function UserHistoryPage() {
         fetchOffers();
     }, [user, navigate]);
 
-    // 2. FUNKCJA POBIERANIA PLIKU (To wywołuje Twój endpoint POST /accept)
 const handleDownloadContract = async (offerId) => {
     setDownloadingId(offerId);
 
     try {
-        const response = await fetch('http://localhost:5254/api/Offer/accept', {
+        const response = await fetch('/api/Offer/accept', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${user.token}`,
@@ -65,21 +62,17 @@ const handleDownloadContract = async (offerId) => {
 
         const blob = await response.blob();
 
-        // === ZMIANA 1: Typ MIME ===
-        // Ustawiamy text/plain, żeby przeglądarka wiedziała, że to tekst
         const newBlob = new Blob([blob], { type: 'text/plain' });
 
         const url = window.URL.createObjectURL(newBlob);
         const link = document.createElement('a');
         link.href = url;
-        
-        // === ZMIANA 2: Rozszerzenie pliku ===
+
         link.setAttribute('download', `Umowa_Oferta_${offerId}.txt`); 
         
         document.body.appendChild(link);
         link.click();
-        
-        // Sprzątanie
+
         link.parentNode.removeChild(link);
         window.URL.revokeObjectURL(url);
 
@@ -121,7 +114,7 @@ const handleDownloadContract = async (offerId) => {
                                         {offer.loanAmount} {offer.currencycode}
                                     </td>
                                     <td style={{ padding: '15px' }}>
-                                        {/* Zakładam, że w GET /Offers zwracasz to pole, jeśli nie - usuń */}
+                                        {}
                                         {offer.monthlyInstallment ? `${offer.monthlyInstallment} ${offer.currencycode}` : '-'}
                                     </td>
                                     <td style={{ padding: '15px' }}>

@@ -5,7 +5,7 @@ namespace MortgageComparer.Services.Interfaces;
 
 public interface IOfferService
 {
-    public Task<OfferSummaryDto> ProcessLoanApplicationAsync(CalculatorRequestModel model);
+    public Task<List<OfferSummaryDto>> ProcessLoanApplicationAsync(PostQuoteRequest model);
     public Task<List<OfferDto>> OffersFromDatabaseAsync();
-    public Task<FileResultDto> AcceptOfferAsync(int  quoteId);
+    public Task<ContractDataDto> AcceptOfferAsync(int  quoteId);
 }

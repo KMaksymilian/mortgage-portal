@@ -35,6 +35,5 @@ public class UserEntity : BasicEntity {
     public DateTime JobEndDate { get; set; } =  DateTime.UtcNow;
     public int Income { get; set; }= 10000;
     public string IncomeCurrCode { get; set; } = "PLN";
-
-
+    
 }

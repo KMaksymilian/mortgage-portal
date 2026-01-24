@@ -2,11 +2,11 @@ using MortgageComparer.Data;
 
 namespace MortgageComparer.Models;
 
-public class CalculatorRequestModel{
-    public MoneyModel RequestedAmount { get; set; }
+public class PostQuoteRequest{
+    public MoneyDto RequestedAmount { get; set; }
     public int InstalmentNumber { get; set; }
 
-    public CalculatorRequestModel(MoneyModel requestedAmount, int instalmentNumber)
+    public PostQuoteRequest(MoneyDto requestedAmount, int instalmentNumber)
     {
         this.RequestedAmount = requestedAmount;
         this.InstalmentNumber = instalmentNumber;

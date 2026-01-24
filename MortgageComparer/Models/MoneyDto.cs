@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace MortgageComparer.Models {
 
     [Owned]
-    public class MoneyModel {
+    public class MoneyDto {
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal Amount { get; set; }
@@ -12,9 +12,9 @@ namespace MortgageComparer.Models {
         [Column(TypeName = "varchar(3)")]
         public string? CurrencyCode { get; set; }
 
-        public MoneyModel() { }
+        //public MoneyModel() { }
 
-        public MoneyModel(decimal amount, string? currencyCode) {
+        public MoneyDto(decimal amount, string? currencyCode) {
             Amount = amount;
             CurrencyCode = currencyCode ?? "PLN";
         }

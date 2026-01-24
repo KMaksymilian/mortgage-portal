@@ -13,10 +13,7 @@ function ProfilePage() {
 
     const fetchProfileData = async () => {
       try {
-        // WAŻNE: Upewnij się, że ten adres pasuje do Twojego kontrolera w C#
-        // Jeśli Twój kontroler ma [Route("api/[controller]")], a metoda [HttpGet("DocumentAndJobTypes")]
-        // to adres będzie: http://localhost:5254/api/User/DocumentAndJobTypes
-        const response = await fetch('http://localhost:5254/api/Dictionary/DocumentAndJobTypes', {
+        const response = await fetch('/api/Dictionary/DocumentAndJobTypes', {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${user.token}`,
@@ -29,7 +26,7 @@ function ProfilePage() {
         }
 
         const data = await response.json();
-        setProfileData(data); // Zakładamy, że backend zwraca { job: {...}, document: {...} }
+        setProfileData(data);
 
       } catch (err) {
         console.error(err);

@@ -12,7 +12,7 @@ using static System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler;
 namespace MortgageComparerAPI.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/[controller]/x")]
 public class AuthController : ControllerBase
 {
     private readonly IApiAuthService _apiAuthService;
@@ -22,16 +22,16 @@ public class AuthController : ControllerBase
         _apiAuthService = apiAuthService;
     }
     [HttpPost]
-    public IActionResult Auth([FromBody] ApiLoginRequest request)
+    public async Task<IActionResult> AuthAsync([FromBody] ApiLoginRequest request)
     {
-        if (request == null || string.IsNullOrEmpty(request.ClientSecret))
+        if (request == null || string.IsNullOrEmpty(request.ClientSecret) || string.IsNullOrEmpty(request.Email))
         {
             return BadRequest("Bad Request");
         }
 
         try
         {
-            var res = _apiAuthService.Authenticate(request);
+            var res = await _apiAuthService.Authenticate(request);
             return Ok(res);
         }
         catch (UnauthorizedAccessException ex)

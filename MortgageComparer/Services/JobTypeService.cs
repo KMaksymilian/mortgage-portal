@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MortgageComparer.Data;
+using MortgageComparer.Models;
 using MortgageComparer.Services.Interfaces;
 
 namespace MortgageComparer.Services;
@@ -15,7 +16,7 @@ public class JobTypeService : IJobTypeService
         _context = context;
     }
 
-    public async Task<JobTypeDocumentDto> GetJobAndDocumentAsync()
+    public async Task<GetJobAndDocumentResponse> GetJobAndDocumentAsync()
     {
         int? userId = _userService.GetUserId();
         if (userId == null)
@@ -38,7 +39,7 @@ public class JobTypeService : IJobTypeService
         {
             await _context.SaveChangesAsync();
         }
-        return new JobTypeDocumentDto
+        return new GetJobAndDocumentResponse
         {
             FirstName = user.FirstName,
             LastName = user.LastName,
@@ -54,20 +55,4 @@ public class JobTypeService : IJobTypeService
             }
         };
     }
-}
-
-public class JobTypeDocumentDto
-{
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public string Email { get; set; }
-    public DateTime? BirthDate { get; set; }
-    public DocumentDto Job { get; set; }
-    public DocumentDto Document { get; set; }
-}
-
-public class DocumentDto
-{
-    public string Name { get; set; }
-    public string Description { get; set; }
 }

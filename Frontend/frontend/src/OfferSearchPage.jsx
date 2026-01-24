@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from './AuthContext'; // Upewnij się, że ścieżka do AuthContext jest poprawna
+import { useAuth } from './AuthContext';
+import { quoteOffer, acceptOffer } from './api/offers';
+
 
 function OfferSearchPage() {
   const { user } = useAuth();
@@ -46,27 +48,16 @@ function OfferSearchPage() {
         instalmentNumber: parseInt(formData.months)
       };
 
-      const response = await fetch('http://localhost:5254/api/Offer/Quote', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json', 
-          'Authorization': `Bearer ${user.token}` 
-        },
-        body: JSON.stringify(payload)
-      });
+      const data = await quoteOffer(user.token, payload);
 
-      if (!response.ok) {
-        // Obsługa błędów z backendu (np. "Problem z zewnętrznym api")
-        const errorText = await response.text();
-        throw new Error(errorText || `Błąd serwera: ${response.status}`);
-      }
-
-      // Backend zwraca teraz lekki, płaski obiekt JSON
-      const data = await response.json();
-      
-      // Pakujemy w tablicę dla spójności renderowania (nawet jak to jeden obiekt)
-      const resultsArray = data ? [data] : [];
-      setOffersList(resultsArray);
+      if (Array.isArray(data)) {
+          setOffersList(data);
+      } else if (data) {
+          // Jeśli backend zwróciłby jednak pojedynczy obiekt (np. błąd lub jedną ofertę bez tablicy)
+          setOffersList([data]);
+      } else {
+          setOffersList([]);
+}
 
     } catch (err) {
       console.error(err);
@@ -83,24 +74,8 @@ function OfferSearchPage() {
     setError(null);
 
     try {
-        const response = await fetch('http://localhost:5254/api/Offer/accept', {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json', 
-                'Authorization': `Bearer ${user.token}` 
-            },
-            // Backend oczekuje [FromBody] int, więc wysyłamy samą liczbę jako JSON
-            body: JSON.stringify(internalId)
-        });
-
-        if (!response.ok) {
-            const errText = await response.text();
-            throw new Error(errText);
-        }
-
-        // Sukces - backend zwrócił 200 OK
+        await acceptOffer(user.token, internalId);
         setIsOfferAccepted(true);
-
     } catch (err) {
         alert(`Wystąpił błąd: ${err.message}`);
     } finally {
@@ -200,8 +175,6 @@ function OfferSearchPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           {offersList.map((offer, index) => {
               
-              // === DATA MAPPING DO NOWEGO BACKENDU ===
-              // Backend zwraca teraz płaski obiekt: { internalId, amount, monthlyInstallment, percentage, currency }
               
               const monthlyInstallment = offer.monthlyInstallment || 0;
               const loanAmount = offer.amount || 0;

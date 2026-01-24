@@ -26,4 +26,5 @@ public class AppDbContext : DbContext
     public DbSet<QuoteEntity> Quotes { get; set; }
     public DbSet<Quote> OurApiQuotes { get; set; }
     public DbSet<ApiOfferEntity> OurApiOffers { get; set; }
+    public DbSet<ApiUserEntity> OurApiUsers { get; set; }
 }

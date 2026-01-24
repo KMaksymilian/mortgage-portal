@@ -4,5 +4,5 @@ namespace MortgageComparerAPI.Services;
 
 public interface IApiAuthService
 {
-    public ApiLoginResponse Authenticate(ApiLoginRequest request);
+    public Task<ApiLoginResponse> Authenticate(ApiLoginRequest request);
 }

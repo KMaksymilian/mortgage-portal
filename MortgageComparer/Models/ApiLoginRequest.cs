@@ -6,9 +6,5 @@ public class ApiLoginRequest
 {
     [JsonPropertyName("clientSecret")]
     public string ClientSecret { get; set; }
-
-    public ApiLoginRequest(string clientSecret)
-    {
-        ClientSecret = clientSecret;
-    }
+    public string Email { get; set; }
 }
