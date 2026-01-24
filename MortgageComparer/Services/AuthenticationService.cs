@@ -24,7 +24,7 @@ public class AuthenticationService : IAuthenticationService
         _context = context;
         _externalApiService = externalApiService;
     }
-    public async Task<GoogleLoginRequestModelDto> GetGoogleTokenAsync(GoogleLoginRequestModel request)
+    public async Task<LoginResponseDto> GetGoogleTokenAsync(GoogleLoginRequestModel request)
     {
         GoogleJsonWebSignature.Payload validPayload;
         try
@@ -39,38 +39,45 @@ public class AuthenticationService : IAuthenticationService
         {
             throw new Exception("Invalid Google Token");
         }
-        UserEntity? user = await _context.Users.FirstOrDefaultAsync((u) => u.Email == validPayload.Email);
+        UserEntity? user = await _context.Users
+            .FirstOrDefaultAsync(u => u.Email == validPayload.Email);
+
         if (user == null)
         {
-            user = new  UserEntity
+            user = new UserEntity
             {
-                FirstName = validPayload.GivenName, LastName = validPayload.FamilyName,
+                FirstName = validPayload.GivenName,
+                LastName = validPayload.FamilyName,
                 Email = validPayload.Email,
+                Income = null,
+                DateOfBirth = null,
+                JobType = null, 
+                PersonalDocument = null 
             };
-            // zmockowane dane, to do: zmienić to
-            // Zakładamy, że wszystkie api będą miały te same zawody i dokumenty
-            if (user.JobType == null)
-            {
-                JobTypeEntity userJob = await _externalApiService.GetJobTypesAsync();
-                var isInDataBase = await _context.JobTypes.FindAsync(userJob.Id);
-                user.JobType = isInDataBase ?? userJob;
-            }
 
-            if (user.PersonalDocument == null)
-            {
-                PersonalDocumentTypeEntity userDocument = await _externalApiService.GetDocumentTypesAsync();
-                var isInDataBase = await _context.DocumentTypes.FindAsync(userDocument.Id);
-                user.PersonalDocument = isInDataBase ?? userDocument;
-            }
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
         }
+        
         var jwtToken = GenerateJwtToken(user);
-        return new GoogleLoginRequestModelDto
+        if (user.JobType == null)
+        {
+            user.JobType = await _context.JobTypes.FirstOrDefaultAsync(j => j.Name == "Truck Driver");
+        }
+
+        if (user.DocumentId == null)
+        {
+            user.DocumentId  = 1;
+        }
+        
+        return new LoginResponseDto
         {
             Token = jwtToken,
-            Email = validPayload.Email,
-            HasBirthDate = user.DateOfBirth != null,
+            Email = user.Email,
+            Earnings = user.Income,
+            BirthDate = user.DateOfBirth,
+            JobStartDate = user.JobStartDate,
+            JobEndDate = user.JobEndDate
         };
     }
     private string GenerateJwtToken(UserEntity user)
@@ -98,9 +105,12 @@ public class AuthenticationService : IAuthenticationService
     }
 }
 
-public class GoogleLoginRequestModelDto
+public class LoginResponseDto
 {
     public string Token { get; set; }
     public string Email { get; set; }
-    public bool HasBirthDate { get; set; }
+    public decimal? Earnings { get; set; }
+    public DateTime? BirthDate { get; set; }
+    public DateTime? JobStartDate { get; set; }
+    public DateTime? JobEndDate { get; set; }
 }

@@ -8,16 +8,13 @@ namespace MortgageComparer.Entities {
     [Table("Quotes")]
     public class QuoteEntity : BasicEntity {
         public int QuoteId { get; set; }
-        public int RequestedMonths { get; set; }
-
-        public required MoneyDto TotalAmountToPay { get; set; }
-
-        [Range(1, 480)] 
-        public int InstalmentNumber { get; set; }
+        public string BankName { get; set; }
+        public int? ExternalQuoteId { get; set; }
+        public MoneyDto InstalmentAmount { get; set; }
+        public decimal RequestedAmount { get; set; }
+        public int Months { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public int StatusId { get; set; }
-        public string? StatusDescription { get; set; }
         
     }
 }

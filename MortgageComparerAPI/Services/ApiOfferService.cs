@@ -49,8 +49,8 @@ public class ApiOfferService : IApiOfferService
             RequestedAmount = quote.RequestedAmount,
             RequestedCurrency =  quote.Currency,
             RequestedPeriodInMonths = quote.Installments,
-            RequestedDate = DateTime.UtcNow,
-            UpdatedDate = DateTime.UtcNow,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow,
             DocumentKey = "1234"
         };
         await _context.OurApiOffers.AddAsync(offer);
@@ -64,7 +64,7 @@ public class ApiOfferService : IApiOfferService
                 Amount = offer.MonthlyInstallementAmount,
                 Currency = offer.MonthlyInstallementCurrency
             },
-            CreateDate = offer.RequestedDate
+            CreateDate = offer.CreatedAt
         };
     }
 
@@ -119,6 +119,7 @@ public class ApiOfferService : IApiOfferService
             await _context.SaveChangesAsync();
         }
     }
+
     /*
     public Task CompleteProccess(GetOfferRequest request)
     {

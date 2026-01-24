@@ -17,7 +17,6 @@ public class OurBank : IBank
     }
     public async Task<PostQuoteResponse> PostQuoteAsync(PostQuoteRequest request)
     {
-        var client = await GetTokenAsync();
         var apiResponse = await _client.PostAsJsonAsync("Quote/x/quote",request);
         if (!apiResponse.IsSuccessStatusCode)
         {
@@ -34,7 +33,7 @@ public class OurBank : IBank
         return new PostQuoteResponse()
         {
             BankName = Name,
-            QuoteId = response.QuoteId,
+            ExternalBankQuoteId = response.QuoteId,
             InstalmentAmount = new MoneyDto(response.TotalAmountToPay.Amount, response.TotalAmountToPay.Currency),
             CreatedDate = DateTime.UtcNow
         };
@@ -53,15 +52,15 @@ public class OurBank : IBank
         // To do: Zmienić te zmockowane dane
         PersonalDocumentModel governmentDocument = new PersonalDocumentModel
         {
-            TypeId = user.PersonalDocument.Id,
+            TypeId = 1,
             Number = "fsfasf"
         };
         JobDetailsModel jobDetails = new JobDetailsModel
         {
-            JobTypeId = (int)user.JobTypeId,
+            JobTypeId = 1,
             StartDate = user.JobStartDate,
             EndDate = user.JobEndDate,
-            Income = new MoneyDto(user.Income, user.IncomeCurrCode)
+            Income = new MoneyDto(user.Income.Value, user.IncomeCurrCode)
         };
         PostOfferRequest data = new PostOfferRequest()
         {
@@ -124,8 +123,8 @@ public class OurBank : IBank
             MonthlyInstallment = new MoneyDto(new decimal(res.MonthlyInstallementAmount), res.MonthlyInstallementCurrency),
             RequestedAmount = new MoneyDto(res.RequestedAmount, res.RequestedCurrency),
             RequestedPeriodInMonth = res.RequestedPeriodInMonths,
-            CreateDate = res.RequestedDate.ToString("yyyy-MM-dd"),
-            UpdateDate = res.RequestedDate.ToString("yyyy-MM-dd"),
+            CreateDate = res.CreatedAt.ToString("yyyy-MM-dd"),
+            UpdateDate = res.CreatedAt.ToString("yyyy-MM-dd"),
             DocumentLink = res.DocumentKey,
         };
     }

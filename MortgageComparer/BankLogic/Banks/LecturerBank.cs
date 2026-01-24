@@ -38,7 +38,7 @@ public class LecturerBank : IBank
         return new PostQuoteResponse()
         {
             BankName =  Name,
-            QuoteId = response.QuoteId,
+            ExternalBankQuoteId = response.QuoteId,
             InstalmentAmount = response.InstalmentAmount,
             CreatedDate = response.CreatedDate
         };
@@ -65,7 +65,7 @@ public class LecturerBank : IBank
             JobTypeId = (int)user.JobTypeId,
             StartDate = user.JobStartDate,
             EndDate = user.JobEndDate,
-            Income = new MoneyDto(user.Income, user.IncomeCurrCode)
+            Income = new MoneyDto(user.Income.Value, user.IncomeCurrCode)
         };
         PostOfferRequest data = new PostOfferRequest()
         {

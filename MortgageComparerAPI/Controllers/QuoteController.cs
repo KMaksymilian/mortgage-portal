@@ -8,7 +8,6 @@ namespace MortgageComparerAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]/x")]
-[Authorize]
 public class QuoteController : ControllerBase
 {
     private readonly IApiQuoteService _apiQuoteService;

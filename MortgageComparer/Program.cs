@@ -20,6 +20,7 @@ using MortgageComparer.Workers;
 using MortgageComparer.Workers;
 using SendGrid.Extensions.DependencyInjection;
 using System.Text;
+using System.Text.Json.Serialization;
 
 
 namespace MortgageComparer;
@@ -30,7 +31,11 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddControllers();
+        builder.Services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+            });
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<IExternalApiService, ExternalApiService>();
@@ -41,8 +46,10 @@ public class Program
         builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnectionString")));
 
+        builder.Services.AddScoped<IOfferService2, BankEmployeeOfferService>();
         builder.Services.AddScoped<IBank, OurBank>();
         builder.Services.AddScoped<IBank, LecturerBank>();
+        builder.Services.AddScoped<IQuoteService, QuoteService>();
         builder.Services.AddScoped<BankAggregator>();
         builder.Services.AddHttpClient("LecturerBankApi", client =>
         {

@@ -33,7 +33,7 @@ public class UserEntity : BasicEntity {
     // To do: Zaimplementować to lepiej, na razie mockup
     public DateTime JobStartDate { get; set; } =  DateTime.UtcNow;
     public DateTime JobEndDate { get; set; } =  DateTime.UtcNow;
-    public int Income { get; set; }= 10000;
+    public int? Income { get; set; }= 10000;
     public string IncomeCurrCode { get; set; } = "PLN";
     
 }

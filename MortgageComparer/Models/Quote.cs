@@ -6,6 +6,7 @@ public class Quote
     public int RequestedAmount { get; set; }
     public int AmountToPay { get; set; }
     public int Installments { get; set; }
+    public int InstalmentRate { get; set; }
     public string Currency { get; set; } = "PLN";
     public DateTime CreatedAt { get; set; }
 }

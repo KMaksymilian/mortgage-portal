@@ -34,17 +34,11 @@ public class BankAggregator
         foreach (var quote in quoteResponses)
         {
             var matchingBank = _bankProviders.FirstOrDefault(b => b.Name == quote.BankName);
+        
             if (matchingBank != null)
             {
-                try
-                {
-                    var res = await matchingBank.PostOfferAsync(quote.QuoteId, user);
-                    result.Add(res);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Błąd przy składaniu oferty w {matchingBank.Name}: {ex.Message}");
-                }
+                var res = await matchingBank.PostOfferAsync(quote.ExternalBankQuoteId, user);
+                result.Add(res);
             }
         }
         return result;

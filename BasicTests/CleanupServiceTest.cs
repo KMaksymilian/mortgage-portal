@@ -53,10 +53,7 @@ public class CleanupServiceTests {
         var quote = new QuoteEntity {
             QuoteId = 1,
             CreatedAt = DateTime.UtcNow.AddDays(-20),
-            TotalAmountToPay = new MoneyModel {
-                Amount = 5000,
-                CurrencyCode = "PLN"
-            }
+            TotalAmountToPay = new MoneyDto(5000, "PLN")
         };
 
         context.Users.Add(user);
@@ -70,9 +67,9 @@ public class CleanupServiceTests {
                 Id = 1,
                 UserId = user.Id,
                 QuoteId = quote.QuoteId,
-                CreateDate = oldDate,
+                CreatedAt = oldDate,
                 Status = OfferStatus.Rejected,
-                RequestedMoney = new MoneyModel { Amount = 1000, CurrencyCode = "PLN" }
+                RequestedMoney = new MoneyDto (1000, "PLN")
             },
             
             // Powinno zostać usunięte (Stare + Canceled)
@@ -80,9 +77,9 @@ public class CleanupServiceTests {
                 Id = 2,
                 UserId = user.Id,
                 QuoteId = quote.QuoteId,
-                CreateDate = oldDate,
+                CreatedAt = oldDate,
                 Status = OfferStatus.Canceled,
-                RequestedMoney = new MoneyModel { Amount = 1000, CurrencyCode = "PLN" }
+                RequestedMoney = new MoneyDto (1000, "PLN")
             },
             
             // Powinno zostać (Status Completed nie jest usuwalny w tej logice)
@@ -90,9 +87,9 @@ public class CleanupServiceTests {
                 Id = 3,
                 UserId = user.Id,
                 QuoteId = quote.QuoteId,
-                CreateDate = oldDate,
+                CreatedAt = oldDate,
                 Status = OfferStatus.Completed,
-                RequestedMoney = new MoneyModel { Amount = 1000, CurrencyCode = "PLN" }
+                RequestedMoney = new MoneyDto (1000, "PLN")
             },
 
             // Powinno zostać (Status Created - może zbyt wcześnie na usunięcie?)
@@ -100,9 +97,9 @@ public class CleanupServiceTests {
                 Id = 4,
                 UserId = user.Id,
                 QuoteId = quote.QuoteId,
-                CreateDate = oldDate,
+                CreatedAt = oldDate,
                 Status = OfferStatus.Created,
-                RequestedMoney = new MoneyModel { Amount = 1000, CurrencyCode = "PLN" }
+                RequestedMoney = new MoneyDto (1000, "PLN")
             },
             
             // Powinno zostać (Zbyt nowa data)
@@ -110,9 +107,9 @@ public class CleanupServiceTests {
                 Id = 5,
                 UserId = user.Id,
                 QuoteId = quote.QuoteId,
-                CreateDate = newDate,
+                CreatedAt = newDate,
                 Status = OfferStatus.Rejected,
-                RequestedMoney = new MoneyModel { Amount = 1000, CurrencyCode = "PLN" }
+                RequestedMoney = new MoneyDto (1000, "PLN")
             }
         });
         await context.SaveChangesAsync();
@@ -143,19 +140,19 @@ public class CleanupServiceTests {
         var quoteToDelete = new QuoteEntity {
             QuoteId = 1,
             CreatedAt = oldDate,
-            TotalAmountToPay = new MoneyModel { Amount = 1000, CurrencyCode = "PLN" }
+            TotalAmountToPay = new MoneyDto(1000, "PLN")
         };
 
         var quoteWithOffer = new QuoteEntity {
             QuoteId = 2,
             CreatedAt = oldDate,
-            TotalAmountToPay = new MoneyModel { Amount = 1000, CurrencyCode = "PLN" }
+            TotalAmountToPay = new MoneyDto(1000, "PLN")
         };
 
         var quoteNew = new QuoteEntity {
             QuoteId = 3,
             CreatedAt = newDate,
-            TotalAmountToPay = new MoneyModel { Amount = 1000, CurrencyCode = "PLN" }
+            TotalAmountToPay = new MoneyDto(1000, "PLN")
         };
 
         context.Quotes.AddRange(quoteToDelete, quoteWithOffer, quoteNew);
@@ -172,9 +169,9 @@ public class CleanupServiceTests {
             Id = 100,
             UserId = user.Id,
             QuoteId = 2,
-            CreateDate = DateTime.UtcNow,
+            CreatedAt = DateTime.UtcNow,
             Status = OfferStatus.Created,
-            RequestedMoney = new MoneyModel { Amount = 1000, CurrencyCode = "PLN" }
+            RequestedMoney = new MoneyDto(1000, "PLN")
         });
 
         await context.SaveChangesAsync();

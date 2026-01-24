@@ -7,6 +7,7 @@ import OfferSearchPage from './OfferSearchPage.jsx';
 import CompleteProfilePage from './BirthDateSite.jsx';
 import PastOffersPage from './PastOffersPage.jsx';
 import './App.css';
+import FinalizeApplicationPage from './FinalizeApplicationPage.jsx';
 
 const linkClass = ({ isActive }) => `navlink${isActive ? ' active' : ''}`;
 
@@ -49,6 +50,7 @@ function App() {
           <Route path="/search" element={<OfferSearchPage />} />
           <Route path="/complete-profile" element={<CompleteProfilePage />} />
           <Route path="/history" element={<PastOffersPage />} />
+          <Route path="/finalize-application" element={<FinalizeApplicationPage />} />
         </Routes>
       </main>
     </div>
