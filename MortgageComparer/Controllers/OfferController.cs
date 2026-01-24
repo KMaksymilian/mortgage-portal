@@ -1,10 +1,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MortgageComparer.BankLogic;
 using MortgageComparer.DataTransferObjects;
+using MortgageComparer.Data;
 using MortgageComparer.Models;
 using MortgageComparer.Services;
 using MortgageComparer.Services.Interfaces;
+using MortgageComparer.StatesMachine;
 
 namespace MortgageComparer.Controllers;
 
@@ -12,10 +15,14 @@ namespace MortgageComparer.Controllers;
 public class OfferController : ControllerBase
 {
     private readonly IOfferService _offerService;
+    private readonly IUserService _userService;
+    private AppDbContext  _context;
 
-    public OfferController(IOfferService offerService)
+    public OfferController(IOfferService offerService,  IUserService userService,  AppDbContext context)
     {
         _offerService = offerService;
+        _userService = userService;
+        _context = context;
     }
 
     [HttpGet]
@@ -62,6 +69,44 @@ public class OfferController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+    [HttpPut("{offerId}/Reject")]
+    [Authorize]
+    public async Task<IActionResult> RejectOfferAsync(int offerId)
+    {
+        var userId = _userService.GetUserId();
+    
+        var offer = await _context.Offers.FindAsync(offerId);
+
+        if (offer == null)
+        {
+            return NotFound();
+        }
+        
+        offer.Status = OfferStatus.Rejected; 
+
+        await _context.SaveChangesAsync();
+        return Ok();
+    }
+    
+    [HttpPut("{offerId}/Accept")]
+    [Authorize]
+    public async Task<IActionResult> AcceptOfferIdAsync(int offerId)
+    {
+        var userId = _userService.GetUserId();
+    
+        var offer = await _context.Offers.FindAsync(offerId);
+
+        if (offer == null)
+        {
+            return NotFound();
+        }
+        
+        offer.Status = OfferStatus.ReadyToBeSigned; 
+
+        await _context.SaveChangesAsync();
+        return Ok();
+    }
+    
 }
 
 

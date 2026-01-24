@@ -43,7 +43,7 @@ public class ReminderWorkerTests {
         // B. Quote
         var quote = new QuoteEntity {
             QuoteId = 99,
-            TotalAmountToPay = new MoneyModel { Amount = 12000, CurrencyCode = "PLN" },
+            TotalAmountToPay = new MoneyDto(12000, "PLN"),
             InstalmentNumber = 24,
             StatusId = 1,
             CreatedAt = DateTime.UtcNow.AddDays(-10)
@@ -58,7 +58,8 @@ public class ReminderWorkerTests {
             Quote = quote,
             Status = OfferStatus.Approved,
             UpdatedAt = DateTime.UtcNow.AddDays(-4),
-            RequestedMoney = new MoneyModel { Amount = 1000, CurrencyCode = "PLN" }
+            RequestedMoney = new MoneyDto(1000, "PLN")
+
         };
 
         // Oferta 2: Nowa (1 dzień) -> Nie powinna dostać maila
@@ -68,7 +69,8 @@ public class ReminderWorkerTests {
             Quote = quote,
             Status = OfferStatus.Approved,
             UpdatedAt = DateTime.UtcNow.AddDays(-1),
-            RequestedMoney = new MoneyModel { Amount = 1000, CurrencyCode = "PLN" }
+            RequestedMoney = new MoneyDto(1000, "PLN")
+
         };
 
         // Dodajemy wszystko do kontekstu
