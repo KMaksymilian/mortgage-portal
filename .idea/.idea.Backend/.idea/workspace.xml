@@ -10,29 +10,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="99b664a8-ce11-40b8-93f8-7bfffd6fe881" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Backend/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Backend/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/frontend/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/frontend/src/App.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/frontend/src/HomePage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/frontend/src/HomePage.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/frontend/src/LoginPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/frontend/src/LoginPage.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparer/BankLogic/BankAggregator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/BankLogic/BankAggregator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparer/BankLogic/Banks/LecturerBank.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/BankLogic/Banks/LecturerBank.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparer/BankLogic/Banks/OurBank.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/BankLogic/Banks/OurBank.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparer/Controllers/OfferController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Controllers/OfferController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparer/Entities/OfferEntity.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Entities/OfferEntity.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparer/Entities/QuoteEntity.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Entities/QuoteEntity.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparer/Entities/UserEntity.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Entities/UserEntity.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparer/Migrations/AppDbContextModelSnapshot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Migrations/AppDbContextModelSnapshot.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparer/Models/PostQuoteRequest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Models/PostQuoteRequest.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparer/Models/PostQuoteResponse.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Models/PostQuoteResponse.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparer/Models/Quote.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Models/Quote.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparer/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparer/Services/AuthenticationService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Services/AuthenticationService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparer/Services/Interfaces/IAuthenticationService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Services/Interfaces/IAuthenticationService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparer/Services/OfferService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Services/OfferService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparerAPI/Controllers/QuoteController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparerAPI/Controllers/QuoteController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MortgageComparerAPI/Services/ApiQuoteService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparerAPI/Services/ApiQuoteService.cs" afterDir="false" />
-    </list>
+    <list default="true" id="99b664a8-ce11-40b8-93f8-7bfffd6fe881" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -52,18 +30,18 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="UPDATE_TYPE" value="REBASE" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "Krejer"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Krejer&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/KMaksymilian/mortgage-portal.git",
-    "accountId": "d0d4c2ac-d051-4299-bee9-fdd3d3255434"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/KMaksymilian/mortgage-portal.git&quot;,
+    &quot;accountId&quot;: &quot;d0d4c2ac-d051-4299-bee9-fdd3d3255434&quot;
   }
-}]]></component>
+}</component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/MortgageComparer/DatabaseData/AppDbContext.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/81d688add276f69c8379b55d229acdbcc350efa22210c2753ce5f9eb6af0/HttpClientFactoryServiceCollectionExtensions.cs" root0="SKIP_HIGHLIGHTING" />
@@ -82,30 +60,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    ".NET Launch Settings Profile.MortgageComparer: http.executor": "Run",
-    ".NET Launch Settings Profile.MortgageComparerAPI: http.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "b8af4411-e70e-4564-a3a6-4ca657f72453.executor": "Debug",
-    "git-widget-placeholder": "feature-quote-logic",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "CodeLensConfigurable",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;.NET Launch Settings Profile.MortgageComparer: http.executor&quot;: &quot;Run&quot;,
+    &quot;.NET Launch Settings Profile.MortgageComparerAPI: http.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;b8af4411-e70e-4564-a3a6-4ca657f72453.executor&quot;: &quot;Debug&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature-quote-logic&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;CodeLensConfigurable&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
-      "EditorConfig",
-      "Angular2Svg"
+  &quot;keyToStringList&quot;: {
+    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
+      &quot;EditorConfig&quot;,
+      &quot;Angular2Svg&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected=".NET Launch Settings Profile.MortgageComparerAPI: http">
     <configuration name="MortgageComparerAPI: http" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/MortgageComparerAPI/MortgageComparerAPI.csproj" />
@@ -195,7 +173,7 @@
       <workItem from="1768575287240" duration="11126000" />
       <workItem from="1768637475378" duration="14916000" />
       <workItem from="1768676996508" duration="9407000" />
-      <workItem from="1769246189511" duration="17534000" />
+      <workItem from="1769246189511" duration="17846000" />
     </task>
     <servers />
   </component>
