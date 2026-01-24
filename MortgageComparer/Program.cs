@@ -47,8 +47,8 @@ public class Program
             options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnectionString")));
 
         builder.Services.AddScoped<IOfferService2, BankEmployeeOfferService>();
-        builder.Services.AddScoped<IBank, OurBank>();
-        builder.Services.AddScoped<IBank, LecturerBank>();
+        builder.Services.AddScoped<IBankService, OurBank>();
+        builder.Services.AddScoped<IBankService, LecturerBank>();
         builder.Services.AddScoped<IQuoteService, QuoteService>();
         builder.Services.AddScoped<BankAggregator>();
         builder.Services.AddHttpClient("LecturerBankApi", client =>

@@ -6,9 +6,6 @@ namespace MortgageComparer.Models {
     [Owned]
     public class PersonalDocumentModel {
         public int TypeId { get; set; }
-
-        [Required]
-        [MaxLength(50)]
         public required string Number { get; set; }
         
     }

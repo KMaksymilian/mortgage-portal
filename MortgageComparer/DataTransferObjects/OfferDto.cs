@@ -11,7 +11,7 @@ public class OfferDto {
     public JobDetailsModel? JobDetails { get; set; }
 
     // Dane wyjściowe 
-    public string? OfferId { get; set; }
+    public int OfferId { get; set; }
     public string? BankName { get; set; }
     public DateTime? CreatedAt { get; set; }
     public double Percentage { get; internal set; }

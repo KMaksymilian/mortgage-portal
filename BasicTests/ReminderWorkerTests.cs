@@ -43,7 +43,7 @@ public class ReminderWorkerTests {
         // B. Quote
         var quote = new QuoteEntity {
             QuoteId = 99,
-            InstalmentAmount = new MoneyDto(12000, "PLN"),
+            InstalmentAmount = new MoneyModel(12000, "PLN"),
             Months = 24,
 
             CreatedAt = DateTime.UtcNow.AddDays(-10)
@@ -58,7 +58,7 @@ public class ReminderWorkerTests {
             Quote = quote,
             Status = OfferStatus.Approved,
             UpdatedAt = DateTime.UtcNow.AddDays(-4),
-            RequestedMoney = new MoneyDto(1000, "PLN")
+            RequestedMoney = new MoneyModel(1000, "PLN")
 
         };
 
@@ -69,7 +69,7 @@ public class ReminderWorkerTests {
             Quote = quote,
             Status = OfferStatus.Approved,
             UpdatedAt = DateTime.UtcNow.AddDays(-1),
-            RequestedMoney = new MoneyDto(1000, "PLN")
+            RequestedMoney = new MoneyModel(1000, "PLN")
 
         };
 
