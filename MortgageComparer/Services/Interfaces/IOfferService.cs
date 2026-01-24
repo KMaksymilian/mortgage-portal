@@ -1,3 +1,4 @@
+using MortgageComparer.DataTransferObjects;
 using MortgageComparer.Entities;
 using MortgageComparer.Models;
 

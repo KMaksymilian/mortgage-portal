@@ -70,7 +70,7 @@ public class CleanupServiceTests {
                 Id = 1,
                 UserId = user.Id,
                 QuoteId = quote.QuoteId,
-                CreateDate = oldDate,
+                CreatedAt = oldDate,
                 Status = OfferStatus.Rejected,
                 RequestedMoney = new MoneyModel { Amount = 1000, CurrencyCode = "PLN" }
             },
@@ -80,7 +80,7 @@ public class CleanupServiceTests {
                 Id = 2,
                 UserId = user.Id,
                 QuoteId = quote.QuoteId,
-                CreateDate = oldDate,
+                CreatedAt = oldDate,
                 Status = OfferStatus.Canceled,
                 RequestedMoney = new MoneyModel { Amount = 1000, CurrencyCode = "PLN" }
             },
@@ -90,7 +90,7 @@ public class CleanupServiceTests {
                 Id = 3,
                 UserId = user.Id,
                 QuoteId = quote.QuoteId,
-                CreateDate = oldDate,
+                CreatedAt = oldDate,
                 Status = OfferStatus.Completed,
                 RequestedMoney = new MoneyModel { Amount = 1000, CurrencyCode = "PLN" }
             },
@@ -100,7 +100,7 @@ public class CleanupServiceTests {
                 Id = 4,
                 UserId = user.Id,
                 QuoteId = quote.QuoteId,
-                CreateDate = oldDate,
+                CreatedAt = oldDate,
                 Status = OfferStatus.Created,
                 RequestedMoney = new MoneyModel { Amount = 1000, CurrencyCode = "PLN" }
             },
@@ -110,7 +110,7 @@ public class CleanupServiceTests {
                 Id = 5,
                 UserId = user.Id,
                 QuoteId = quote.QuoteId,
-                CreateDate = newDate,
+                CreatedAt = newDate,
                 Status = OfferStatus.Rejected,
                 RequestedMoney = new MoneyModel { Amount = 1000, CurrencyCode = "PLN" }
             }
@@ -172,7 +172,7 @@ public class CleanupServiceTests {
             Id = 100,
             UserId = user.Id,
             QuoteId = 2,
-            CreateDate = DateTime.UtcNow,
+            CreatedAt = DateTime.UtcNow,
             Status = OfferStatus.Created,
             RequestedMoney = new MoneyModel { Amount = 1000, CurrencyCode = "PLN" }
         });

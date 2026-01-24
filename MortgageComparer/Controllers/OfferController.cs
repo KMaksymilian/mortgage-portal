@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MortgageComparer.BankLogic;
+using MortgageComparer.DataTransferObjects;
 using MortgageComparer.Models;
 using MortgageComparer.Services;
 using MortgageComparer.Services.Interfaces;
@@ -61,7 +62,6 @@ public class OfferController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
-    
 }
 
 
