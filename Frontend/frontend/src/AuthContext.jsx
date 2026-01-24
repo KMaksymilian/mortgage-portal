@@ -1,4 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
+import { getMe } from './api/user';
+
 
 const AuthContext = createContext(null);
 
@@ -17,13 +19,8 @@ export const AuthProvider = ({ children }) => {
     if (!user?.token) return;
 
     try {
-      const response = await fetch('/api/User/Me', {
-        headers: { Authorization: `Bearer ${user.token}` },
-      });
+      const data = await getMe(user.token);
 
-      if (!response.ok) return;
-
-      const data = await response.json();
       setUser((prev) => {
         if (!prev) return prev;
         const updated = { ...prev, hasBirthDate: data.hasBirthDate };
@@ -34,6 +31,7 @@ export const AuthProvider = ({ children }) => {
       console.error('Błąd odświeżania profilu', err);
     }
   };
+
 
   const login = (userData) => {
     setUser(userData);

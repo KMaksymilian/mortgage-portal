@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
+import { quoteOffer, acceptOffer } from './api/offers';
+
 
 function OfferSearchPage() {
   const { user } = useAuth();
@@ -46,23 +48,8 @@ function OfferSearchPage() {
         instalmentNumber: parseInt(formData.months)
       };
 
-      const response = await fetch('/api/Offer/Quote', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json', 
-          'Authorization': `Bearer ${user.token}` 
-        },
-        body: JSON.stringify(payload)
-      });
+      const data = await quoteOffer(user.token, payload);
 
-      if (!response.ok) {
-        // Obsługa błędów z backendu (np. "Problem z zewnętrznym api")
-        const errorText = await response.text();
-        throw new Error(errorText || `Błąd serwera: ${response.status}`);
-      }
-
-      const data = await response.json();
-      
       if (Array.isArray(data)) {
           setOffersList(data);
       } else if (data) {
@@ -87,24 +74,8 @@ function OfferSearchPage() {
     setError(null);
 
     try {
-        const response = await fetch('/api/Offer/accept', {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json', 
-                'Authorization': `Bearer ${user.token}` 
-            },
-            // Backend oczekuje [FromBody] int, więc wysyłamy samą liczbę jako JSON
-            body: JSON.stringify(internalId)
-        });
-
-        if (!response.ok) {
-            const errText = await response.text();
-            throw new Error(errText);
-        }
-
-        // Sukces - backend zwrócił 200 OK
+        await acceptOffer(user.token, internalId);
         setIsOfferAccepted(true);
-
     } catch (err) {
         alert(`Wystąpił błąd: ${err.message}`);
     } finally {
