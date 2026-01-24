@@ -334,6 +334,7 @@ public class OfferSummaryDto
     public int InternalId { get; set; }
     public decimal Amount { get; set; }
     public decimal MonthlyInstallment { get; set; }
+    public int Months;
     public string Currency { get; set; }
     public double Percentage { get; set; }
 }
