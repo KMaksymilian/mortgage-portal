@@ -57,7 +57,7 @@ public class ReminderWorkerTests {
             User = user,
             Quote = quote,
             Status = OfferStatus.Approved,
-            UpdateDate = DateTime.UtcNow.AddDays(-4),
+            UpdatedAt = DateTime.UtcNow.AddDays(-4),
             RequestedMoney = new MoneyModel { Amount = 1000, CurrencyCode = "PLN" }
         };
 
@@ -67,7 +67,7 @@ public class ReminderWorkerTests {
             User = user,
             Quote = quote,
             Status = OfferStatus.Approved,
-            UpdateDate = DateTime.UtcNow.AddDays(-1),
+            UpdatedAt = DateTime.UtcNow.AddDays(-1),
             RequestedMoney = new MoneyModel { Amount = 1000, CurrencyCode = "PLN" }
         };
 
@@ -113,7 +113,7 @@ public class ReminderWorkerTests {
             // Logika wyciągnięta z workera
             var forgottenOffers = await db.Offers
                 .Include(o => o.User)
-                .Where(o => o.Status == OfferStatus.Approved && o.UpdateDate < threshold)
+                .Where(o => o.Status == OfferStatus.Approved && o.UpdatedAt < threshold)
                 .ToListAsync();
 
             foreach (var offer in forgottenOffers) {

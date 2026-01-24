@@ -36,6 +36,7 @@ public class Program
         builder.Services.AddScoped<IOfferService, OfferService>();
         builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
         builder.Services.AddScoped<IJobTypeService, JobTypeService>();
+        builder.Services.AddScoped<IOfferService2, BankEmployeeOfferService>();
         builder.Services.AddScoped<IBank, OurBank>();
         builder.Services.AddScoped<IBank, LecturerBank>();
         builder.Services.AddScoped<BankAggregator>();

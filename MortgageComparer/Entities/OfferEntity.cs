@@ -7,36 +7,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace MortgageComparer.Entities;
 
 [Table("Offers")]
-public class OfferEntity : BasicEntity {
-    
-    public int UserId { get; set; }
-    [ForeignKey(nameof(UserId))]
-    public virtual UserEntity? User { get; set; }
-    public int QuoteId { get; set; } 
-    [ForeignKey(nameof(QuoteId))]
-    public virtual QuoteEntity Quote { get; set; }
+public class OfferEntity : BasicOfferEntity {
     
     public string BankName { get; set; }
 
     [MaxLength(50)]
     public string? ExternalBankOfferId { get; set; }
-
-    public OfferStatus Status { get; set; } = OfferStatus.Created;
-
-    [MaxLength(500)]
-    public string? StatusDescription { get; set; }
     public byte[]? ContractData { get; set; }
     public double? BankPercentage { get; set; }
     public required MoneyDto RequestedMoney { get; set; }
     public MoneyDto? MonthlyInstallment { get; set; }
     
-
-    [MaxLength(500)]
-    public string? DocumentLink { get; set; }
-    public DateTime? ContractLinkValidDate { get; set; }
-    public string? SingedBy { get; set; }
-    
-    public DateTime CreateDate { get; set; } = DateTime.UtcNow;
-    public DateTime? UpdateDate { get; set; } = DateTime.UtcNow;
 
 }
