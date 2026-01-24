@@ -17,11 +17,13 @@ public class ApiQuoteService : IApiQuoteService
     }
     public async Task<QuoteResponse> ApiPostQuote(QuoteRequest quoteRequest)
     {
+        int amountToPay = quoteRequest.Amount + 100;
         Quote quoteToSave = new Quote()
         {
             RequestedAmount = quoteRequest.Amount,
-            AmountToPay = quoteRequest.Amount + 100,
+            AmountToPay = amountToPay,
             Installments = quoteRequest.InstallmentsCount,
+            InstalmentRate = amountToPay / quoteRequest.InstallmentsCount,
             CreatedAt = DateTime.UtcNow
         };
 
@@ -33,7 +35,7 @@ public class ApiQuoteService : IApiQuoteService
             QuoteId = quoteToSave.Id,
             TotalAmountToPay = new Money()
             {
-                Amount = quoteToSave.AmountToPay,
+                Amount = quoteToSave.InstalmentRate,
                 Currency = quoteToSave.Currency
             }
         };

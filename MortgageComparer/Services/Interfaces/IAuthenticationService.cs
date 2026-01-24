@@ -4,5 +4,5 @@ namespace MortgageComparer.Services.Interfaces;
 
 public interface IAuthenticationService
 {
-    public Task<GoogleLoginRequestModelDto> GetGoogleTokenAsync(GoogleLoginRequestModel request);
+    public Task<LoginResponseDto> GetGoogleTokenAsync(GoogleLoginRequestModel request);
 }

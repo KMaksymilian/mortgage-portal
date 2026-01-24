@@ -27,7 +27,7 @@ public class OfferEntity : BasicEntity {
     public string? StatusDescription { get; set; }
     public byte[]? ContractData { get; set; }
     public double? BankPercentage { get; set; }
-    public required MoneyDto RequestedMoney { get; set; }
+    public MoneyDto? RequestedMoney { get; set; }
     public MoneyDto? MonthlyInstallment { get; set; }
     
 
