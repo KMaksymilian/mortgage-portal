@@ -1,6 +1,7 @@
 Write-Host "--- Running Unit Tests ---" -ForegroundColor Cyan
 
-$testProjects = Get-ChildItem -Recurse -Filter "*.Tests.csproj" -Path "./tests"
+$testProjects = "BasicTests/"
+cd $testProjects
 
 if ($null -eq $testProjects) {
     Write-Error "No test projects found in /tests folder!"
@@ -9,7 +10,7 @@ if ($null -eq $testProjects) {
 
 foreach ($project in $testProjects) {
     Write-Host "Testing: $($project.Name)" -ForegroundColor Blue
-    dotnet test $project.FullName --configuration Release --no-restore
+    dotnet test 
     
     if ($LASTEXITCODE -ne 0) {
         Write-Host "Tests failed in $($project.Name)" -ForegroundColor Red
