@@ -18,13 +18,18 @@ public class BankAggregator
     public async Task<IEnumerable<QuoteDto>> PostQuotesFromAllBanksAsync(QuoteDto request) =>
     (await Task.WhenAll(_bankProviders.Select(b => b.PostQuoteAsync(request)))).Where(res => res != null);
 
-    public async Task<IEnumerable<OfferDto>> PostOfferFromAllBanksAsync(IEnumerable<OfferDto> offers) {
-        var tasks = offers
-            .Select(offer => new { offer, provider = _bankProviders.FirstOrDefault(b => b.Name == offer.BankName) })
-            .Where(x => x.provider != null)
-            .Select(x => x.provider!.PostOfferAsync(x.offer));
+    public async Task<OfferDto> PostOfferFromSpecificBankAsync(OfferDto offer, string targetBankName) {
+        var provider = _bankProviders.FirstOrDefault(b => b.Name.Equals(targetBankName, StringComparison.OrdinalIgnoreCase));
 
-        return await Task.WhenAll(tasks);
+        if (provider == null) {
+            throw new ArgumentException($"Dostawca dla banku '{targetBankName}' nie  znaleziony.");
+        }
+
+        if (!offer.BankName.Equals(targetBankName, StringComparison.OrdinalIgnoreCase)) {
+            throw new ArgumentException("Nazwa banku w ofercie nie zgadza sie z docelowym bankiem.");
+        }
+
+        return await provider.PostOfferAsync(offer);
     }
 
     public async Task<OfferDto?> GetOfferByIdFromSpecificBankAsync(string bankName, int offerId) {

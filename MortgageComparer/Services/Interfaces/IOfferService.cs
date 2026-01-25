@@ -7,6 +7,6 @@ namespace MortgageComparer.Services.Interfaces {
         Task<List<OfferDto>> GetAllAsync();
         Task<OfferDto?> GetByIdAsync(int id);
         Task<bool> ExecuteActionAsync(int offerId, IOfferAction action);
-        Task<IEnumerable<OfferDto>> CreateAsync(OfferDto offerDto);
+        Task<OfferDto> CreateAsync(OfferDto offerDto);
     }
 }

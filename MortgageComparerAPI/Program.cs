@@ -4,7 +4,6 @@ using Microsoft.Extensions.Azure;
 using Microsoft.IdentityModel.Tokens;
 using MortgageComparer.Data;
 using MortgageComparerAPI.Services;
-using MortgageComparerAPI.Services.BackgroundLogic;
 using MortgageComparerAPI.Services.Interfaces;
 using MortgageComparerAPI.Workers;
 using SendGrid.Extensions.DependencyInjection;

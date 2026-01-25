@@ -1,9 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using MortgageComparer.Services.BackgroundLogic;
+using MortgageComparerAPI.Services.Interfaces;
 
-namespace MortgageComparer.Workers {
+
+namespace MortgageComparerAPI.Workers {
     public class CleanupWorker : BackgroundService {
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly ILogger<CleanupWorker> _logger;

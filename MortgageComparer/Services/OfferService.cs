@@ -36,20 +36,58 @@ public class OfferService : IOfferService
         _banks = banks;
     }
 
+   
 
-    public Task<List<OfferDto>> GetAllAsync() {
-        throw new NotImplementedException();
+    public async Task<List<OfferDto>> GetAllAsync() {
+        int userId = _userService.GetUserId() ?? throw new Exception("User not found or not authenticated");
+        var records = await _context.OfferToBanks.Where(ob => ob.UserId == userId).ToListAsync();
+        List<OfferDto> offers = new List<OfferDto>();
+        foreach (var record in records) {
+            var offer = await _banks.GetOfferByIdFromSpecificBankAsync(record.BankCode, record.OfferId);
+            if (offer != null) {
+                offers.Add(offer);
+            }
+        }
+        return offers;
+
     }
 
-    public Task<OfferDto?> GetByIdAsync(int id) {
-        throw new NotImplementedException();
+    public async Task<OfferDto?> GetByIdAsync(int id) {
+        int userId = _userService.GetUserId() ?? throw new Exception("User not found");
+
+        var record = await _context.OfferToBanks
+            .FirstOrDefaultAsync(ob => ob.OfferId == id && ob.UserId == userId);
+
+        if (record == null) { return null; } 
+
+        return await _banks.GetOfferByIdFromSpecificBankAsync(record.BankCode, record.OfferId);
     }
 
     public Task<bool> ExecuteActionAsync(int offerId, IOfferAction action) {
         throw new NotImplementedException();
     }
 
-    Task<IEnumerable<OfferDto>> IOfferService.CreateAsync(OfferDto offerDto) {
-        throw new NotImplementedException();
+    public async Task<OfferDto> CreateAsync(OfferDto offerDto) {
+
+        int userId = _userService.GetUserId() ?? throw new Exception("User not found");
+
+        var bankResponse = await _banks.PostOfferFromSpecificBankAsync(offerDto, offerDto.BankName);
+
+        if (bankResponse == null) {
+            throw new Exception("No bank responded");
+        }
+
+        var offerToBank = new OfferToBankEntity {
+            UserId = userId,
+            BankCode = bankResponse.BankName,
+            OfferId = bankResponse.OfferId,
+            StatusDescription = $"Oferta z dnia {DateTime.Now:g}",
+            CreatedAt = DateTime.UtcNow
+        };
+
+        _context.OfferToBanks.Add(offerToBank);
+        await _context.SaveChangesAsync();
+
+        return bankResponse;
     }
 }

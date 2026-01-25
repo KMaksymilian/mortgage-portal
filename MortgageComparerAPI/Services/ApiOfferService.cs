@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MortgageComparer.Data;
 using MortgageComparer.Entities;
+using MortgageComparer.Models;
 using MortgageComparer.Services;
 using MortgageComparerAPI.Models;
-using Money = MortgageComparer.Models.Money;
 
 namespace MortgageComparerAPI.Services;
 
@@ -37,23 +37,18 @@ public class ApiOfferService : IApiOfferService
         {
             throw new BadHttpRequestException("Offer already exists");
         }
-        // To do: Poprawić zmockowane dane
-        ApiOfferEntity offer = new ApiOfferEntity()
+        OfferEntity offer = new OfferEntity()
         {
             QuoteId = quoteId,
             UserId = userId,
-            Percentage = 15f,
-            MonthlyInstallementAmount = (int)Math.Round((double)quote.AmountToPay * 1.1) / quote.Installments,
-            MonthlyInstallementCurrency = quote.Currency,
+            Percentage = 10f,
 
-            RequestedAmount = quote.RequestedAmount,
-            RequestedCurrency =  quote.Currency,
-            RequestedPeriodInMonths = quote.Installments,
+            Quote = quote,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
-            DocumentKey = "1234"
+            
         };
-        await _context.OurApiOffers.AddAsync(offer);
+        await _context.Offers.AddAsync(offer);
         user.UpdateUser(request);
         await _context.SaveChangesAsync();
         return new PostOfferResponse()
@@ -61,16 +56,16 @@ public class ApiOfferService : IApiOfferService
             OfferId = offer.Id,
             InstallmentAmount = new Money()
             {
-                Amount = offer.MonthlyInstallementAmount,
-                Currency = offer.MonthlyInstallementCurrency
+                Amount = quote.InstalmentAmount.Amount,
+                Currency = quote.InstalmentAmount.CurrencyCode
             },
             CreateDate = offer.CreatedAt
         };
     }
 
-    public async Task<ApiOfferEntity> GetOfferByIdAsync(int offerId)
+    public async Task<OfferEntity> GetOfferByIdAsync(int offerId)
     {
-        var offer = await _context.OurApiOffers.FirstOrDefaultAsync(o => o.Id == offerId);
+        var offer = await _context.Offers.FirstOrDefaultAsync(o => o.Id == offerId);
         if (offer == null)
         {
             throw new BadHttpRequestException("Offer not found");
@@ -82,47 +77,12 @@ public class ApiOfferService : IApiOfferService
     [ProducesResponseType(typeof(FileResult), 200)]
     public async Task<CustomFile> GetContractAsync(int offerId, string key)
     {
-        var offer = await _context.OurApiOffers
-            .Include(o => o.User)
-            .FirstOrDefaultAsync(o => o.Id == offerId);
-        if (offer == null)
-        {
-            throw new BadHttpRequestException("Offer not found");
-        }
-
-        if (!(offer.DocumentKey == key))
-        {
-            throw new BadHttpRequestException("Invalid Document Key");
-        }
-        
-        var templatePath = Path.Combine(Directory.GetCurrentDirectory(), "ContractTemplate.txt");
-        string content = System.IO.File.ReadAllText(templatePath);
-        content = content.Replace("{{DaneDoUmowy}}", offer.User.FirstName  + " " + offer.User.LastName);
-        var contract = Encoding.UTF8.GetBytes(content);
-        offer.Contract = contract;
-        await  _context.SaveChangesAsync();
-        return new CustomFile()
-        {
-            FileContents = contract,
-            FileName = $"Umowa_{offerId}.txt",
-            ContentType = "text/plain"
-        };
+       throw new NotImplementedException();
     }
 
     public async Task PostContractAsync(IFormFile file, int offerId, string key)
     {
-        var offer = await _context.OurApiOffers.FirstOrDefaultAsync(o => o.Id == offerId);
-        using (var memoryStream = new MemoryStream())
-        {
-            await file.CopyToAsync(memoryStream);
-            offer.SignedContract = memoryStream.ToArray();
-            await _context.SaveChangesAsync();
-        }
+       throw new NotImplementedException();
     }
 
-    /*
-    public Task CompleteProccess(GetOfferRequest request)
-    {
-        
-    }*/
 }

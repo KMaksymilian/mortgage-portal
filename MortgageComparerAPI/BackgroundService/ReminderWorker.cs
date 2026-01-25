@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.DependencyInjection;
+﻿
 using Microsoft.EntityFrameworkCore;
 using MortgageComparer.StatesMachine;
 using MortgageComparer.Services.Interfaces;
 using MortgageComparer.Data;
+using MortgageComparerAPI.Services.Interfaces;
 
 public class ReminderWorker : BackgroundService {
     private readonly IServiceScopeFactory _scopeFactory;

@@ -16,6 +16,10 @@ namespace MortgageComparer.Services {
             _context = context;
         }
 
+        public Task<OfferDto> CreateAsync(OfferDto offerDto) {
+            throw new NotImplementedException();
+        }
+
         public async Task<bool> ExecuteActionAsync(int offerId, IOfferAction action) {
             if (await GetEntityByIdAsync(offerId) is not { } offerEntity) {
                 return false;
@@ -27,14 +31,10 @@ namespace MortgageComparer.Services {
         }
 
         public async Task<List<OfferDto>> GetAllAsync() =>  
-            await _context.Offers.Select(o => new OfferDto(o)).ToListAsync();
+            await _context.Offers.Select(o =>  Mapper.ToDto(o)).ToListAsync();
 
         public async Task<OfferDto?> GetByIdAsync(int id) =>
-            (await GetEntityByIdAsync(id)) is { } e ? new OfferDto(e) : null;
-
-        Task<IEnumerable<OfferDto>> IOfferService.CreateAsync(OfferDto offerDto) {
-            throw new NotImplementedException();
-        }
+            (await GetEntityByIdAsync(id)) is { } e ?  Mapper.ToDto(e) : null;
 
         private async Task<OfferEntity?> GetEntityByIdAsync(int id) =>  
             await _context.Offers.FirstOrDefaultAsync(o => o.Id == id);

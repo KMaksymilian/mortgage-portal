@@ -1,4 +1,4 @@
-﻿namespace MortgageComparer.Services.Interfaces {
+﻿namespace MortgageComparerAPI.Services.Interfaces {
     public interface IEmailTemplateService {
         // 1. Potwierdzenie złożenia wniosku (Dla Użytkownika)
         string GetSubmissionConfirmation(string userName, string bankName, decimal amount);

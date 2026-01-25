@@ -1,10 +1,9 @@
-using MortgageComparer.Entities;
-using MortgageComparer.Models;
+using MortgageComparer.DataTransferObjects;
 
 namespace MortgageComparer.Services.Interfaces;
 
 public interface IQuoteService
 {
-    public Task<IEnumerable<PostQuoteResponse>> PostQuoteAsync(PublicQuoteRequest quoteRequest);
-    public Task<OfferEntity> FinalizeQuoteAsync(int userId, FinalizeQuoteRequest request);
+    public Task<IEnumerable<QuoteDto>> PostQuoteAsync(QuoteDto quoteRequest);
+    public Task<QuoteDto?> GetQuoteById(int quoteId);
 }   

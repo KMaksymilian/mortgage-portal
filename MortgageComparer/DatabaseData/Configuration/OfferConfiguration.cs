@@ -20,8 +20,8 @@ namespace MortgageComparer.Data.Configurations {
                    .HasDatabaseName("IX_Offers_Status");
 
  
-            builder.OwnsOne(o => o.RequestedMoney);
-            builder.OwnsOne(o => o.MonthlyInstallment);
+            builder.OwnsOne(o => o.Quote);
+ 
 
 
             builder.Property(o => o.Status)

@@ -1,24 +1,14 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
+
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Azure;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using MortgageComparer.Data;
 using MortgageComparer.BankLogic;
 using MortgageComparer.BankLogic.Banks;
 using MortgageComparer.BankProviders;
-using MortgageComparer.BankLogic.Banks;
 using MortgageComparer.BankProviders.Banks;
 using MortgageComparer.Services;
-using MortgageComparer.Services.BackgroundLogic;
 using MortgageComparer.Services.Interfaces;
-using MortgageComparer.Workers;
-using MortgageComparer.Workers;
-using SendGrid.Extensions.DependencyInjection;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -46,7 +36,7 @@ public class Program
         builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnectionString")));
 
-        builder.Services.AddScoped<IOfferService2, BankEmployeeOfferService>();
+        builder.Services.AddScoped<IOfferService, BankEmployeeOfferService>();
         builder.Services.AddScoped<IBankService, OurBank>();
         builder.Services.AddScoped<IBankService, LecturerBank>();
         builder.Services.AddScoped<IQuoteService, QuoteService>();
@@ -94,21 +84,7 @@ public class Program
             });
         });
 
-        builder.Services.AddScoped<ICleanupService, CleanupService>();
-        builder.Services.AddHostedService<CleanupWorker>();
-
-        builder.Services.AddAzureClients(clientBuilder =>
-        {
-            clientBuilder.AddBlobServiceClient(builder.Configuration["AzureStorage:ConnectionString"]);
-        });
-        builder.Services.AddTransient<IFileStorageService, AzureBlobStorageService>();
-
-        builder.Services.AddSendGrid(options => {
-            options.ApiKey = builder.Configuration["SendGrid:ApiKey"];
-        });
-        builder.Services.AddTransient<IEmailService, SendGridEmailService>();
-        builder.Services.AddTransient<IEmailTemplateService, MockEmailTemplateService>();
-        builder.Services.AddHostedService<ReminderWorker>();
+       
 
         var app = builder.Build();
 

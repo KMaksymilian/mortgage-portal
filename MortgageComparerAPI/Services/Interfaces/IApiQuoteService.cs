@@ -7,6 +7,6 @@ namespace MortgageComparerAPI.Services;
 public interface IApiQuoteService
 {
     public Task<QuoteResponse> ApiPostQuote(QuoteRequest quoteRequest);
-    public Task<Quote> GetQuoteByIdAsync(int quoteId);
-    public Task<ApiOfferEntity?> GetOfferByQuoteIdAsync(int quoteId);
+    public Task<QuoteEntity?> GetQuoteByIdAsync(int quoteId);
+    public Task<OfferEntity?> GetOfferByQuoteIdAsync(int quoteId);
 }

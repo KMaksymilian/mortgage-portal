@@ -1,4 +1,4 @@
-﻿namespace MortgageComparer.Services.Interfaces {
+﻿namespace MortgageComparerAPI.Services.Interfaces {
     public interface IFileStorageService {
 
         Task<string> UploadAsync(Stream fileStream, string fileName, string contentType = "application/pdf");

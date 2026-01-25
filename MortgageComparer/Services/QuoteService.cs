@@ -1,6 +1,8 @@
+using Azure.Core;
 using Microsoft.EntityFrameworkCore;
 using MortgageComparer.BankLogic;
 using MortgageComparer.Data;
+using MortgageComparer.DataTransferObjects;
 using MortgageComparer.Entities;
 using MortgageComparer.Models;
 using MortgageComparer.Services.Interfaces;
@@ -19,101 +21,38 @@ public class QuoteService : IQuoteService
         _context = context;
     }
 
-    public async Task<IEnumerable<PostQuoteResponse>> PostQuoteAsync(PublicQuoteRequest quoteRequest)
-    {
-        decimal amountToPay = quoteRequest.Amount - quoteRequest.OwnContribution;
-
-        PostQuoteRequest request = new PostQuoteRequest
-        {
-            RequestedAmount = new MoneyModel(amountToPay, "PLN"),
-            InstalmentNumber = quoteRequest.Months
-        };
-        var bankResponses = await _banks.PostQuotesFromAllBanksAsync(request);
-        if (bankResponses == null)
-        {
+    public async Task<IEnumerable<QuoteDto>> PostQuoteAsync(QuoteDto quoteRequest) {
+        var bankResponses = await _banks.PostQuotesFromAllBanksAsync(quoteRequest);
+        if (bankResponses == null) {
             throw new Exception("No quotes found");
         }
-        var results = new List<PostQuoteResponse>();
-        foreach (var response in bankResponses)
-        {
-            QuoteEntity newQuote = new QuoteEntity()
-            {
-                BankName = response.BankName,
-                QuoteId = response.ExternalBankQuoteId,
-                InstalmentAmount = new MoneyModel(response.InstalmentAmount.Amount,
-                    response.InstalmentAmount.CurrencyCode),
-                ExternalQuoteId = response.ExternalBankQuoteId,
-                RequestedAmount = quoteRequest.Amount,
-                Months = quoteRequest.Months,
-                CreatedAt = DateTime.UtcNow,
+
+        foreach (var response in bankResponses) {
+            var quoteToBank = new QuoteToBankEntity {
+                QuoteId = quoteRequest.Id, 
+                BankCode = response.BankName, 
+                Description = $"Oferta wygenerowana automatycznie: {DateTime.Now:yyyy-MM-dd}",
+                CreatedAt = DateTime.UtcNow
+                
             };
-            _context.Quotes.Add(newQuote);
-            await _context.SaveChangesAsync();
-            
-            results.Add(new PostQuoteResponse 
-            {
-                InternalId = newQuote.Id,
-                BankName = newQuote.BankName,
-                InstalmentAmount = newQuote.InstalmentAmount,
-            });
+
+            _context.QuoteToBanks.Add(quoteToBank);
         }
 
-        return results;
+        await _context.SaveChangesAsync();
+
+        return bankResponses;
     }
 
-    public async Task<OfferEntity> FinalizeQuoteAsync(int userId, FinalizeQuoteRequest request)
-    {
-        var quote = await _context.Quotes.FindAsync(request.QuoteId);
+    public async Task<QuoteDto?> GetQuoteById(int recordId) {
+       
+        var quoteEntity = await _context.QuoteToBanks
+            .FirstOrDefaultAsync(q => q.Id == recordId);
 
-        if (quote == null)
-        {
-            throw new Exception("Oferta nie istnieje");
+        if (quoteEntity == null) {
+            return null;
         }
-        
-        
-        var user = await _context.Users
-            .Include(u => u.PersonalDocument) 
-            .Include(u => u.JobType)
-            .FirstOrDefaultAsync(u => u.Id == userId);
-        user.JobStartDate = request.JobStartDate.ToUniversalTime();
-        user.JobEndDate = request.JobEndDate.Value == null ? DateTime.UtcNow :  request.JobEndDate.Value.ToUniversalTime();
-        user.Income = (int)request.Earnings;
-        user.DateOfBirth = request.BirthDate.ToUniversalTime();
-        await _context.SaveChangesAsync();
-        
-    
-        var quoteResponseForAggregator = new PostQuoteResponse
-        {
-            BankName = quote.BankName,
-            ExternalBankQuoteId = quote.ExternalQuoteId.Value,
-        };
-        
-        var offerResponses = await _banks.PostOfferFromAllBanksAsync(
-            new List<PostQuoteResponse> { quoteResponseForAggregator }, 
-            user
-        );
-        var response = offerResponses.FirstOrDefault();
-        if (response == null)
-        {
-            throw new Exception("Bank nie zwrócił oferty.");
-        }
-        
-        var finalOffer = new OfferEntity 
-        {
-            QuoteId = quote.Id,
-            BankName = response.BankName,
-            UserId = userId,
-            RequestedMoney = new MoneyModel(quote.RequestedAmount, "PLN"),
-            ExternalBankOfferId = response.OfferId.ToString(),
-            MonthlyInstallment = response.InstalementAmount,
-            CreatedAt = response.CreateDate.ToUniversalTime(),
-            DocumentLink = response.DocumentLink,
-            BankPercentage = response.Percentage,
-            Status = OfferStatus.Approved
-        };
-        _context.Offers.Add(finalOffer);
-    
-        await _context.SaveChangesAsync();
-        return  finalOffer;
+
+        throw new NotImplementedException();
     }
 }

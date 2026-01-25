@@ -3,7 +3,7 @@ using MortgageComparer.Data;
 using MortgageComparer.Entities;
 using MortgageComparer.Models;
 using MortgageComparerAPI.Models;
-using Models_Money = MortgageComparer.Models.Money;
+
 
 namespace MortgageComparerAPI.Services;
 
@@ -18,12 +18,10 @@ public class ApiQuoteService : IApiQuoteService
     public async Task<QuoteResponse> ApiPostQuote(QuoteRequest quoteRequest)
     {
         int amountToPay = quoteRequest.Amount + 100;
-        Quote quoteToSave = new Quote()
+        QuoteEntity quoteToSave = new QuoteEntity()
         {
-            RequestedAmount = quoteRequest.Amount,
-            AmountToPay = amountToPay,
-            Installments = quoteRequest.InstallmentsCount,
-            InstalmentRate = amountToPay / quoteRequest.InstallmentsCount,
+            InstalmentAmount = new MoneyModel(amountToPay, quoteRequest.Currency),
+            RequestedAmount = new MoneyModel(quoteRequest.Amount, quoteRequest.Currency),
             CreatedAt = DateTime.UtcNow
         };
 
@@ -35,22 +33,22 @@ public class ApiQuoteService : IApiQuoteService
             QuoteId = quoteToSave.Id,
             TotalAmountToPay = new Money()
             {
-                Amount = quoteToSave.InstalmentRate,
-                Currency = quoteToSave.Currency
+                Amount = quoteToSave.InstalmentAmount.Amount,
+                Currency = quoteToSave.InstalmentAmount.CurrencyCode
             }
         };
         return quoteResponse;
     }
 
-    public async Task<Quote> GetQuoteByIdAsync(int quoteId)
+    public async Task<QuoteEntity?> GetQuoteByIdAsync(int quoteId)
     {
-        var res = await _context.OurApiQuotes.FirstOrDefaultAsync(q => quoteId == q.Id);
+        var res = await _context.Quotes.FirstOrDefaultAsync(q => quoteId == q.Id);
         return res;
     }
 
-    public async Task<ApiOfferEntity?> GetOfferByQuoteIdAsync(int quoteId)
+    public async Task<OfferEntity?> GetOfferByQuoteIdAsync(int quoteId)
     {
-        var res = await _context.OurApiOffers.FirstOrDefaultAsync(o => o.QuoteId == quoteId);
+        var res = await _context.Offers.FirstOrDefaultAsync(o => o.QuoteId == quoteId);
         return res;
     }
 }

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MortgageComparer.DataTransferObjects;
 using MortgageComparer.Entities;
 using MortgageComparer.Models;
 using MortgageComparer.Services.Interfaces;
@@ -18,17 +19,9 @@ public class QuoteController : ControllerBase
         _userService = userService;
     }
     [HttpPost("PublicQuote")]
-    public async Task<IActionResult> PostQuoteAsync([FromBody] PublicQuoteRequest quoteRequest)
+    public async Task<IActionResult> PostQuoteAsync([FromBody] QuoteDto quoteRequest)
     {
         var res = await _quoteService.PostQuoteAsync(quoteRequest);
         return Ok(res);
-    }
-    [HttpPost("Finalize")]
-    [Authorize]
-    public async Task<IActionResult> FinalizeQuoteAsync([FromBody] FinalizeQuoteRequest request)
-    {
-        var userId = _userService.GetUserId();
-        var offer = await _quoteService.FinalizeQuoteAsync(userId.Value, request);
-        return Ok(offer);
     }
 }

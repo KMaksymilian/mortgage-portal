@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MortgageComparer.Data;
+using MortgageComparer.DataTransferObjects;
 using MortgageComparer.Models;
 using MortgageComparer.Services.Interfaces;
 
@@ -7,6 +8,7 @@ namespace MortgageComparer.Services;
 
 public class JobTypeService : IJobTypeService
 {
+    
     private readonly IUserService _userService;
     private AppDbContext  _context;
 
@@ -45,14 +47,21 @@ public class JobTypeService : IJobTypeService
             LastName = user.LastName,
             Email = user.Email,
             BirthDate = user.DateOfBirth,
-            Job = new DocumentDto(){
+            Job = new DocumentDto2(){
                 Name = user.JobType?.Name,
                 Description = user.JobType?.Description
             },
-            Document = new DocumentDto(){
+            Document = new DocumentDto2(){
                 Name = user.PersonalDocument?.Name,
                 Description = user.PersonalDocument?.Description
             }
         };
     }
+
+    public class DocumentDto2 {
+        public string? Name { get; set; }
+        public string? Description { get; set; }
+
+    }
 }
+

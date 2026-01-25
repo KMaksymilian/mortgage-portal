@@ -18,4 +18,5 @@ public class AppDbContext : DbContext
     public DbSet<QuoteEntity> Quotes { get; set; }
     public DbSet<ApiUserEntity> OurApiUsers { get; set; }
     public DbSet<QuoteToBankEntity> QuoteToBanks { get; set; }
+    public DbSet<OfferToBankEntity> OfferToBanks { get; set; }
 }

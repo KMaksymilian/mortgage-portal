@@ -2,11 +2,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MortgageComparer.BankLogic;
-using MortgageComparer.DataTransferObjects;
 using MortgageComparer.Data;
+using MortgageComparer.DataTransferObjects;
 using MortgageComparer.Models;
 using MortgageComparer.Services;
 using MortgageComparer.Services.Interfaces;
+using MortgageComparer.StateMachine;
 using MortgageComparer.StatesMachine;
 
 namespace MortgageComparer.Controllers;
@@ -32,7 +33,7 @@ public class OfferController : ControllerBase
         List<OfferDto> offers;
         try
         {
-            offers = await _offerService.OffersFromDatabaseAsync();
+            offers = await _offerService.GetAllAsync();
             return Ok(offers);
         }
         catch (Exception ex)
@@ -42,71 +43,36 @@ public class OfferController : ControllerBase
     }
 
     [Authorize]
-    [HttpPost("Quote")]
-    public async Task<IActionResult> PostOfferAsync([FromBody] PostQuoteRequest offer)
+    [HttpPost("Create")]
+    public async Task<IActionResult> PostOfferAsync([FromBody] OfferDto offer)
     {
         if (offer == null)
         {
             return BadRequest("Invalid data");
         }
         
-        List<OfferSummaryDto> newOffers = await _offerService.ProcessLoanApplicationAsync(offer);
+        OfferDto newOffers = await _offerService.CreateAsync(offer);
         
         return Ok(newOffers);
     }
-    
-    [HttpPost("accept")]
-    public async Task<IActionResult> AcceptOfferAsync([FromBody] int quoteId)
-    {
-        ContractDataDto contractData;
-        try
-        {
-            contractData = await _offerService.AcceptOfferAsync(quoteId);
-            return File(contractData.Content, contractData.FileName, contractData.ContentType);
+
+    [HttpPost("{id}/execute")]
+    public async Task<IActionResult> ExecuteActionAsync(int id, [FromBody] ActionRequest request) {
+        try {
+            var action = OfferActionFactory.Create(request);
+
+            return await _offerService.ExecuteActionAsync(id, action)
+                ? Ok(new { Message = $"Action {request.Action} executed successfully." })
+                : NotFound($"Offer with ID {id} not found.");
         }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
+        catch (Exception ex) when (ex is ArgumentException or InvalidOperationException) {
+            return BadRequest(new { Error = ex.Message });
+        }
+        catch (Exception) {
+            return StatusCode(500, "An unexpected error occurred.");
         }
     }
-    [HttpPut("{offerId}/Reject")]
-    [Authorize]
-    public async Task<IActionResult> RejectOfferAsync(int offerId)
-    {
-        var userId = _userService.GetUserId();
-    
-        var offer = await _context.Offers.FindAsync(offerId);
 
-        if (offer == null)
-        {
-            return NotFound();
-        }
-        
-        offer.Status = OfferStatus.Rejected; 
-
-        await _context.SaveChangesAsync();
-        return Ok();
-    }
-    
-    [HttpPut("{offerId}/Accept")]
-    [Authorize]
-    public async Task<IActionResult> AcceptOfferIdAsync(int offerId)
-    {
-        var userId = _userService.GetUserId();
-    
-        var offer = await _context.Offers.FindAsync(offerId);
-
-        if (offer == null)
-        {
-            return NotFound();
-        }
-        
-        offer.Status = OfferStatus.Approved; 
-
-        await _context.SaveChangesAsync();
-        return Ok();
-    }
-    
 }
 
 
