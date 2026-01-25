@@ -22,45 +22,34 @@ jobs:
           dotnet-version: '9.x'
 
       # 1. Publikujemy pierwszy projekt (np. API) do głównego folderu
-      - name: Publish MortgageComparerAPI
+      - name: Build and Publish MortgageComparer (Project 1)
         run: |
-          dotnet publish MortgageComparerAPI/MortgageComparerAPI.csproj `
-            -c ${{ env.BUILD_CONFIGURATION }} `
-            -o ${{ env.OUTPUT_PATH }}
+          # Budujemy i publikujemy pierwszy projekt do osobnego folderu temp
+          dotnet publish MortgageComparer/MortgageComparer.csproj -c Release -o "${{env.DOTNET_ROOT}}/myapp/backend1"
 
-      # 2. Publikujemy drugi projekt do podfolderu (opcjonalnie)
-      # Jeśli chcesz, by oba były w jednym miejscu, .NET może znów rzucić błędem kolizji.
-      # Bezpieczniej jest dać go do podfolderu 'sub-app'
-      - name: Publish MortgageComparer (Sub-App)
+      - name: Build and Publish MortgageComparerAPI (Project 2)
         run: |
-          dotnet publish MortgageComparer/MortgageComparer.csproj `
-            -c ${{ env.BUILD_CONFIGURATION }} `
-            -o "${{ env.OUTPUT_PATH }}/sub-app"
+          # Budujemy i publikujemy drugi projekt do osobnego folderu temp
+          dotnet publish MortgageComparerAPI/MortgageComparerAPI.csproj -c Release -o "${{env.DOTNET_ROOT}}/myapp/backend2"
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      # 3. Budujemy Frontend
-      - name: Install and Build React
+      - name: Install and Build React (Vite)
         working-directory: ./Frontend/frontend
         run: |
           npm install
           npm run build
 
-      # 4. Kopiujemy Frontend do wwwroot GŁÓWNEGO projektu (API)
-      - name: Copy React build to API wwwroot
+      - name: Finalize Artifact Structure
         run: |
-          $wwwroot = "${{ env.OUTPUT_PATH }}/wwwroot"
-          if (!(Test-Path $wwwroot)) { New-Item -ItemType Directory -Force -Path $wwwroot }
-          Copy-Item -Path "./Frontend/frontend/dist/*" -Destination $wwwroot -Recurse -Force
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: full-app-package
-          path: ${{ env.OUTPUT_PATH }}
+          # Tworzymy folder wwwroot wewnątrz GŁÓWNEGO projektu (zakładam, że to API)
+          New-Item -ItemType Directory -Force -Path "${{env.DOTNET_ROOT}}/myapp/backend2/wwwroot"
+          
+          # Kopiujemy build Reacta do wwwroot drugiego projektu
+          Copy-Item -Path "./Frontend/frontend/dist/*" -Destination "${{env.DOTNET_ROOT}}/myapp/backend2/wwwroot" -Recurse -Force
 
   deploy:
     runs-on: windows-latest
@@ -84,4 +73,5 @@ jobs:
         with:
           app-name: 'loanHub-wb'
           package: ./publish
+
 
