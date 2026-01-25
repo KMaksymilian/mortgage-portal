@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { request } from './api/http';
+
 
 function PublicCalculator() {
   const navigate = useNavigate();
@@ -24,37 +26,43 @@ function PublicCalculator() {
     setResults(null);
     setError(null);
 
+    const requestedAmountVal =
+      Number(formData.amount) - (Number(formData.ownContribution) || 0);
+
     const payload = {
-        Amount: parseFloat(formData.amount),
-        Months: parseInt(formData.months),
-        OwnContribution: parseFloat(formData.ownContribution) || 0
+      bankName: '',
+      id: 0,
+      requestedAmount: { amount: requestedAmountVal, currencyCode: 'PLN' },
+      installmentAmount: { amount: 0, currencyCode: 'PLN' },
+      instalmentNumber: Number(formData.months),
+      createdDate: new Date().toISOString(),
     };
 
     try {
-        const response = await fetch('/api/Quote/PublicQuote', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
+        const data = await request('/api/Quote/PublicQuote', {
+          method: 'POST',
+          body: payload,
         });
+        // jeśli backend zwróci { quoteId, offers }
+        const offersFromWrapper = data?.offers ?? data?.Offers;
 
-        if (!response.ok) {
-            const errText = await response.text();
-            throw new Error(errText || "Błąd obliczeń");
+        // jeśli backend zwróci bezpośrednio listę
+        const offers = Array.isArray(data)
+          ? data
+          : Array.isArray(offersFromWrapper)
+            ? offersFromWrapper
+            : data
+              ? [data]
+              : [];
+
+        if (data?.quoteId) {
+          localStorage.setItem('currentQuoteId', data.quoteId);
         }
-        const data = await response.json();
-        if (data.quoteId) {
-            localStorage.setItem('currentQuoteId', data.quoteId); // Zapisujemy ID sesji wyszukiwania
-            setResults(data.offers);
-        }
-        
-        // ZMIANA: Zapisujemy całą tablicę, a nie tylko pierwszy element
-        if (Array.isArray(data) && data.length > 0) {
-            setResults(data);
-        } else if (data && !Array.isArray(data)) {
-            // Jeśli backend zwróciłby pojedynczy obiekt zamiast listy
-            setResults([data]);
+
+        if (offers.length === 0) {
+          setError('Brak ofert dla podanych parametrów.');
         } else {
-            setError("Brak ofert dla podanych parametrów.");
+          setResults(offers);
         }
 
     } catch (err) {
@@ -105,23 +113,9 @@ function PublicCalculator() {
         </div>
 
         <div style={{ display: 'flex', alignItems: 'flex-end' }}>
-             <button 
-                className="btn"
-                onClick={() => {
-                    // Zapisujemy ID zapytania (które przyszło z backendu w głównym obiekcie response)
-                    // Oraz nazwę banku z konkretnego kafelka
-                    const selectionData = {
-                        quoteId: localStorage.getItem('currentQuoteId'), // Musisz to zapisać przy pobieraniu danych!
-                        selectedBankName: offer.bankName 
-                    };
-                    
-                    localStorage.setItem('pendingSelection', JSON.stringify(selectionData));
-                    
-                    navigate('/login');
-                }}
-            >
-                Wybierz ofertę >
-            </button>
+          <button className="btn" type="submit" disabled={isLoading}>
+            {isLoading ? 'Obliczanie...' : 'Oblicz'}
+          </button>
         </div>
       </form>
 
@@ -132,10 +126,21 @@ function PublicCalculator() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
            {results.map((offer, index) => {
                // Obsługa wielkości liter (zabezpieczenie)
-               const installment = offer.monthlyInstallment ?? offer.MonthlyInstallment ?? offer.instalmentAmount?.amount ?? 0;
-               const amount = offer.amount ?? offer.Amount ?? offer.requestedAmount?.amount ?? 0;
-               const currency = offer.currency || offer.Currency || 'PLN';
-               const bankName = offer.bankName || offer.BankName || `Bank #${index + 1}`;
+              const installmentRaw =
+                offer.installmentAmount?.amount ??
+                offer.instalmentAmount?.amount ??
+                offer.monthlyInstallment ??
+                offer.MonthlyInstallment ??
+                0;
+              const installment = Number(installmentRaw) || 0;
+              const amount = offer.amount ?? offer.Amount ?? offer.requestedAmount?.amount ?? 0;
+              const currency =
+                offer.installmentAmount?.currencyCode ??
+                offer.requestedAmount?.currencyCode ??
+                offer.currencyCode ??
+                offer.currency ??
+                'PLN';
+              const bankName = offer.bankName || offer.BankName || `Bank #${index + 1}`;
 
                return (
                 <div key={index} style={{ 
@@ -151,7 +156,7 @@ function PublicCalculator() {
                     <div style={{ textAlign: 'center' }}>
                         <span style={{ color: 'var(--muted)', fontSize: '0.8em', textTransform: 'uppercase' }}>Szacunkowa Rata</span>
                         <div style={{ fontSize: '1.8em', color: 'var(--brand2)', fontWeight: 'bold' }}>
-                            {installment?.toFixed(2)} <span style={{fontSize: '0.5em'}}>{currency}</span>
+                            {installment.toFixed(2)} <span style={{fontSize: '0.5em'}}>{currency}</span>
                         </div>
                     </div>
 
@@ -159,9 +164,18 @@ function PublicCalculator() {
                     <div>
                     <button 
                         onClick={() => {
-                            // Zapisujemy ID konkretnego wiersza z tabeli Quotes
-                            localStorage.setItem('selectedQuoteId', offer.internalId);
-                            navigate('/login');
+                          const offerId = offer.internalId ?? offer.id ?? offer.offerId ?? null;
+
+                          localStorage.setItem(
+                            'pendingSelection',
+                            JSON.stringify({
+                              quoteId: localStorage.getItem('currentQuoteId') ?? null,
+                              offerId,
+                              bankName,
+                            })
+                          );
+
+                          navigate('/login');
                         }}
                     >
                         Wybierz >

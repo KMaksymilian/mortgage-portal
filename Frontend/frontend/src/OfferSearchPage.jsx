@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { quoteOffer, acceptOffer } from './api/offers';
+import { acceptOffer } from './api/offers';
+import { request } from './api/http';
+
 
 
 function OfferSearchPage() {
@@ -17,10 +19,6 @@ function OfferSearchPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // Przekierowanie, jeśli użytkownik nie jest zalogowany
-  useEffect(() => {
-    if (!user) navigate('/login');
-  }, [user, navigate]);
 
   // Obsługa inputów formularza
   const handleChange = (e) => {
@@ -41,14 +39,18 @@ function OfferSearchPage() {
       const requestedAmountVal = parseFloat(formData.amount) - (parseFloat(formData.ownContribution) || 0);
 
       const payload = {
-        requestedAmount: {
-          amount: requestedAmountVal,
-          currencyCode: "PLN"
-        },
-        instalmentNumber: parseInt(formData.months)
+        bankName: "",        // QuoteDto ma to pole, może być puste
+        id: 0,               // QuoteDto ma Id
+        requestedAmount: { amount: requestedAmountVal, currencyCode: "PLN" },
+        installmentAmount: { amount: 0, currencyCode: "PLN" }, // QuoteDto ma InstallmentAmount
+        instalmentNumber: parseInt(formData.months, 10),
+        createdDate: new Date().toISOString(),
       };
 
-      const data = await quoteOffer(user.token, payload);
+      const data = await request('/api/Quote/PublicQuote', {
+        method: 'POST',
+        body: payload,
+      });
 
       if (Array.isArray(data)) {
           setOffersList(data);
@@ -69,6 +71,13 @@ function OfferSearchPage() {
 
   // --- 2. AKCEPTACJA OFERTY ---
   const handleSelectOffer = async (internalId) => {
+    
+    if (!user) {
+      alert("Zaloguj się, aby zaakceptować ofertę.");
+      navigate('/login');
+      return;
+    }
+
     if (!window.confirm("Czy na pewno chcesz zaakceptować tę ofertę?")) return;
     setIsProcessing(true);
     setError(null);
@@ -176,17 +185,37 @@ function OfferSearchPage() {
           {offersList.map((offer, index) => {
               
               
-              const monthlyInstallment = offer.monthlyInstallment || 0;
-              const loanAmount = offer.amount || 0;
-              const currency = offer.currency || 'PLN';
-              const percentage = offer.percentage ? `${offer.percentage.toFixed(2)}%` : '---';
+              const monthlyInstallment =
+                offer.installmentAmount?.amount ??
+                offer.monthlyInstallment ??
+                offer.monthlyInstallment?.amount ??
+                0;
+
+              const loanAmount =
+                offer.requestedAmount?.amount ??
+                offer.loanAmount ??
+                offer.amount ??
+                0;
+
+              const currency =
+                offer.installmentAmount?.currencyCode ??
+                offer.requestedAmount?.currencyCode ??
+                offer.currencyCode ??
+                offer.currency ??
+                'PLN';
+
+              const percentageRaw = offer.percentage ?? offer.interestRate ?? offer.apr;
+              const percentage = typeof percentageRaw === 'number' ? `${percentageRaw.toFixed(2)}%` : '---';
+
+              const offerId = offer.internalId ?? offer.id ?? offer.offerId ?? index;
+              const bankName = offer.bankName ?? offer.BankName ?? 'Bank';
 
               // Obliczenie sumy opłat (tylko do wyświetlenia szacunkowo)
               const months = parseInt(formData.months) || 1;
               const totalCost = (monthlyInstallment * months).toFixed(2);
 
               return (
-                <div key={offer.internalId || index} style={{ 
+                <div key={offerId} style={{ 
                     backgroundColor: '#1e1e1e', color: '#ffffff', 
                     border: '1px solid #333', borderRadius: '12px', padding: '30px',
                     display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '25px',
@@ -196,7 +225,7 @@ function OfferSearchPage() {
                     {/* Sekcja 1: Szczegóły finansowe */}
                     <div style={{ flex: '2 1 300px' }}>
                         <div style={{fontSize: '0.85em', color: '#888', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '1px'}}>
-                            Oferta wygenerowana (ID: {offer.internalId})
+                            Oferta wygenerowana — {bankName} (ID: {offerId})
                         </div>
                         
                         <div style={{ display: 'flex', gap: '40px', flexWrap: 'wrap' }}>
@@ -236,8 +265,9 @@ function OfferSearchPage() {
                     {/* Sekcja 3: Przycisk Akcji */}
                     <div style={{ flexShrink: 0 }}>
                         <button 
-                            onClick={() => handleSelectOffer(offer.internalId)}
-                            disabled={isProcessing}
+                            onClick={() => handleSelectOffer(offer.internalId ?? offer.id ?? offer.offerId)}
+                            disabled={isProcessing || !user}
+                            title={!user ? 'Zaloguj się, aby zaakceptować ofertę' : ''}
                             style={{ 
                                 backgroundColor: isProcessing ? '#888' : '#fff', 
                                 color: '#000', 
@@ -253,7 +283,7 @@ function OfferSearchPage() {
                             onMouseOver={(e) => !isProcessing && (e.target.style.transform = 'scale(1.05)')}
                             onMouseOut={(e) => !isProcessing && (e.target.style.transform = 'scale(1)')}
                         >
-                            {isProcessing ? 'Przetwarzanie...' : 'Akceptuj ofertę >'}
+                            {!user ? 'Zaloguj się, aby zaakceptować' : (isProcessing ? 'Przetwarzanie...' : 'Akceptuj ofertę >')}
                         </button>
                     </div>
 
