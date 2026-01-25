@@ -1,9 +1,9 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.Extensions.Options; 
-using MortgageComparer.Services.Interfaces;
+using MortgageComparerAPI.Services.Interfaces;
 
-namespace MortgageComparer.Services {
+namespace MortgageComparerAPI.Services {
 
     public class AzureStorageSettings {
         public string ContainerName { get; set; } = string.Empty;

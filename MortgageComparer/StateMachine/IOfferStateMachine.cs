@@ -21,9 +21,9 @@ namespace MortgageComparer.StatesMachine {
     }
 
     public class OfferStateMachine : IOfferStateMachine {
-        private readonly BasicOfferEntity _offer;
+        private readonly OfferEntity _offer;
 
-        public OfferStateMachine(BasicOfferEntity offer) {
+        public OfferStateMachine(OfferEntity offer) {
             _offer = offer ?? throw new ArgumentNullException(nameof(offer));
         }
 

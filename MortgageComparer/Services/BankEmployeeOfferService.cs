@@ -8,7 +8,7 @@ using MortgageComparer.StatesMachine;
 using System;
 
 namespace MortgageComparer.Services {
-    public class BankEmployeeOfferService : IOfferService2 {
+    public class BankEmployeeOfferService : IOfferService {
 
         private readonly AppDbContext _context;
 
@@ -27,13 +27,17 @@ namespace MortgageComparer.Services {
         }
 
         public async Task<List<OfferDto>> GetAllAsync() =>  
-            await _context.OurApiOffers.Select(o => new OfferDto(o)).ToListAsync();
+            await _context.Offers.Select(o => new OfferDto(o)).ToListAsync();
 
         public async Task<OfferDto?> GetByIdAsync(int id) =>
             (await GetEntityByIdAsync(id)) is { } e ? new OfferDto(e) : null;
 
-        private async Task<ApiOfferEntity?> GetEntityByIdAsync(int id) =>  
-            await _context.OurApiOffers.FirstOrDefaultAsync(o => o.Id == id);
+        Task<IEnumerable<OfferDto>> IOfferService.CreateAsync(OfferDto offerDto) {
+            throw new NotImplementedException();
+        }
+
+        private async Task<OfferEntity?> GetEntityByIdAsync(int id) =>  
+            await _context.Offers.FirstOrDefaultAsync(o => o.Id == id);
 
 
     }

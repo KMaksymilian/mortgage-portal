@@ -1,7 +1,7 @@
-﻿using MortgageComparer.Services.Interfaces;
+﻿using MortgageComparerAPI.Services.Interfaces;
 using System.Globalization;
 
-namespace MortgageComparer.Services {
+namespace MortgageComparerAPI.Services {
     public class MockEmailTemplateService : IEmailTemplateService {
         // --- 1. Potwierdzenie złożenia wniosku ---
         public string GetSubmissionConfirmation(string userName, string bankName, decimal amount) {

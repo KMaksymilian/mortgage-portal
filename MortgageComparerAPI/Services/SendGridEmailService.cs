@@ -4,8 +4,9 @@ using SendGrid.Helpers.Mail;
 using MortgageComparer.Services.Interfaces;
 using System;
 using System.Threading.Tasks;
+using MortgageComparerAPI.Services.Interfaces;
 
-namespace MortgageComparer.Services {
+namespace MortgageComparerAPI.Services {
     public class SendGridEmailService : IEmailService {
         private readonly ISendGridClient _client; 
         private readonly IConfiguration _configuration;

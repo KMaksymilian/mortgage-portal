@@ -12,9 +12,9 @@ namespace MortgageComparer.Controllers {
     [ApiController]
     [Route("api/bank/offers")]
     public class BankEmployeeController : ControllerBase {
-        private readonly IOfferService2 _offerService;
+        private readonly IOfferService _offerService;
 
-        public BankEmployeeController(IOfferService2 offerService) {
+        public BankEmployeeController(IOfferService offerService) {
             _offerService = offerService;
         }
 

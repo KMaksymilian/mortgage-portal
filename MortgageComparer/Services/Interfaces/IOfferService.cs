@@ -1,12 +1,12 @@
-using MortgageComparer.DataTransferObjects;
-using MortgageComparer.Entities;
-using MortgageComparer.Models;
+﻿using MortgageComparer.DataTransferObjects;
+using MortgageComparer.StateMachine;
+using MortgageComparer.StatesMachine;
 
-namespace MortgageComparer.Services.Interfaces;
-
-public interface IOfferService
-{
-    public Task<List<OfferSummaryDto>> ProcessLoanApplicationAsync(PostQuoteRequest model);
-    public Task<List<OfferDto>> OffersFromDatabaseAsync();
-    public Task<ContractDataDto> AcceptOfferAsync(int  quoteId);
+namespace MortgageComparer.Services.Interfaces {
+    public interface IOfferService {
+        Task<List<OfferDto>> GetAllAsync();
+        Task<OfferDto?> GetByIdAsync(int id);
+        Task<bool> ExecuteActionAsync(int offerId, IOfferAction action);
+        Task<IEnumerable<OfferDto>> CreateAsync(OfferDto offerDto);
+    }
 }

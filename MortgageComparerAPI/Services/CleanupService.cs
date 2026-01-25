@@ -3,9 +3,10 @@ using Microsoft.Extensions.Logging;
 using MortgageComparer.Data;
 using MortgageComparer.Entities;
 using MortgageComparer.StatesMachine;
+using MortgageComparerAPI.Services.Interfaces;
 
 
-namespace MortgageComparer.Services.BackgroundLogic {
+namespace MortgageComparerAPI.Services {
     public class CleanupService : ICleanupService {
         private readonly AppDbContext _context;
         private readonly ILogger<CleanupService> _logger;

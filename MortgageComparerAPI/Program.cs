@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Azure;
 using Microsoft.IdentityModel.Tokens;
 using MortgageComparer.Data;
-using MortgageComparer.Services;
-using MortgageComparer.Services.BackgroundLogic;
-using MortgageComparer.Services.Interfaces;
-using MortgageComparer.Workers;
 using MortgageComparerAPI.Services;
+using MortgageComparerAPI.Services.BackgroundLogic;
+using MortgageComparerAPI.Services.Interfaces;
+using MortgageComparerAPI.Workers;
 using SendGrid.Extensions.DependencyInjection;
 using System.Text;
 
@@ -57,6 +57,25 @@ public class Program
         builder.Services.AddScoped<IApiAuthService, ApiAuthService>();
         builder.Services.AddScoped<IApiQuoteService, ApiQuoteService>();
         builder.Services.AddScoped<IApiOfferService, ApiOfferService>();
+
+
+        builder.Services.Configure<AzureStorageSettings>(builder.Configuration.GetSection("AzureStorage"));
+        builder.Services.AddAzureClients(clientBuilder => {
+            clientBuilder.AddBlobServiceClient(builder.Configuration["AzureStorage:ConnectionString"]);
+        });
+        builder.Services.AddTransient<IFileStorageService, AzureBlobStorageService>();
+
+        builder.Services.AddScoped<ICleanupService, CleanupService>();
+        builder.Services.AddHostedService<CleanupWorker>();
+
+
+
+        builder.Services.AddSendGrid(options => {
+            options.ApiKey = builder.Configuration["SendGrid:ApiKey"];
+        });
+        builder.Services.AddTransient<IEmailService, SendGridEmailService>();
+        builder.Services.AddTransient<IEmailTemplateService, MockEmailTemplateService>();
+        builder.Services.AddHostedService<ReminderWorker>();
 
         var app = builder.Build();
 
