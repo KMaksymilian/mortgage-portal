@@ -21,36 +21,44 @@ jobs:
         with:
           dotnet-version: '9.x'
 
-      # 1. Publikujemy pierwszy projekt (np. API) do głównego folderu
-      - name: Build and Publish MortgageComparer (Project 1)
+      # KROK 1: Publikacja PIERWSZEGO projektu do dedykowanego podfolderu
+      - name: Publish MortgageComparer
         run: |
-          # Budujemy i publikujemy pierwszy projekt do osobnego folderu temp
-          dotnet publish MortgageComparer/MortgageComparer.csproj -c Release -o "${{env.DOTNET_ROOT}}/myapp/backend1"
+          dotnet publish MortgageComparer/MortgageComparer.csproj `
+            -c Release `
+            -o "${{ github.workspace }}/out/backend1" `
+            --no-self-contained
 
-      - name: Build and Publish MortgageComparerAPI (Project 2)
+      # KROK 2: Publikacja DRUGIEGO projektu (API) do innego podfolderu
+      - name: Publish MortgageComparerAPI
         run: |
-          # Budujemy i publikujemy drugi projekt do osobnego folderu temp
-          dotnet publish MortgageComparerAPI/MortgageComparerAPI.csproj -c Release -o "${{env.DOTNET_ROOT}}/myapp/backend2"
+          dotnet publish MortgageComparerAPI/MortgageComparerAPI.csproj `
+            -c Release `
+            -o "${{ github.workspace }}/out/backend2" `
+            --no-self-contained
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install and Build React (Vite)
+      - name: Build Frontend (React)
         working-directory: ./Frontend/frontend
         run: |
           npm install
           npm run build
 
-      - name: Finalize Artifact Structure
+      # KROK 3: Połączenie wszystkiego w strukturę akceptowaną przez Azure
+      - name: Prepare Final Package
         run: |
-          # Tworzymy folder wwwroot wewnątrz GŁÓWNEGO projektu (zakładam, że to API)
-          New-Item -ItemType Directory -Force -Path "${{env.DOTNET_ROOT}}/myapp/backend2/wwwroot"
-          
-          # Kopiujemy build Reacta do wwwroot drugiego projektu
-          Copy-Item -Path "./Frontend/frontend/dist/*" -Destination "${{env.DOTNET_ROOT}}/myapp/backend2/wwwroot" -Recurse -Force
+          # Tworzymy folder wwwroot wewnątrz API (backend2)
+          if (!(Test-Path "${{ github.workspace }}/out/backend2/wwwroot")) {
+            New-Item -ItemType Directory -Force -Path "${{ github.workspace }}/out/backend2/wwwroot"
+          }
+          # Kopiujemy frontend do API
+          Copy-Item -Path "./Frontend/frontend/dist/*" -Destination "${{ github.workspace }}/out/backend2/wwwroot" -Recurse -Force
 
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: .net-app
+          # Wysyłamy folder 'out', który zawiera oba backendy w osobnych podfolderach
+          path: ${{ github.workspace }}/out
   deploy:
     runs-on: windows-latest
     needs: build
@@ -73,5 +81,6 @@ jobs:
         with:
           app-name: 'loanHub-wb'
           package: ./publish
+
 
 
