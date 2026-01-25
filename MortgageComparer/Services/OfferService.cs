@@ -35,46 +35,103 @@ public class OfferService : IOfferService
         _banks = banks;
     }
     
-    public async Task<List<OfferSummaryDto>> ProcessLoanApplicationAsync(PostQuoteRequest model)
+public async Task<List<OfferSummaryDto>> ProcessLoanApplicationAsync(PostQuoteRequest model)
+{
+    var userId = _userService.GetUserId();
+    if (userId == null)
     {
-        var userId = _userService.GetUserId();
-        if (userId == null)
-        {
-            throw new DataException("Użytkownik nie istnieje w bazie");
-        }
-        
-        var user = await GetUserByIdAsync(userId.Value);
-        if (user == null)
-        {
-            throw new Exception("Użytkownik niekompletny lub nie istnieje");
-        }
-        
-        var quotes = await _banks.PostQuotesFromAllBanksAsync(model);
-        
-        var offerEntities = await CreateOfferEntitiesAsync(quotes, user, model);
-        List<OfferSummaryDto> offerSummaries = new List<OfferSummaryDto>();
-
-        foreach (var offer in offerEntities)
-        {
-            offer.UserId = userId.Value;
-            _context.Offers.Add(offer);   
-        }
-        await _context.SaveChangesAsync();
-        foreach (var offer in offerEntities)
-        {
-            offerSummaries.Add(new OfferSummaryDto()
-            {
-                BankName = offer.BankName,
-                InternalId = offer.Id,
-                Amount = offer.RequestedMoney?.Amount ?? 0,
-                MonthlyInstallment = offer.MonthlyInstallment?.Amount ?? 0,
-                Currency = offer.MonthlyInstallment?.CurrencyCode ?? "PLN",
-                Percentage = offer.BankPercentage ?? 0
-            });
-        }
-
-        return offerSummaries;
+        throw new DataException("Użytkownik nie istnieje w bazie");
     }
+    
+    var user = await GetUserByIdAsync(userId.Value);
+    if (user == null)
+    {
+        throw new Exception("Użytkownik niekompletny lub nie istnieje");
+    }
+    var bankResponses = await _banks.PostQuotesFromAllBanksAsync(model);
+    
+    var quoteMap = new Dictionary<int, QuoteEntity>();
+    
+    foreach (var response in bankResponses)
+    {
+        int bankId = response.ExternalBankQuoteId; 
+
+        var newQuote = new QuoteEntity
+        {
+            BankName = response.BankName,
+            CreatedAt = DateTime.UtcNow,
+            
+            ExternalQuoteId = bankId,
+            
+            InstalmentAmount = response.InstalmentAmount,
+            RequestedAmount = model.RequestedAmount.Amount,
+            Months = model.InstalmentNumber
+        };
+
+        _context.Quotes.Add(newQuote);
+
+        if (!quoteMap.ContainsKey(bankId))
+        {
+            quoteMap[bankId] = newQuote;
+        }
+    }
+
+    await _context.SaveChangesAsync();
+
+    var offersToSave = new List<OfferEntity>();
+    var offerSummaries = new List<OfferSummaryDto>();
+
+    var rawOfferDetails = await _banks.PostOfferFromAllBanksAsync(bankResponses, user);
+
+    foreach (var detail in rawOfferDetails)
+    {
+        int linkKey = detail.QuoteId; 
+        
+        if (quoteMap.ContainsKey(linkKey))
+        {
+            var parentQuote = quoteMap[linkKey];
+
+            var newOffer = new OfferEntity
+            {
+                UserId = userId.Value,
+                QuoteId = parentQuote.Id,
+                
+                BankName = detail.BankName,
+                ExternalBankOfferId = detail.OfferId.ToString(),
+                RequestedMoney = new MoneyDto(model.RequestedAmount.Amount, "PLN"),
+                MonthlyInstallment = detail.InstalementAmount,
+                BankPercentage = detail.Percentage,
+                DocumentLink = detail.DocumentLink,
+                CreatedAt = DateTime.UtcNow,
+                Status = OfferStatus.Pending
+            };
+            
+            if (!string.IsNullOrEmpty(detail.DocumentLinkValidDate) && 
+                DateTime.TryParse(detail.DocumentLinkValidDate, out var validDate))
+            {
+                newOffer.ContractLinkValidDate = validDate.ToUniversalTime();
+            }
+
+            _context.Offers.Add(newOffer);
+            offersToSave.Add(newOffer);
+        }
+    }
+    await _context.SaveChangesAsync();
+    foreach (var offer in offersToSave)
+    {
+        offerSummaries.Add(new OfferSummaryDto
+        {
+            InternalId = offer.Id,
+            BankName = offer.BankName,
+            Amount = offer.RequestedMoney?.Amount ?? 0,
+            MonthlyInstallment = offer.MonthlyInstallment?.Amount ?? 0,
+            Currency = offer.MonthlyInstallment?.CurrencyCode ?? "PLN",
+            Percentage = offer.BankPercentage ?? 0
+        });
+    }
+
+    return offerSummaries;
+}
     private async Task<List<OfferEntity>> CreateOfferEntitiesAsync(IEnumerable<PostQuoteResponse> quotes, 
         UserEntity user, PostQuoteRequest originalRequest)
     {
@@ -92,7 +149,6 @@ public class OfferService : IOfferService
                 response.InstalementAmount?.CurrencyCode ?? "PLN");
             var entity = new OfferEntity
             {
-                QuoteId = response.QuoteId,
                 BankName = response.BankName,
                 ExternalBankOfferId = response.OfferId.ToString(),
                 MonthlyInstallment = response.InstalementAmount,
@@ -148,111 +204,10 @@ public class OfferService : IOfferService
     
     private async Task<IEnumerable<PostQuoteResponse>> QuoteExternalApiOfferAsync(PostQuoteRequest offer, int? userId)
     {
-        /*var client =  _httpClientFactory.CreateClient();
-        
-        client.DefaultRequestHeaders.Authorization =
-            new AuthenticationHeaderValue("Bearer", tokenDto);
-
-        var apiResponse = await client.PostAsJsonAsync("https://mini.loanbank.api.snet.com.pl/api/v1/Quote", offer);
-        if (!apiResponse.IsSuccessStatusCode)
-        {
-            throw new Exception("Problem z api");
-        }
-        var result = await apiResponse.Content.ReadAsStringAsync();
-        var jsonSettings = new JsonSerializerOptions()
-        {
-            PropertyNameCaseInsensitive = true
-        };
-        var response = JsonSerializer.Deserialize<PostQuoteResponse>(result, jsonSettings);*/
         var response = await _banks.PostQuotesFromAllBanksAsync(offer);
         return response;
     }
-
-    /*private async Task<List<OfferEntity>> OfferPostToExternalApiAsync(IEnumerable<PostQuoteResponse> quoteResponses, UserEntity user,
-                 PostQuoteRequest quoteRequest)
-    {
-        
-        /*var client = _httpClientFactory.CreateClient();
-        int quoteId = quoteResponse.QuoteId;
-
-        PersonalDataModel personalData = new PersonalDataModel
-        {
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            BirthDate = user.DateOfBirth?.ToString("yyyy-MM-dd")
-        };
-        // To do: Zmienić te zmockowane dane
-        PersonalDocumentModel governmentDocument = new PersonalDocumentModel
-        {
-            TypeId = user.PersonalDocument.Id,
-            Number = "fsfasf"
-        };
-        JobDetailsModel jobDetails = new JobDetailsModel
-        {
-            JobTypeId = (int)user.JobTypeId,
-            StartDate = user.JobStartDate,
-            EndDate = user.JobEndDate,
-            Income = new MoneyDto(user.Income, user.IncomeCurrCode)
-        };
-        PostOfferRequest data = new PostOfferRequest()
-        {
-            QuoteId = quoteId,
-            PersonalData = personalData,
-            GovernmentDocument = governmentDocument,
-            JobDetails = jobDetails
-        };
-        
-        client.DefaultRequestHeaders.Authorization =
-            new AuthenticationHeaderValue("Bearer", tokenDto);
-        
-        var options = new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-        };
-        var apiResponse = await client.PostAsJsonAsync("https://mini.loanbank.api.snet.com.pl/api/v1/Offer",
-            data, options);
-
-        var result = await apiResponse.Content.ReadAsStringAsync();
-        if (!apiResponse.IsSuccessStatusCode)
-        {
-            throw new HttpRequestException($"Bank rzucił błąd: {result}");
-        }
-        var jsonSettings = new JsonSerializerOptions()
-        {
-            PropertyNameCaseInsensitive = true
-        };
-        var response = JsonSerializer.Deserialize<PostOfferResponse>(result, jsonSettings);#1#
-        List<OfferEntity> offerResponses = new List<OfferEntity>();
-        var postOfferResponse = await _banks.PostOfferFromAllBanksAsync(quoteResponses, user);
-        foreach (var response in postOfferResponse)
-        {
-                OfferEntity newOffer = new OfferEntity()
-                {
-                    BankName = response.BankName,
-                    ExternalBankOfferId = response.OfferId.ToString(),
-                    MonthlyInstallment = response.InstalementAmount,
-                    CreateDate = response.CreateDate,
-                    RequestedMoney = quoteRequest.RequestedAmount,
-                };
-        
-                var getResponse = await GetOfferDetailsAsync(newOffer);
-        
-                if (getResponse == null || getResponse.DocumentLink == null || getResponse.DocumentLinkValidDate == null)
-                {
-                    throw new Exception("Problem z zewnętrznym api");
-                }
-        
-                newOffer.DocumentLink = getResponse.DocumentLink;
-                var documentValidDate = DateTime.Parse(getResponse.DocumentLinkValidDate).ToUniversalTime();
-
-                newOffer.ContractLinkValidDate = documentValidDate;
-                newOffer.BankPercentage = getResponse.Percentage;
-                
-                offerResponses.Add(newOffer);
-        }
-        
-        return offerResponses;
-    }*/
+    
     private async Task<List<GetOfferByIdResponse?>> GetOfferDetailsAsync(OfferEntity offer)
     {
         var getOfferByIdResponse = await _banks.GetOfferByIdFromAllBanksAsync(offer);
@@ -260,7 +215,7 @@ public class OfferService : IOfferService
         return getOfferByIdResponse;
     }
 
-    public async Task<ContractDataDto> AcceptOfferAsync(int quoteId)
+    public async Task<ContractDataDto> AcceptOfferAsync(int offerId)
     {
         var userId = _userService.GetUserId();
         if (userId == null)
@@ -268,47 +223,15 @@ public class OfferService : IOfferService
             throw new Exception("Nie zalogowany użytkownik");
         }
         
-        var offer =  await _context.Offers.FirstOrDefaultAsync(o => o.Id == quoteId && o.UserId == userId);
+        var offer =  await _context.Offers.FirstOrDefaultAsync(o => o.Id == offerId && o.UserId == userId);
         if (offer == null)
         {
             throw new Exception("Brak takiej oferty w bazie");
         }
         
+        var res = await _banks.AcceptOfferAsync(offer);
         
-        var client = _httpClientFactory.CreateClient();
-        var tokenDto = await _externalApiService.GetTokenAsync();
-        
-        client.DefaultRequestHeaders.Authorization =
-            new AuthenticationHeaderValue("Bearer", tokenDto);
-
-
-        string documentKey = offer.DocumentLink.Split("document/").Last();
-        
-        var apiResponse = await client.GetAsync(
-            $"https://mini.loanbank.api.snet.com.pl/api/v1/Offer/{offer.ExternalBankOfferId}/document/{documentKey}");
-        if (!apiResponse.IsSuccessStatusCode)
-        {
-            throw new Exception($"Bank rzucił błąd: {apiResponse.StatusCode}");
-        }
-
-        byte[] result = await apiResponse.Content.ReadAsByteArrayAsync();
-        if (result == null || result.Length == 0)
-        {
-            throw new Exception("Problem z pobraniem pliku");
-        }
-
-        offer.ContractData = result;
-        offer.Status = OfferStatus.Approved;
-
-        ContractDataDto contractData = new ContractDataDto
-        {
-            Content = result,
-            FileName = "text/plain",
-            ContentType = $"Umowa_Oferta_{offer.ExternalBankOfferId}.txt"
-        };
-        await UpdateDatabaseAsync(offer);
-        
-        return contractData;
+        return res;
     }
 
     public async Task<List<ApiOfferEntity>?> GetAllOurBankOffersAsync()
@@ -323,7 +246,27 @@ public class OfferService : IOfferService
         await _context.SaveChangesAsync();
     }
 
+    public async Task CompleteOfferAsync(IFormFile file, int offerId)
+    {
+        var offer = await _context.Offers.FindAsync(offerId);
+        if (offer == null)
+        {
+            throw new Exception("Brak takiej oferty w bazie");
+        }
+        if (file != null && file.Length > 0)
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                await file.CopyToAsync(memoryStream);
+                offer.SignedContractData = memoryStream.ToArray();
+            }
+        }
 
+        offer.SignedFileName = $"Podpisana_umowa_{offer.ExternalBankOfferId}.txt";
+        string key = offer.DocumentLink.Split("document/").Last();
+        await _banks.CompleteOfferAsync(file, offer.BankName, key, int.Parse(offer.ExternalBankOfferId));
+        await _context.SaveChangesAsync();
+    }
 }
 
 

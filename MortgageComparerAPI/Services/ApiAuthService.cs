@@ -62,7 +62,7 @@ public class ApiAuthService : IApiAuthService
         return new ApiLoginResponse()
         {
             AccessToken = jwtString,
-            ExpiresIn = tokenDescriptor.Expires.Value.ToString("O")
+            ExpiresIn = tokenDescriptor.Expires.Value.ToString("o")
         };
     }
 }

@@ -56,13 +56,22 @@ public class OfferController : ControllerBase
     }
     
     [HttpPost("accept")]
-    public async Task<IActionResult> AcceptOfferAsync([FromBody] int quoteId)
+    public async Task<IActionResult> AcceptOfferAsync([FromBody] int offerId)
     {
-        ContractDataDto contractData;
         try
         {
-            contractData = await _offerService.AcceptOfferAsync(quoteId);
-            return File(contractData.Content, contractData.FileName, contractData.ContentType);
+            var contract = await _offerService.AcceptOfferAsync(offerId);
+            var offer = await _context.Offers.FindAsync(offerId);
+            if (offer == null)
+            {
+                return NotFound("Oferta nie znaleziona");
+            }
+
+            offer.Status = OfferStatus.Approved;
+            offer.ContractData = contract.FileContents;
+            offer.FileName = contract.FileName;
+            await _context.SaveChangesAsync();
+            return Ok();
         }
         catch (Exception ex)
         {
@@ -92,19 +101,75 @@ public class OfferController : ControllerBase
     [Authorize]
     public async Task<IActionResult> AcceptOfferIdAsync(int offerId)
     {
-        var userId = _userService.GetUserId();
-    
-        var offer = await _context.Offers.FindAsync(offerId);
-
-        if (offer == null)
+        try
         {
-            return NotFound();
-        }
-        
-        offer.Status = OfferStatus.Approved; 
+            var contract = await _offerService.AcceptOfferAsync(offerId);
+            var offer = await _context.Offers.FindAsync(offerId);
+            if (offer == null)
+            {
+                return NotFound("Oferta nie znaleziona");
+            }
 
-        await _context.SaveChangesAsync();
-        return Ok();
+            offer.Status = OfferStatus.Approved;
+            offer.ContractData = contract.FileContents;
+            offer.FileName = contract.FileName;
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+    [HttpGet("{offerId}/Download")]
+    public async Task<IActionResult> DownloadContractAsync(int offerId)
+    {
+        var res = await _context.Offers.FindAsync(offerId);
+        
+        if (res == null || res.ContractData == null)
+        {
+            return NotFound("Nie znaleziono umowy dla tej oferty.");
+        }
+
+        return File(res.ContractData, "text/plain", res.FileName ?? "umowa.txt");
+    }
+
+    [HttpPost("{offerId}/Sign")]
+    [Authorize]
+    public async Task<IActionResult> SignContractAsync(int offerId, [FromForm] IFormFile file)
+    {
+        try
+        {
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("Nie przesłano pliku.");
+            }
+
+            if (!file.FileName.EndsWith(".txt"))
+            {
+                return BadRequest("Dozwolone są tylko pliki tekstowe (.txt).");
+            }
+            var offer = await _context.Offers.FindAsync(offerId);
+            if (offer == null)
+            {
+                return NotFound("Nie znaleziono oferty.");
+            }
+            
+            using (var memoryStream = new MemoryStream())
+            {
+                await file.CopyToAsync(memoryStream);
+            }
+            offer.Status = OfferStatus.Completed;
+            await _offerService.CompleteOfferAsync(file, offerId);
+        
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Umowa została podpisana pomyślnie." });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest($"Błąd podczas podpisywania: {ex.Message}");
+        }
     }
     
 }

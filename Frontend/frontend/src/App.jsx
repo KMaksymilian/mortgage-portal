@@ -1,10 +1,10 @@
-import { Routes, Route, NavLink } from 'react-router-dom';
+import { Routes, Route, NavLink, Navigate } from 'react-router-dom'; // <--- ZMIANA: Dodaj Navigate
 import { useAuth } from './AuthContext';
 import LoginPage from './LoginPage.jsx';
 import ProfilePage from './ProfilePage.jsx';
 import HomePage from './HomePage.jsx';
 import OfferSearchPage from './OfferSearchPage.jsx';
-import CompleteProfilePage from './BirthDateSite.jsx';
+import CompleteProfilePage from './CompleteProfilePage.jsx';
 import PastOffersPage from './PastOffersPage.jsx';
 import './App.css';
 import FinalizeApplicationPage from './FinalizeApplicationPage.jsx';
@@ -24,10 +24,10 @@ function App() {
           </div>
 
           <nav className="navlinks">
-            <NavLink to="/" end className={linkClass}>Home</NavLink>
-
+            {/* 1. UKRYWAMY LINK HOME DLA ZALOGOWANYCH */}
             {user ? (
               <>
+                {/* Tutaj są linki tylko dla zalogowanych */}
                 <NavLink to="/search" className={linkClass}>Kalkulator</NavLink>
                 <NavLink to="/history" className={linkClass}>Historia</NavLink>
                 <NavLink to="/profile" className={linkClass}>Profil</NavLink>
@@ -36,7 +36,11 @@ function App() {
                 </button>
               </>
             ) : (
-              <NavLink to="/login" className={linkClass}>Zaloguj</NavLink>
+              <>
+                {/* Tutaj są linki dla NIEZALOGOWANYCH */}
+                <NavLink to="/" end className={linkClass}>Home</NavLink> {/* Przeniesione tutaj */}
+                <NavLink to="/login" className={linkClass}>Zaloguj</NavLink>
+              </>
             )}
           </nav>
         </div>
@@ -44,7 +48,13 @@ function App() {
 
       <main className="container" style={{ padding: '26px 0 40px' }}>
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          {/* 2. LOGIKA PRZEKIEROWANIA */}
+          {/* Jeśli user zalogowany -> idź do /search. Jeśli nie -> pokaż HomePage */}
+          <Route 
+            path="/" 
+            element={user ? <Navigate to="/search" replace /> : <HomePage />} 
+          />
+          
           <Route path="/login" element={<LoginPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/search" element={<OfferSearchPage />} />

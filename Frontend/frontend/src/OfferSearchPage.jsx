@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { quoteOffer, acceptOffer } from './api/offers';
 
-
 function OfferSearchPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -11,7 +10,6 @@ function OfferSearchPage() {
   // --- STANY ---
   const [formData, setFormData] = useState({ amount: '', months: '', ownContribution: '' });
   const [offersList, setOffersList] = useState(null);
-  const [isOfferAccepted, setIsOfferAccepted] = useState(false);
   
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -33,7 +31,6 @@ function OfferSearchPage() {
     e.preventDefault();
     setError(null);
     setOffersList(null);
-    setIsOfferAccepted(false);
     setIsLoading(true);
 
     try {
@@ -53,63 +50,45 @@ function OfferSearchPage() {
       if (Array.isArray(data)) {
           setOffersList(data);
       } else if (data) {
-          // Jeśli backend zwróciłby jednak pojedynczy obiekt (np. błąd lub jedną ofertę bez tablicy)
           setOffersList([data]);
       } else {
           setOffersList([]);
-}
+      }
 
     } catch (err) {
       console.error(err);
-      setError(err.message);
+      setError(err.message || "Błąd podczas pobierania ofert.");
     } finally {
       setIsLoading(false);
     }
   };
 
   // --- 2. AKCEPTACJA OFERTY ---
-  const handleSelectOffer = async (internalId) => {
+  const handleSelectOffer = async (safeId) => {
+    // Zabezpieczenie przed pustym ID
+    if (!safeId) {
+        alert("Błąd: Nie można zidentyfikować ID oferty. Odśwież stronę.");
+        return;
+    }
+
     if (!window.confirm("Czy na pewno chcesz zaakceptować tę ofertę?")) return;
+    
     setIsProcessing(true);
     setError(null);
 
     try {
-        await acceptOffer(user.token, internalId);
-        setIsOfferAccepted(true);
+        // Wywołujemy endpoint (który teraz zwraca 200 OK)
+        await acceptOffer(user.token, safeId);
+        
+        // SUKCES: Przekierowanie do historii, gdzie można pobrać umowę
+        navigate('/history');
+        
     } catch (err) {
-        alert(`Wystąpił błąd: ${err.message}`);
-    } finally {
-        setIsProcessing(false);
+        console.error(err);
+        alert(`Wystąpił błąd podczas akceptacji: ${err.message}`);
+        setIsProcessing(false); // Odblokuj przycisk tylko w przypadku błędu
     }
   };
-
-  // --- WIDOK SUKCESU (Po akceptacji) ---
-  if (isOfferAccepted) {
-      return (
-          <div className="card" style={{ maxWidth: '600px', margin: '40px auto', textAlign: 'center', padding: '40px', backgroundColor: '#1e1e1e', color: '#fff', border: '1px solid #4CAF50', borderRadius: '10px' }}>
-              <h2 style={{ color: '#4CAF50', marginBottom: '10px' }}>Gratulacje!</h2>
-              <p style={{ fontSize: '1.1em', color: '#ddd' }}>Twoja oferta została pomyślnie zaakceptowana.</p>
-              <p style={{ color: '#aaa', fontSize: '0.9em', marginTop: '10px' }}>Możesz teraz przejść do historii swoich wniosków, gdzie czeka na Ciebie umowa do podpisania</p>
-              
-              <button 
-                  onClick={() => { setIsOfferAccepted(false); navigate('/history'); }}
-                  style={{ 
-                      marginTop: '30px', 
-                      background: 'transparent', 
-                      border: '2px solid #4CAF50', 
-                      color: '#4CAF50', 
-                      padding: '10px 25px', 
-                      cursor: 'pointer',
-                      borderRadius: '5px',
-                      fontWeight: 'bold',
-                      fontSize: '1em'
-                  }}
-              >
-                  Wróć do listy spraw
-              </button>
-          </div>
-      );
-  }
 
   // --- WIDOK GŁÓWNY (KALKULATOR) ---
   return (
@@ -175,18 +154,24 @@ function OfferSearchPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           {offersList.map((offer, index) => {
               
-              
-              const monthlyInstallment = offer.monthlyInstallment || 0;
-              const loanAmount = offer.amount || 0;
-              const currency = offer.currency || 'PLN';
-              const percentage = offer.percentage ? `${offer.percentage.toFixed(2)}%` : '---';
+              // --- NAJWAŻNIEJSZA POPRAWKA: BEZPIECZNE MAPOWANIE DANYCH ---
+              // Backend może zwracać "InternalId" (PascalCase) lub "internalId" (camelCase).
+              // Sprawdzamy oba warianty, żeby safeId nigdy nie było undefined.
+              const safeId = offer.internalId || offer.InternalId || offer.id;
 
-              // Obliczenie sumy opłat (tylko do wyświetlenia szacunkowo)
+              const monthlyInstallment = offer.monthlyInstallment || offer.MonthlyInstallment || 0;
+              const loanAmount = offer.amount || offer.Amount || 0;
+              const currency = offer.currency || offer.Currency || 'PLN';
+              const percentageVal = offer.percentage || offer.Percentage || 0;
+              
+              const percentageStr = percentageVal ? `${percentageVal.toFixed(2)}%` : '---';
+
+              // Obliczenie sumy opłat (szacunkowo)
               const months = parseInt(formData.months) || 1;
               const totalCost = (monthlyInstallment * months).toFixed(2);
 
               return (
-                <div key={offer.internalId || index} style={{ 
+                <div key={safeId || index} style={{ 
                     backgroundColor: '#1e1e1e', color: '#ffffff', 
                     border: '1px solid #333', borderRadius: '12px', padding: '30px',
                     display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '25px',
@@ -196,7 +181,7 @@ function OfferSearchPage() {
                     {/* Sekcja 1: Szczegóły finansowe */}
                     <div style={{ flex: '2 1 300px' }}>
                         <div style={{fontSize: '0.85em', color: '#888', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '1px'}}>
-                            Oferta wygenerowana (ID: {offer.internalId})
+                            Oferta (ID: {safeId})
                         </div>
                         
                         <div style={{ display: 'flex', gap: '40px', flexWrap: 'wrap' }}>
@@ -230,13 +215,13 @@ function OfferSearchPage() {
                         padding: '15px 25px', minWidth: '120px'
                     }}>
                          <span style={{ display: 'block', color: '#bbb', fontSize: '0.75em', textTransform: 'uppercase', marginBottom: '5px' }}>Oprocentowanie</span>
-                         <strong style={{ fontSize: '1.6em', color: '#fff' }}>{percentage}</strong>
+                         <strong style={{ fontSize: '1.6em', color: '#fff' }}>{percentageStr}</strong>
                     </div>
 
                     {/* Sekcja 3: Przycisk Akcji */}
                     <div style={{ flexShrink: 0 }}>
                         <button 
-                            onClick={() => handleSelectOffer(offer.internalId)}
+                            onClick={() => handleSelectOffer(safeId)}
                             disabled={isProcessing}
                             style={{ 
                                 backgroundColor: isProcessing ? '#888' : '#fff', 

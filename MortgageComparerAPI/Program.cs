@@ -57,6 +57,8 @@ public class Program
         builder.Services.AddScoped<IApiAuthService, ApiAuthService>();
         builder.Services.AddScoped<IApiQuoteService, ApiQuoteService>();
         builder.Services.AddScoped<IApiOfferService, ApiOfferService>();
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
 
         var app = builder.Build();
 

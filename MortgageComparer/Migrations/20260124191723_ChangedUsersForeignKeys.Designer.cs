@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MortgageComparer.Data;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MortgageComparer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260124191723_ChangedUsersForeignKeys")]
+    partial class ChangedUsersForeignKeys
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -196,23 +199,8 @@ namespace MortgageComparer.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<string>("FileContents")
-                        .HasColumnType("text");
-
-                    b.Property<string>("FileName")
-                        .HasColumnType("text");
-
                     b.Property<int>("QuoteId")
                         .HasColumnType("integer");
-
-                    b.Property<byte[]>("SignedContractData")
-                        .HasColumnType("bytea");
-
-                    b.Property<string>("SignedFileContents")
-                        .HasColumnType("text");
-
-                    b.Property<string>("SignedFileName")
-                        .HasColumnType("text");
 
                     b.Property<string>("SingedBy")
                         .HasColumnType("text");
@@ -268,6 +256,7 @@ namespace MortgageComparer.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("BankName")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
@@ -335,11 +324,14 @@ namespace MortgageComparer.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.Property<int?>("PersonalDocumentId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("DocumentId");
-
                     b.HasIndex("JobTypeId");
+
+                    b.HasIndex("PersonalDocumentId");
 
                     b.ToTable("Users");
                 });
@@ -501,18 +493,19 @@ namespace MortgageComparer.Migrations
                                 .HasForeignKey("QuoteEntityId");
                         });
 
-                    b.Navigation("InstalmentAmount");
+                    b.Navigation("InstalmentAmount")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("MortgageComparer.Entities.UserEntity", b =>
                 {
-                    b.HasOne("MortgageComparer.Entities.PersonalDocumentTypeEntity", "PersonalDocument")
-                        .WithMany()
-                        .HasForeignKey("DocumentId");
-
                     b.HasOne("MortgageComparer.Entities.JobTypeEntity", "JobType")
                         .WithMany()
                         .HasForeignKey("JobTypeId");
+
+                    b.HasOne("MortgageComparer.Entities.PersonalDocumentTypeEntity", "PersonalDocument")
+                        .WithMany()
+                        .HasForeignKey("PersonalDocumentId");
 
                     b.Navigation("JobType");
 

@@ -69,11 +69,26 @@ namespace MortgageComparer.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPut("UpdateProfile")]
+        public async Task<ActionResult> UpdateProfileAsync([FromBody] UserToUpdateData? user)
+        {
+            await _userService.UpdateProfileAsync(user);
+            return Ok();
+        }
     }
 
     public class UserBirthDateDto
     {
         public DateTime BirthDate { get; set; }
+    }
+
+    public class UserToUpdateData
+    {
+        public int Earnings { get; set; }
+        public string BirthDate { get; set; }
+        public string JobStartDate  { get; set; }
+        public string? JobEndDate { get; set; }
     }
 
     public class UserProfileDto

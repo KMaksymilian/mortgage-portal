@@ -155,6 +155,63 @@ public class OurBank : IBank
         }
         return await res.Content.ReadFromJsonAsync<GetOfferByIdResponse>();
     }
+
+    public async Task<ContractDataDto> GetDocumentByDocumentKeyAsync(int offerId, string key)
+    {
+        string tokenDto = await GetTokenAsync();
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenDto);
+        var res = await _client.GetAsync($"Offer/x/{offerId}/document/{key}"); 
+        if (!res.IsSuccessStatusCode)
+        {
+            throw new Exception("Błąd pobierania pliku: " + res.StatusCode);
+        }
+        
+        var fileBytes = await res.Content.ReadAsByteArrayAsync();
+        
+        var contentType = res.Content.Headers.ContentType?.MediaType ?? "application/octet-stream";
+        var fileName = res.Content.Headers.ContentDisposition?.FileNameStar 
+                       ?? res.Content.Headers.ContentDisposition?.FileName 
+                       ?? "umowa.txt";
+        return new ContractDataDto
+        {
+            FileContents = fileBytes,
+            ContentType = contentType,
+            FileName = fileName
+        };
+    }
+
+    public async Task PostContractAsync(IFormFile file, int offerId, string key)
+    {
+        var tokenDto = await GetTokenAsync();
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenDto);
+
+        using (var content = new MultipartFormDataContent())
+        {
+            using (var stream = file.OpenReadStream())
+            {
+                var fileContent = new StreamContent(stream);
+                fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
+                
+                content.Add(fileContent, "file", file.FileName);
+                var url = $"Offer/x/{offerId}/document/{key}/upload";
+                var res = await _client.PostAsync(url, content);
+                
+                if (!res.IsSuccessStatusCode)
+                {
+                    var error = await res.Content.ReadAsStringAsync();
+                    throw new HttpRequestException($"Błąd uploadu ({res.StatusCode}): {error}");
+                }
+            }
+        }
+        
+    }
+
+
+    /*public async Task<GetOfferByIdResponse?> GetOfferByIdAsync(OfferEntity offer)
+    {
+        var res = await _client.GetAsync($"/{offer.Id}");
+        
+    }*/
     /*
     public async Task<byte[]> GetDocumentByDocumentKeyAsync()
     {

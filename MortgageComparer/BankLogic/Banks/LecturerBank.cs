@@ -1,5 +1,7 @@
 using System.Net.Http.Headers;
+using System.Text;
 using System.Text.Json;
+using Google.Apis.Auth;
 using MortgageComparer.BankProviders;
 using MortgageComparer.Entities;
 using MortgageComparer.Models;
@@ -123,7 +125,7 @@ public class LecturerBank : IBank
         return await apiResponse.Content.ReadFromJsonAsync<GetOfferByIdResponse>();
     }
 
-    /*public async Task<GetOfferByIdResponse?> GetOfferByIdAsync(OfferEntity offer)
+    public async Task<GetOfferByIdResponse?> GetOfferByIdAsync(OfferEntity offer)
     {
         var tokenDto = await GetTokenAsync();
         _client.DefaultRequestHeaders.Authorization =
@@ -143,7 +145,69 @@ public class LecturerBank : IBank
         };
         var response = JsonSerializer.Deserialize<GetOfferByIdResponse>(result, jsonSettings);
         return response;
-    }*/
+    }
+
+    public async Task<ContractDataDto> GetDocumentByDocumentKeyAsync(int offerId, string key)
+    {
+        var tokenDto = await GetTokenAsync();
+        _client.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer", tokenDto);
+        string documentKey = key.Split("document/").Last();
+        var res= await _client.GetAsync($"v1/Offer/{offerId}/document/{documentKey}");
+        if (!res.IsSuccessStatusCode)
+        {
+            var errorContent = await res.Content.ReadAsStringAsync();
+            throw new HttpRequestException($"Błąd pobierania ({res.StatusCode}): {errorContent}");
+        }
+        var fileBytes = await res.Content.ReadAsByteArrayAsync();
+        
+        var contentType = res.Content.Headers.ContentType?.MediaType ?? "application/octet-stream";
+        var fileName = res.Content.Headers.ContentDisposition?.FileNameStar 
+                       ?? res.Content.Headers.ContentDisposition?.FileName 
+                       ?? "umowa.txt";
+        return new ContractDataDto
+        {
+            FileContents = fileBytes,
+            ContentType = contentType,
+            FileName = fileName
+        };
+    }
+
+    public async Task PostContractAsync(IFormFile file, int offerId, string key)
+    {
+        var tokenDto = await GetTokenAsync();
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenDto);
+        
+        var version = "1"; 
+        var url = $"v{version}/Offer/{offerId}/document/{key}upload";
+
+        using (var content = new MultipartFormDataContent())
+        {
+            using (var stream = file.OpenReadStream())
+            {
+                var streamContent = new StreamContent(stream);
+                streamContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
+        
+                content.Add(streamContent, "formFile", file.FileName); 
+
+                var res = await _client.PostAsync(url, content);
+
+                if (!res.IsSuccessStatusCode)
+                {
+                    var error = await res.Content.ReadAsStringAsync();
+                    throw new HttpRequestException($"Błąd uploadu ({res.StatusCode}): {error}");
+                }
+
+                var completeRes = await _client.PostAsync($"v{version}/Offer/{offerId}/complete", null);
+                if (!completeRes.IsSuccessStatusCode)
+                {
+                    var error = await completeRes.Content.ReadAsStringAsync();
+                    throw new HttpRequestException($"Błąd KROKU 2 (Complete): {completeRes.StatusCode}, {error}");
+                }
+            }
+        }
+    }
+
     public async Task<string?> GetTokenAsync()
     {
         var tokenUrl = "https://indentitymanager.snet.com.pl/connect/token";
@@ -166,5 +230,12 @@ public class LecturerBank : IBank
         var token = await response.Content.ReadFromJsonAsync<TokenResponseDto>();
         return token?.AccessToken;
     }
+
+    public Task CompleteOfferAsync(int offerId, string key)
+    {
+        throw new NotImplementedException();
+    }
+
     private record LecturerBankPostQuoteResponse(int QuoteId, MoneyDto InstalmentAmount, DateTime CreatedDate);
+    public record DocumentContent(string Payload, string FileName, string ContentType);
 }
