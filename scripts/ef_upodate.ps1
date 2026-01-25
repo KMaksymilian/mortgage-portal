@@ -9,8 +9,8 @@ dotnet tool install --global dotnet-ef --version 9.0.0 -q
 $env:ConnectionStrings__DefaultConnection = $ConnectionString
 
 dotnet ef database update `
-    --project ./src/LoanHub/LoanHub.csproj `
-    --startup-project ./src/LoanHub/LoanHub.csproj `
+    --project ./MortgageComparer/MortgageComparer.csproj `
+    --startup-project ./MortgageComparer/MortgageComparer.csproj `
     --connection $ConnectionString
 
 Write-Host "=== MIGRATIONS DONE ==="
