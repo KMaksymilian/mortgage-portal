@@ -75,12 +75,13 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_... }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_... }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_... }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_40E8FE9BDDA94D08851377F114A4EF95 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_EC03E7EBCEB5465DB48F3535C191126B }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_7A704669530E4BEF84DB526FF2D2A327 }}
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'loanHub-wb'
           package: ./publish
+
