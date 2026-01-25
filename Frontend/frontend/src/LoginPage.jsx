@@ -23,6 +23,8 @@ function LoginPage() {
       // Oczekujemy: { token, email, earnings, birthDate, jobStartDate, jobEndDate }
       const backendResponse = await res.json();
 
+      const role = backendResponse.role ?? backendResponse.Role ?? 'User';
+
       // 2. Tworzymy obiekt użytkownika dla AuthContext
       // Ważne: Przepisujemy pola finansowe, żeby FinalizeApplicationPage je widział
       const userData = {
@@ -33,7 +35,8 @@ function LoginPage() {
         earnings: backendResponse.earnings,
         birthDate: backendResponse.birthDate,
         jobStartDate: backendResponse.jobStartDate,
-        jobEndDate: backendResponse.jobEndDate
+        jobEndDate: backendResponse.jobEndDate,
+        role
       };
 
       // 3. Logujemy w kontekście aplikacji

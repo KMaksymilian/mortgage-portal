@@ -29,4 +29,19 @@ public class AuthenticationController : ControllerBase
         var result = await _authenticationService.GetGoogleTokenAsync(request);
         return Ok(result);
     }
+
+    [HttpPost("admin/google-login")]
+    public async Task<ActionResult> GetGoogleAdminTokenAsync([FromBody] GoogleLoginRequestModel request) 
+    {
+        try 
+        {
+            var result = await _authenticationService.GetGoogleAdminTokenAsync(request);
+            return Ok(result);
+        }
+        catch (UnauthorizedAccessException) 
+        {
+            return Forbid();
+        }
+    }
+
 }

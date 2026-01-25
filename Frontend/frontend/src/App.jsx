@@ -8,6 +8,10 @@ import CompleteProfilePage from './BirthDateSite.jsx';
 import PastOffersPage from './PastOffersPage.jsx';
 import './App.css';
 import FinalizeApplicationPage from './FinalizeApplicationPage.jsx';
+import AdminLoginPage from './AdminLoginPage.jsx';
+import AdminOffersPage from './AdminOffersPage.jsx';
+import RequireAdmin from './RequireAdmin.jsx';
+
 
 const linkClass = ({ isActive }) => `navlink${isActive ? ' active' : ''}`;
 
@@ -31,12 +35,19 @@ function App() {
                 <NavLink to="/search" className={linkClass}>Kalkulator</NavLink>
                 <NavLink to="/history" className={linkClass}>Historia</NavLink>
                 <NavLink to="/profile" className={linkClass}>Profil</NavLink>
+
+                {user.role === 'Admin' && (
+                  <NavLink to="/admin" className={linkClass}>Admin</NavLink>
+                )}
+
                 <button className="btn" onClick={logout}>
                   Wyloguj ({user.email})
                 </button>
               </>
             ) : (
-              <NavLink to="/login" className={linkClass}>Zaloguj</NavLink>
+              <>
+                <NavLink to="/login" className={linkClass}>Zaloguj</NavLink>
+              </>
             )}
           </nav>
         </div>
@@ -51,6 +62,15 @@ function App() {
           <Route path="/complete-profile" element={<CompleteProfilePage />} />
           <Route path="/history" element={<PastOffersPage />} />
           <Route path="/finalize-application" element={<FinalizeApplicationPage />} />
+          <Route path="/admin/login" element={<AdminLoginPage />} />
+          <Route
+            path="/admin"
+            element={
+              <RequireAdmin>
+                <AdminOffersPage />
+              </RequireAdmin>
+            }
+          />
         </Routes>
       </main>
     </div>

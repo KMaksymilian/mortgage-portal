@@ -39,6 +39,13 @@ public class AuthenticationService : IAuthenticationService
         {
             throw new Exception("Invalid Google Token");
         }
+
+        var adminEmails = _configuration.GetSection("Admin:Emails").Get<string[]>() ?? Array.Empty<string>();
+        var isAdmin = adminEmails.Any(e =>
+            !string.IsNullOrWhiteSpace(e) &&
+            string.Equals(e.Trim(), validPayload.Email, StringComparison.OrdinalIgnoreCase)
+        );
+
         UserEntity? user = await _context.Users
             .FirstOrDefaultAsync(u => u.Email == validPayload.Email);
 
@@ -52,13 +59,20 @@ public class AuthenticationService : IAuthenticationService
                 Income = null,
                 DateOfBirth = null,
                 JobType = null, 
-                PersonalDocument = null 
+                PersonalDocument = null,
+                Role = isAdmin ? "Admin" : "User"
             };
 
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
         }
-        
+
+        if (isAdmin && !string.Equals(user.Role, "Admin", StringComparison.OrdinalIgnoreCase)) {
+            user.Role = "Admin";
+            await _context.SaveChangesAsync();
+        }
+
+
         var jwtToken = GenerateJwtToken(user);
         if (user.JobType == null)
         {
@@ -77,9 +91,24 @@ public class AuthenticationService : IAuthenticationService
             Earnings = user.Income,
             BirthDate = user.DateOfBirth,
             JobStartDate = user.JobStartDate,
-            JobEndDate = user.JobEndDate
+            JobEndDate = user.JobEndDate,
+            Role = user.Role
         };
     }
+
+    public async Task<LoginResponseDto> GetGoogleAdminTokenAsync(GoogleLoginRequestModel request) 
+    {
+        var res = await GetGoogleTokenAsync(request);
+
+        if (!string.Equals(res.Role, "Admin", StringComparison.OrdinalIgnoreCase)) 
+        {
+            throw new UnauthorizedAccessException("User is not an admin");
+        }
+
+        return res;
+    }
+
+
     private string GenerateJwtToken(UserEntity user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
@@ -92,7 +121,8 @@ public class AuthenticationService : IAuthenticationService
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()) 
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.Role, user.Role)
             }),
             Expires = DateTime.UtcNow.AddHours(1),
             Issuer = _configuration["Jwt:Issuer"],
@@ -113,4 +143,5 @@ public class LoginResponseDto
     public DateTime? BirthDate { get; set; }
     public DateTime? JobStartDate { get; set; }
     public DateTime? JobEndDate { get; set; }
+    public string Role { get; set; }
 }
