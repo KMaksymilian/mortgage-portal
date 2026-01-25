@@ -29,6 +29,24 @@ jobs:
       - name: dotnet publish
         run: dotnet publish -c Release -o "${{env.DOTNET_ROOT}}/myapp"
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install and Build React (Vite)
+        working-directory: ./Frontend/frontend
+        run: |
+          npm install
+          npm install @react-oauth/google
+          npm run build
+
+      - name: Copy React build to .NET wwwroot
+        run: |
+          New-Item -ItemType Directory -Force -Path "${{env.DOTNET_ROOT}}/myapp/wwwroot"
+          
+          Copy-Item -Path "./src/coreapp/Client/dist/*" -Destination "${{env.DOTNET_ROOT}}/myapp/wwwroot" -Recurse -Force
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
@@ -62,4 +80,5 @@ jobs:
           app-name: 'loanHub-wb'
           slot-name: 'Production'
           package: .
+
           
