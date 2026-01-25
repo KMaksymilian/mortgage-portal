@@ -11,13 +11,13 @@ New-Item -ItemType Directory -Path $OutputPath | Out-Null
 
 # 1) Build API (LoanHubApi)
 Write-Host "=== BUILD LoanHubApi ==="
-dotnet publish ./LoanHubApi/LoanHubApi.csproj `
+dotnet publish ./MortgageComparerApi/MortgageComparerApi.csproj `
     -c $Configuration `
     -o "$OutputPath/api" `
     /p:EnvironmentName=Production
 
 Write-Host "=== BUILD LoanHub ==="
-dotnet publish ./LoanHub/LoanHub.csproj `
+dotnet publish ./MortgageComparer/MortgageComparer.csproj `
     -c $Configuration `
     -o "$OutputPath" `
     /p:EnvironmentName=Production
@@ -25,14 +25,14 @@ dotnet publish ./LoanHub/LoanHub.csproj `
 
 # 2) Build React frontend
 Write-Host "=== BUILD FRONTEND (React) ==="
-Push-Location ./frontend
+Push-Location ./Frontend/frontend
 npm install
 npm run build
 Pop-Location
 
 # 3) Copy frontend build to API wwwroot
 Write-Host "=== COPY FRONTEND TO API wwwroot ==="
-$frontendBuildPath = "./frontend/build"
+$frontendBuildPath = "./Frontend/frontend/build"
 $wwwrootPath = "$OutputPath/api/wwwroot"
 
 Copy-Item $frontendBuildPath/* $wwwrootPath -Recurse -Force
