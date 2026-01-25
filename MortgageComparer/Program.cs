@@ -1,11 +1,27 @@
-using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using MortgageComparer.Data;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using MortgageComparer.Data;
+using MortgageComparer.BankLogic;
+using MortgageComparer.BankLogic.Banks;
+using MortgageComparer.BankProviders;
+using MortgageComparer.BankLogic.Banks;
+using MortgageComparer.BankProviders.Banks;
+using MortgageComparer.Services;
+using MortgageComparer.Services.BackgroundLogic;
+using MortgageComparer.Services.Interfaces;
+using MortgageComparer.Workers;
+using MortgageComparer.Workers;
+using SendGrid.Extensions.DependencyInjection;
+using System.Text;
+using System.Text.Json.Serialization;
+
 
 namespace MortgageComparer;
 
@@ -15,9 +31,36 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddControllers();
-        builder.Services.AddNpgsql<AppDbContext>(
-            builder.Configuration.GetConnectionString("DefaultConnectionString"));
+        builder.Services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+            });
+        builder.Services.AddHttpContextAccessor();
+        builder.Services.AddScoped<IUserService, UserService>();
+        builder.Services.AddScoped<IExternalApiService, ExternalApiService>();
+        builder.Services.AddScoped<IOfferService, OfferService>();
+        builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+        builder.Services.AddScoped<IJobTypeService, JobTypeService>();
+      
+        builder.Services.AddDbContext<AppDbContext>(options =>
+            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnectionString")));
+
+        builder.Services.AddScoped<IOfferService2, BankEmployeeOfferService>();
+        builder.Services.AddScoped<IBank, OurBank>();
+        builder.Services.AddScoped<IBank, LecturerBank>();
+        builder.Services.AddScoped<IQuoteService, QuoteService>();
+        builder.Services.AddScoped<BankAggregator>();
+        builder.Services.AddHttpClient("LecturerBankApi", client =>
+        {
+            client.BaseAddress = new Uri("https://mini.loanbank.api.snet.com.pl/api/");
+        });
+        builder.Services.AddHttpClient("OurBankApi", client =>
+        {
+            client.BaseAddress = new Uri("http://localhost:5046/api/");
+        });
+
+
 
         builder.Services.AddAuthentication(options =>
         {
@@ -51,6 +94,22 @@ public class Program
             });
         });
 
+        builder.Services.AddScoped<ICleanupService, CleanupService>();
+        builder.Services.AddHostedService<CleanupWorker>();
+
+        builder.Services.AddAzureClients(clientBuilder =>
+        {
+            clientBuilder.AddBlobServiceClient(builder.Configuration["AzureStorage:ConnectionString"]);
+        });
+        builder.Services.AddTransient<IFileStorageService, AzureBlobStorageService>();
+
+        builder.Services.AddSendGrid(options => {
+            options.ApiKey = builder.Configuration["SendGrid:ApiKey"];
+        });
+        builder.Services.AddTransient<IEmailService, SendGridEmailService>();
+        builder.Services.AddTransient<IEmailTemplateService, MockEmailTemplateService>();
+        builder.Services.AddHostedService<ReminderWorker>();
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -60,20 +119,18 @@ public class Program
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
-
-        //app.UseHttpsRedirection();
+        
         app.UseRouting();
         
         app.UseCors("AllowReactApp");
+
+        //app.UseHttpsRedirection();
         
         app.UseAuthorization();
 
         app.MapControllers();
 
-        using (var scope = app.Services.CreateScope()) {
-            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            db.Database.Migrate();
-        }
+
 
         app.Run();
     }

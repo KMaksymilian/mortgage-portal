@@ -6,39 +6,75 @@ function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleGoogleSuccess = (credentialResponse) => {
-    // 1. Mamy token od Google (credentialResponse.credential)
-    console.log("Token z Google:", credentialResponse);
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      const res = await fetch('/api/auth/google-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: credentialResponse.credential }),
+      });
 
-    // 2. Wysyłamy ten token do naszego backendu
-    fetch('http://localhost:5254/api/auth/google-login', { // WAŻNY ADRES!
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ token: credentialResponse.credential })
-    })
-    .then(res => res.json())
-    .then(backendResponse => {
-      // 4. Backend zweryfikował token i odesłał nam dane usera + SWÓJ token
-      //    (np. { email: "...", token: "nasz-jwt-token" })
-      login(backendResponse); 
-      // 5. Przekieruj na stronę profilu
-      navigate('/profile'); 
-    })
-    .catch(err => console.error("Błąd logowania na backendzie:", err));
+      if (!res.ok) {
+        const msg = await res.text();
+        throw new Error(msg || 'Błąd logowania');
+      }
+
+      const backendResponse = await res.json();
+
+      // Tworzymy obiekt użytkownika
+      const userData = {
+        token: backendResponse.token,
+        email: backendResponse.email,
+        firstName: backendResponse.firstName,
+        earnings: backendResponse.earnings,
+        birthDate: backendResponse.birthDate,
+        jobStartDate: backendResponse.jobStartDate,
+        jobEndDate: backendResponse.jobEndDate
+      };
+
+      login(userData);
+
+      // === LOGIKA PRZEKIEROWANIA ===
+      const pendingQuoteId = localStorage.getItem('selectedQuoteId');
+
+      if (pendingQuoteId) {
+        // Scenariusz A: Mamy wybraną ofertę -> idziemy do finalizacji (tam też jest formularz uzupełniania)
+        console.log("Wykryto wybraną ofertę, przekierowanie do finalizacji...");
+        navigate('/finalize-application');
+      } else {
+        // Scenariusz B: Zwykłe logowanie -> sprawdzamy kompletność profilu
+        
+        // WARUNEK KOMPLETNOŚCI: Musi mieć datę urodzenia, zarobki ORAZ datę startu pracy
+        const hasBirthDate = !!backendResponse.birthDate;
+        const hasEarnings = backendResponse.earnings !== null && backendResponse.earnings !== undefined; // Bo zarobki mogą wynosić 0
+        const hasJobStart = !!backendResponse.jobStartDate;
+
+        const isProfileComplete = hasBirthDate && hasEarnings && hasJobStart;
+        
+        if (isProfileComplete) {
+            navigate('/search'); // Profil gotowy -> do kalkulatora
+        } else {
+            navigate('/complete-profile'); // Brakuje danych -> uzupełnij profil
+        }
+      }
+
+    } catch (err) {
+      console.error('Błąd logowania:', err);
+      alert("Logowanie nie powiodło się. Spróbuj ponownie.");
+    }
   };
 
   return (
-    <div>
-      <h2>Logowanie</h2>
-      <p>Zaloguj się przez Google:</p>
-      <GoogleLogin
-        onSuccess={handleGoogleSuccess}
-        onError={() => {
-          console.log('Login Failed');
-        }}
-      />
+    <div className="card" style={{maxWidth: '400px', margin: '50px auto', textAlign: 'center', padding: '40px'}}>
+      <h2 style={{color: 'var(--brand)', marginBottom: '30px'}}>Logowanie</h2>
+      <div style={{display: 'flex', justifyContent: 'center'}}>
+        <GoogleLogin 
+            onSuccess={handleGoogleSuccess} 
+            onError={() => console.log('Login Failed')} 
+            theme="filled_black"
+            shape="pill"
+        />
+      </div>
     </div>
   );
 }

@@ -2,49 +2,97 @@ import { useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 
 function ProfilePage() {
-  const { user } = useAuth(); // user teraz zawiera { email: "...", token: "..." }
+  const { user } = useAuth();
   const [profileData, setProfileData] = useState(null);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Ta logika jest teraz poprawna:
-    // Jeśli user jest null (po starcie i sprawdzeniu localStorage),
-    // to useEffect się nie uruchomi.
+    // Jeśli nie ma usera, nie pobieramy
     if (!user) return; 
 
-    // ZMIANA: Pobierz token bezpośrednio z obiektu user z kontekstu
-    const token = user.token; 
+    const fetchProfileData = async () => {
+      try {
+        const response = await fetch('/api/Dictionary/DocumentAndJobTypes', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${user.token}`,
+            'Content-Type': 'application/json'
+          }
+        });
 
-    fetch('http://localhost:5254/api/profile/me', {
-      headers: {
-        'Authorization': `Bearer ${token}` 
+        if (!response.ok) {
+          throw new Error("Nie udało się pobrać danych profilowych.");
+        }
+
+        const data = await response.json();
+        setProfileData(data);
+
+      } catch (err) {
+        console.error(err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
       }
-    })
-    .then(res => {
-      if (!res.ok) throw new Error("Nie udało się pobrać danych lub token jest nieważny");
-      return res.json();
-    })
-    .then(data => setProfileData(data))
-    .catch(err => setError(err.message));
+    };
 
-  }, [user]); // Ten efekt zależy tylko od 'user'
+    fetchProfileData();
+
+  }, [user]);
 
   if (!user) {
     return <h2>Musisz być zalogowany, aby zobaczyć profil.</h2>;
   }
 
-  // Reszta kodu jest poprawna...
   return (
-    <div>
-      <h2>Profil Użytkownika</h2>
-      <p>Witaj, {user.email}!</p>
+    <div className="card">
+      <h2>Twój Profil Użytkownika</h2>
+      <p style={{ color: '#888' }}>Zalogowany jako: <strong>{user.email}</strong></p>
       
-      <h3>Twoje dane z bazy:</h3>
-      {error && <p style={{color: 'red'}}>{error}</p>}
-      {profileData ? (
-        <pre>{JSON.stringify(profileData, null, 2)}</pre>
-      ) : (
-        <p>Ładowanie danych...</p>
+      <hr style={{ margin: '20px 0', borderColor: '#444' }} />
+
+      {loading && <p>Pobieranie danych z urzędu (losowanie zawodu)...</p>}
+      
+      {error && <div style={{ color: 'red', border: '1px solid red', padding: '10px' }}>{error}</div>}
+
+      {!loading && profileData && (
+        <div style={{ textAlign: 'left', maxWidth: '500px', margin: '0 auto' }}>
+
+          {/* NOWA SEKCJA: Dane osobowe */}
+          <div style={{ marginBottom: '20px', padding: '15px', border: '1px solid #ccc', borderRadius: '8px' }}>
+              <h3>Dane Osobowe</h3>
+              <p><strong>Imię i Nazwisko:</strong> {profileData.firstName} {profileData.lastName}</p>
+              <p><strong>Email:</strong> {profileData.email}</p>
+              <p><strong>Data urodzenia:</strong> {profileData.birthDate ? new Date(profileData.birthDate).toLocaleDateString() : 'Brak'}</p>
+          </div>
+          
+          {/* Sekcja Zawodu */}
+          <div style={{ marginBottom: '20px', padding: '15px', border: '1px solid #646cff', borderRadius: '8px' }}>
+            <h3 style={{ marginTop: 0 }}>Twoja Praca</h3>
+            {profileData.job ? (
+              <>
+                <p><strong>Stanowisko:</strong> {profileData.job.name}</p>
+                <p><strong>Opis:</strong> {profileData.job.description}</p>
+              </>
+            ) : (
+              <p>Brak przypisanej pracy.</p>
+            )}
+          </div>
+
+          {/* Sekcja Dokumentu */}
+          <div style={{ padding: '15px', border: '1px solid #4CAF50', borderRadius: '8px' }}>
+            <h3 style={{ marginTop: 0 }}>Twój Dokument Tożsamości</h3>
+            {profileData.document ? (
+              <>
+                <p><strong>Typ dokumentu:</strong> {profileData.document.name}</p>
+                <p><strong>Opis:</strong> {profileData.document.description}</p>
+              </>
+            ) : (
+              <p>Brak przypisanego dokumentu.</p>
+            )}
+          </div>
+
+        </div>
       )}
     </div>
   );
