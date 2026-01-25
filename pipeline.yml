@@ -8,7 +8,7 @@ on:
 
 env:
   DOTNET_VERSION: '9.x'
-  AZURE_WEBAPP_NAME: 'LoanHub' # Nazwa App Service w Azure
+  AZURE_WEBAPP_NAME: 'loanHub-wb' # Nazwa App Service w Azure
   BUILD_CONFIGURATION: 'Release'
   OUTPUT_PATH: './published-app'
 
