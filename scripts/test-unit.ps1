@@ -1,22 +1,16 @@
-cd MortgageComparer
+Write-Host "--- Running Unit Tests ---" -ForegroundColor Cyan
 
-Write-Host "🔄 Restoring dependencies..."
-dotnet restore
+$testProjects = "BasicTests/"
+cd $testProjects
 
-Write-Host "🏗️ Building project in Release mode..."
-dotnet build --configuration Release
 
-Write-Host "🧪 Running unit tests..."
-# Run tests and store the exit code
-dotnet test --configuration Release `
-    --logger "trx;LogFileName=UnitTests.trx" `
-    --results-directory "$env:AGENT_TEMPDIRECTORY\TestResults\Unit"
 
-$exitCode = $LASTEXITCODE
 
-if ($exitCode -ne 0) {
-    Write-Host "❌ Some unit tests failed."
-    exit $exitCode   # This will fail the pipeline
-} else {
-    Write-Host "✅ All unit tests passed!"
-}
+    dotnet test 
+    
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "Tests failed in $($project.Name)" -ForegroundColor Red
+        exit 1
+    }
+
+Write-Host "All tests passed successfully!" -ForegroundColor Green
