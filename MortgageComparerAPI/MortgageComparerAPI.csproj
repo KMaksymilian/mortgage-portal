@@ -40,4 +40,10 @@
       <ProjectReference Include="..\MortgageComparer\MortgageComparer.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="ContractTemplate.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

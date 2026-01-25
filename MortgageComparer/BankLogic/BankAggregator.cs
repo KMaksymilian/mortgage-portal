@@ -59,4 +59,17 @@ public class BankAggregator
         }
         return result;
     }
+
+    public async Task<ContractDataDto> AcceptOfferAsync(OfferEntity offer)
+    {
+        var bankProvider = _bankProviders.FirstOrDefault(b => b.Name == offer.BankName);
+        var res = await bankProvider.GetDocumentByDocumentKeyAsync(int.Parse(offer.ExternalBankOfferId), offer.DocumentLink);
+        return res;
+    }
+
+    public async Task CompleteOfferAsync(IFormFile file, string bankName, string key, int offerId)
+    {
+        var bankProvider = _bankProviders.FirstOrDefault(b => b.Name == bankName);
+        await bankProvider.PostContractAsync(file, offerId, key);
+    }
 }

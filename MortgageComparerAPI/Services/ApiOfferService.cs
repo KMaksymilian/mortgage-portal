@@ -103,19 +103,24 @@ public class ApiOfferService : IApiOfferService
         await  _context.SaveChangesAsync();
         return new CustomFile()
         {
-            FileContents = contract,
-            FileName = $"Umowa_{offerId}.txt",
-            ContentType = "text/plain"
+            FileContents = contract, 
+            ContentType = "text/plain",
+            FileName = $"Umowa_{offerId}.txt"
         };
     }
 
     public async Task PostContractAsync(IFormFile file, int offerId, string key)
     {
         var offer = await _context.OurApiOffers.FirstOrDefaultAsync(o => o.Id == offerId);
+        if (offer == null)
+        {
+            throw new Exception($"Nie znaleziono oferty o ID {offerId} w tabeli OurApiOffers.");
+        }
         using (var memoryStream = new MemoryStream())
         {
             await file.CopyToAsync(memoryStream);
             offer.SignedContract = memoryStream.ToArray();
+        
             await _context.SaveChangesAsync();
         }
     }

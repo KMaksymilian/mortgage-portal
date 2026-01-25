@@ -12,10 +12,7 @@ public interface IBank
 
     public Task<PostOfferResponse> PostOfferAsync(int quoteId, UserEntity user);
     public Task<GetOfferByIdResponse?> GetOfferDetailsByIdAsync(int externalOfferId);
-
-    /*public Task<GetOfferByIdResponse> GetOfferByIdAsync(OfferEntity offer);*/
-    /*
-    public Task<byte[]> GetDocumentByDocumentKeyAsync();
-    public Task UploadContractAsync(ContractDataDto contract)
-    */
+    
+    public Task<ContractDataDto> GetDocumentByDocumentKeyAsync(int offerId, string key);
+    public Task PostContractAsync(IFormFile file, int offerId, string key);
 }

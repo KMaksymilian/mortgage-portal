@@ -1,5 +1,5 @@
 import { GoogleLogin } from '@react-oauth/google';
-import { useAuth } from './AuthContext'; // Upewnij się, że ścieżka jest poprawna
+import { useAuth } from './AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 function LoginPage() {
@@ -19,42 +19,42 @@ function LoginPage() {
         throw new Error(msg || 'Błąd logowania');
       }
 
-      // 1. Pobieramy pełne dane z backendu (UserDto)
-      // Oczekujemy: { token, email, earnings, birthDate, jobStartDate, jobEndDate }
       const backendResponse = await res.json();
 
-      // 2. Tworzymy obiekt użytkownika dla AuthContext
-      // Ważne: Przepisujemy pola finansowe, żeby FinalizeApplicationPage je widział
+      // Tworzymy obiekt użytkownika
       const userData = {
         token: backendResponse.token,
         email: backendResponse.email,
-        firstName: backendResponse.firstName, // Jeśli backend to zwraca
-        // Dane do wniosku:
+        firstName: backendResponse.firstName,
         earnings: backendResponse.earnings,
         birthDate: backendResponse.birthDate,
         jobStartDate: backendResponse.jobStartDate,
         jobEndDate: backendResponse.jobEndDate
       };
 
-      // 3. Logujemy w kontekście aplikacji
       login(userData);
 
-      // 4. Logika przekierowania
+      // === LOGIKA PRZEKIEROWANIA ===
       const pendingQuoteId = localStorage.getItem('selectedQuoteId');
 
       if (pendingQuoteId) {
-        // SCENARIUSZ A: Użytkownik wybrał ofertę przed logowaniem -> Idziemy ją sfinalizować
+        // Scenariusz A: Mamy wybraną ofertę -> idziemy do finalizacji (tam też jest formularz uzupełniania)
         console.log("Wykryto wybraną ofertę, przekierowanie do finalizacji...");
         navigate('/finalize-application');
       } else {
-        // SCENARIUSZ B: Zwykłe logowanie
-        // Sprawdzamy czy profil jest kompletny (np. czy ma datę urodzenia)
-        const isProfileComplete = !!backendResponse.birthDate; 
+        // Scenariusz B: Zwykłe logowanie -> sprawdzamy kompletność profilu
+        
+        // WARUNEK KOMPLETNOŚCI: Musi mieć datę urodzenia, zarobki ORAZ datę startu pracy
+        const hasBirthDate = !!backendResponse.birthDate;
+        const hasEarnings = backendResponse.earnings !== null && backendResponse.earnings !== undefined; // Bo zarobki mogą wynosić 0
+        const hasJobStart = !!backendResponse.jobStartDate;
+
+        const isProfileComplete = hasBirthDate && hasEarnings && hasJobStart;
         
         if (isProfileComplete) {
-            navigate('/search'); // Ma dane -> może szukać
+            navigate('/search'); // Profil gotowy -> do kalkulatora
         } else {
-            navigate('/complete-profile'); // Nie ma danych -> niech uzupełni profil
+            navigate('/complete-profile'); // Brakuje danych -> uzupełnij profil
         }
       }
 

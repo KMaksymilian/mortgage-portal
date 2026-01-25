@@ -41,7 +41,7 @@ public class AuthenticationService : IAuthenticationService
         }
         UserEntity? user = await _context.Users
             .FirstOrDefaultAsync(u => u.Email == validPayload.Email);
-
+        
         if (user == null)
         {
             user = new UserEntity
@@ -51,24 +51,28 @@ public class AuthenticationService : IAuthenticationService
                 Email = validPayload.Email,
                 Income = null,
                 DateOfBirth = null,
-                JobType = null, 
-                PersonalDocument = null 
+                DocumentId = 1,
+                JobTypeId = 1,
             };
+            if (user.JobType == null)
+            {
+                JobTypeEntity userJob = await _externalApiService.GetJobTypesAsync();
+                var isInDataBase = await _context.JobTypes.FindAsync(userJob.Id);
+                user.JobType = isInDataBase ?? userJob;
+            }
+
+            if (user.PersonalDocument == null)
+            {
+                PersonalDocumentTypeEntity userDocument = await _externalApiService.GetDocumentTypesAsync();
+                var isInDataBase = await _context.DocumentTypes.FindAsync(userDocument.Id);
+                user.PersonalDocument = isInDataBase ?? userDocument;
+            }
 
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
         }
         
         var jwtToken = GenerateJwtToken(user);
-        if (user.JobType == null)
-        {
-            user.JobType = await _context.JobTypes.FirstOrDefaultAsync(j => j.Name == "Truck Driver");
-        }
-
-        if (user.DocumentId == null)
-        {
-            user.DocumentId  = 1;
-        }
         
         return new LoginResponseDto
         {

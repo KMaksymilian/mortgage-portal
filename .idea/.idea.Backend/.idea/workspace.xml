@@ -10,7 +10,33 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="99b664a8-ce11-40b8-93f8-7bfffd6fe881" name="Changes" comment="" />
+    <list default="true" id="99b664a8-ce11-40b8-93f8-7bfffd6fe881" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Backend/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Backend/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/frontend/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/frontend/src/App.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/frontend/src/LoginPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/frontend/src/LoginPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/frontend/src/OfferSearchPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/frontend/src/OfferSearchPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/frontend/src/PastOffersPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/frontend/src/PastOffersPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/frontend/src/api/offers.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/frontend/src/api/offers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparer/BankLogic/BankAggregator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/BankLogic/BankAggregator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparer/BankLogic/Banks/IBank.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/BankLogic/Banks/IBank.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparer/BankLogic/Banks/LecturerBank.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/BankLogic/Banks/LecturerBank.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparer/BankLogic/Banks/OurBank.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/BankLogic/Banks/OurBank.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparer/Controllers/OfferController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Controllers/OfferController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparer/Controllers/UserController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Controllers/UserController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparer/Entities/OfferEntity.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Entities/OfferEntity.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparer/Entities/QuoteEntity.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Entities/QuoteEntity.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparer/Migrations/AppDbContextModelSnapshot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Migrations/AppDbContextModelSnapshot.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparer/Models/ContractDataDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Models/ContractDataDto.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparer/Services/AuthenticationService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Services/AuthenticationService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparer/Services/Interfaces/IOfferService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Services/Interfaces/IOfferService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparer/Services/Interfaces/IUserService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Services/Interfaces/IUserService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparer/Services/OfferService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Services/OfferService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparer/Services/UserService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparer/Services/UserService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparerAPI/MortgageComparerAPI.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparerAPI/MortgageComparerAPI.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparerAPI/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparerAPI/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparerAPI/Services/ApiAuthService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparerAPI/Services/ApiAuthService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MortgageComparerAPI/Services/ApiOfferService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MortgageComparerAPI/Services/ApiOfferService.cs" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -38,14 +64,20 @@
 }</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/KMaksymilian/mortgage-portal.git&quot;,
+    &quot;url&quot;: &quot;https://github.com/KMaksymilian/LoanHub.git&quot;,
     &quot;accountId&quot;: &quot;d0d4c2ac-d051-4299-bee9-fdd3d3255434&quot;
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/MortgageComparer/DatabaseData/AppDbContext.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MortgageComparer/Services/OfferService.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/3cdfc713367d4fd38cf82da4b3ea17e411908/ba/0509d9dc/IFormFile.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/c94b26b3926f4875a47210ff6a7138497330/4f/ef866b7c/IConfiguration.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/4b21fc3f8a3abb5d25f06c622276fbec0fd3932f169cc6af520bf5abc6a46b4/DbSet.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/718b6d39b999f2b6e27f63239352104a5bd93c9ce8ef3e5b9a92b87bfbef035/FromBodyAttribute.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/81d688add276f69c8379b55d229acdbcc350efa22210c2753ce5f9eb6af0/HttpClientFactoryServiceCollectionExtensions.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/b3575a2f41d7c2dbfaa36e866b8a361e11dd7223ff82bc574c1d5d4b7522f735/Future.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/de8c9d9014ed8851ff8db88744302e50dddf33c626b751126f43a9cbb5ef7b6/HttpClientJsonExtensions.Post.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
@@ -60,31 +92,32 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;.NET Launch Settings Profile.MortgageComparer: http.executor&quot;: &quot;Run&quot;,
-    &quot;.NET Launch Settings Profile.MortgageComparerAPI: http.executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;b8af4411-e70e-4564-a3a6-4ca657f72453.executor&quot;: &quot;Debug&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;feature-quote-logic&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;CodeLensConfigurable&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    ".NET Launch Settings Profile.MortgageComparer: http.executor": "Run",
+    ".NET Launch Settings Profile.MortgageComparerAPI: http.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "b8af4411-e70e-4564-a3a6-4ca657f72453.executor": "Debug",
+    "git-widget-placeholder": "feature-api-pipeline",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\JetBrains Rider 2025.1.4\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
-      &quot;EditorConfig&quot;,
-      &quot;Angular2Svg&quot;
+  "keyToStringList": {
+    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
+      "EditorConfig",
+      "Angular2Svg"
     ]
   }
-}</component>
-  <component name="RunManager" selected=".NET Launch Settings Profile.MortgageComparerAPI: http">
+}]]></component>
+  <component name="RunManager" selected=".NET Launch Settings Profile.MortgageComparer: http">
     <configuration name="MortgageComparerAPI: http" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/MortgageComparerAPI/MortgageComparerAPI.csproj" />
       <option name="LAUNCH_PROFILE_TFM" value="net9.0" />
@@ -174,6 +207,10 @@
       <workItem from="1768637475378" duration="14916000" />
       <workItem from="1768676996508" duration="9407000" />
       <workItem from="1769246189511" duration="17846000" />
+      <workItem from="1769274490255" duration="17159000" />
+      <workItem from="1769331552926" duration="6471000" />
+      <workItem from="1769345509130" duration="70000" />
+      <workItem from="1769345613347" duration="15312000" />
     </task>
     <servers />
   </component>
@@ -198,6 +235,47 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/MortgageComparerAPI/Controllers/AuthController.cs</url>
+          <line>33</line>
+          <properties documentPath="C:\Studia\dotNET\mortgage-portal\MortgageComparerAPI\Controllers\AuthController.cs" containingFunctionPresentation="Method 'AuthAsync'">
+            <startOffsets>
+              <option value="1006" />
+            </startOffsets>
+            <endOffsets>
+              <option value="1060" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="42" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/MortgageComparerAPI/Services/ApiAuthService.cs</url>
+          <line>28</line>
+          <properties documentPath="C:\Studia\dotNET\mortgage-portal\MortgageComparerAPI\Services\ApiAuthService.cs" containingFunctionPresentation="Method 'Authenticate'">
+            <startOffsets>
+              <option value="847" />
+            </startOffsets>
+            <endOffsets>
+              <option value="900" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="43" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/MortgageComparerAPI/Services/ApiAuthService.cs</url>
+          <line>24</line>
+          <properties documentPath="C:\Studia\dotNET\mortgage-portal\MortgageComparerAPI\Services\ApiAuthService.cs" containingFunctionPresentation="Method 'Authenticate'">
+            <startOffsets>
+              <option value="718" />
+            </startOffsets>
+            <endOffsets>
+              <option value="772" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="44" />
+        </line-breakpoint>
+      </breakpoints>
       <default-breakpoints>
         <breakpoint type="DotNet_Exception_Breakpoints" />
       </default-breakpoints>

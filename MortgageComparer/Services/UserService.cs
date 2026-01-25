@@ -84,4 +84,27 @@ public class UserService : IUserService
             HasBirthDate = user.DateOfBirth != null,
         };   
     }
+
+    public async Task UpdateProfileAsync(UserToUpdateData user)
+    {
+        int? userId = GetUserId();
+        var userToUpdate = await _context.Users.FindAsync(userId);
+        if (userToUpdate == null)
+        {
+            throw new Exception("Problemik");
+        }
+        userToUpdate.DateOfBirth = DateTime.Parse(user.BirthDate).ToUniversalTime();
+        if (user.JobEndDate != null)
+        {
+            userToUpdate.JobEndDate = DateTime.Parse(user.JobEndDate).ToUniversalTime();
+        }
+        else
+        {
+            userToUpdate.JobEndDate = DateTime.UtcNow;
+        }
+        userToUpdate.JobStartDate = DateTime.Parse(user.JobStartDate).ToUniversalTime();
+        userToUpdate.Income = user.Earnings;
+        await _context.SaveChangesAsync();
+        
+    }
 }
