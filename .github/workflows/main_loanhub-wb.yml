@@ -1,7 +1,4 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
-name: Build and deploy ASP.Net Core app to Azure Web App - loanHub-wb
+name: Build and deploy - Multiple Projects
 
 on:
   push:
@@ -9,76 +6,81 @@ on:
       - main
   workflow_dispatch:
 
+env:
+  BUILD_CONFIGURATION: 'Release'
+  OUTPUT_PATH: "${{ github.workspace }}/publish"
+
 jobs:
   build:
     runs-on: windows-latest
-    permissions:
-      contents: read #This is required for actions/checkout
-
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up .NET Core
+      - name: Set up .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '9.x'
 
-      - name: Build with dotnet
-        run: dotnet build --configuration Release
+      # 1. Publikujemy pierwszy projekt (np. API) do głównego folderu
+      - name: Publish MortgageComparerAPI
+        run: |
+          dotnet publish MortgageComparerAPI/MortgageComparerAPI.csproj `
+            -c ${{ env.BUILD_CONFIGURATION }} `
+            -o ${{ env.OUTPUT_PATH }}
 
-      - name: dotnet publish
-        run: dotnet publish -c Release -o "${{env.DOTNET_ROOT}}/myapp"
+      # 2. Publikujemy drugi projekt do podfolderu (opcjonalnie)
+      # Jeśli chcesz, by oba były w jednym miejscu, .NET może znów rzucić błędem kolizji.
+      # Bezpieczniej jest dać go do podfolderu 'sub-app'
+      - name: Publish MortgageComparer (Sub-App)
+        run: |
+          dotnet publish MortgageComparer/MortgageComparer.csproj `
+            -c ${{ env.BUILD_CONFIGURATION }} `
+            -o "${{ env.OUTPUT_PATH }}/sub-app"
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Install and Build React (Vite)
+      # 3. Budujemy Frontend
+      - name: Install and Build React
         working-directory: ./Frontend/frontend
         run: |
           npm install
-          npm install @react-oauth/google
           npm run build
 
-      - name: Copy React build to .NET wwwroot
+      # 4. Kopiujemy Frontend do wwwroot GŁÓWNEGO projektu (API)
+      - name: Copy React build to API wwwroot
         run: |
-          New-Item -ItemType Directory -Force -Path "${{env.DOTNET_ROOT}}/myapp/wwwroot"
-          
-          Copy-Item -Path "./src/coreapp/Client/dist/*" -Destination "${{env.DOTNET_ROOT}}/myapp/wwwroot" -Recurse -Force
+          $wwwroot = "${{ env.OUTPUT_PATH }}/wwwroot"
+          if (!(Test-Path $wwwroot)) { New-Item -ItemType Directory -Force -Path $wwwroot }
+          Copy-Item -Path "./Frontend/frontend/dist/*" -Destination $wwwroot -Recurse -Force
 
-      - name: Upload artifact for deployment job
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          name: full-app-package
+          path: ${{ env.OUTPUT_PATH }}
 
   deploy:
     runs-on: windows-latest
     needs: build
-    permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
-
     steps:
-      - name: Download artifact from build job
+      - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: .net-app
+          name: full-app-package
+          path: ./publish
       
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_40E8FE9BDDA94D08851377F114A4EF95 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_EC03E7EBCEB5465DB48F3535C191126B }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_7A704669530E4BEF84DB526FF2D2A327 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_... }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_... }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_... }}
 
       - name: Deploy to Azure Web App
-        id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'loanHub-wb'
-          slot-name: 'Production'
-          package: .
-
-          
+          package: ./publish
