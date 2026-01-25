@@ -1,58 +1,24 @@
-name: CI/CD Pipeline
+name: CI Pipeline
 
-on:
-  push:
-    branches: [ "main", "develop", "release/*" ]
-  pull_request:
-    branches: [ "main", "develop", "release/*" ]
+trigger:
+  branches:
+    include:
+      - develop
 
-env:
-  DOTNET_VERSION: '9.x'
-  AZURE_WEBAPP_NAME: 'loanHub-wb' # Nazwa App Service w Azure
-  BUILD_CONFIGURATION: 'Release'
-  OUTPUT_PATH: './published-app'
+pool:
+  vmImage: 'windows-latest'
 
-jobs:
-  # ==========================================
-  # Job 1: Build, Tests
-  # ==========================================
-  build-and-test:
-    name: Build & Test
-    runs-on: windows-latest
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+  dotnetSdkVersion: '9.x'
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+steps:
+  - task: UseDotNet@2
+    inputs:
+      packageType: 'sdk'
+      version: '$(dotnetSdkVersion)'
 
-      - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
-
-      - name: Run Unit Tests
-        run: pwsh ./scripts/test-unit.ps1
-
-  # ==========================================
-  # Job 2: Mirror to Azure Repo 
-  # ==========================================
-  mirror-repo:
-    name: Mirror to Azure DevOps
-    needs: build-and-test
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Mirror main to Azure DevOps
-        env:
-          AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
-        run: |
-          echo "Adding Azure DevOps remote"
-          git remote add azure https://$(echo $AZURE_DEVOPS_PAT)@dev.azure.com/TWOJA_ORGANIZACJA/TWOJ_PROJEKT/_git/TWOJE_REPO
-
-          echo "Pushing main to Azure DevOps"
-          git push azure main --force
+  - script: pwsh ./scripts/test-unit.ps1
+    displayName: 'Run Unit Tests'
