@@ -26,16 +26,16 @@ jobs:
         run: |
           dotnet publish MortgageComparer/MortgageComparer.csproj `
             -c Release `
-            -o "${{ github.workspace }}/out/backend1" `
+            -o "${{ github.workspace }}/out/mortgagecomparer" `
             --no-self-contained
 
-      # KROK 2: Publikacja DRUGIEGO projektu (API) do innego podfolderu
       - name: Publish MortgageComparerAPI
         run: |
           dotnet publish MortgageComparerAPI/MortgageComparerAPI.csproj `
             -c Release `
-            -o "${{ github.workspace }}/out/backend2" `
+            -o "${{ github.workspace }}/out/mortgagecomparer-api" `
             --no-self-contained
+
 
       - name: Build Frontend (React)
         working-directory: ./Frontend/frontend
@@ -56,8 +56,7 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: .net-app
-          # Wysyłamy folder 'out', który zawiera oba backendy w osobnych podfolderach
+          name: full-app-package
           path: ${{ github.workspace }}/out
   deploy:
     runs-on: windows-latest
@@ -81,6 +80,7 @@ jobs:
         with:
           app-name: 'loanHub-wb'
           package: ./publish
+
 
 
 
