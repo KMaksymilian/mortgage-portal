@@ -50,13 +50,12 @@ jobs:
       # KROK 3: Połączenie wszystkiego w strukturę akceptowaną przez Azure
       - name: Prepare Final Package
         run: |
-          # Tworzymy folder wwwroot wewnątrz API (backend2)
-          if (!(Test-Path "${{ github.workspace }}/out/backend2/wwwroot")) {
-            New-Item -ItemType Directory -Force -Path "${{ github.workspace }}/out/backend2/wwwroot"
+          if (!(Test-Path "${{ github.workspace }}/out/mortgagecomparer/wwwroot")) {
+            New-Item -ItemType Directory -Force -Path "${{ github.workspace }}/out/mortgagecomparer/wwwroot"
           }
-          # Kopiujemy frontend do API
-          Copy-Item -Path "./Frontend/frontend/dist/*" -Destination "${{ github.workspace }}/out/backend2/wwwroot" -Recurse -Force
-
+          Copy-Item -Path "./Frontend/frontend/dist/*" `
+          -Destination "${{ github.workspace }}/out/mortgagecomparer/wwwroot" `
+          -Recurse -Force
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
@@ -83,7 +82,8 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'loanHub-wb'
-          package: ./publish
+          package: ./publish/mortgagecomparer
+
 
 
 
