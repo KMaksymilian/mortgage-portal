@@ -1,5 +1,9 @@
 name: Build and deploy - Multiple Projects
 
+permissions:
+  id-token: write
+  contents: read
+
 on:
   push:
     branches:
@@ -80,6 +84,7 @@ jobs:
         with:
           app-name: 'loanHub-wb'
           package: ./publish
+
 
 
 
