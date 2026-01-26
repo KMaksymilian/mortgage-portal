@@ -53,6 +53,7 @@ public class AuthenticationService : IAuthenticationService
                 DateOfBirth = null,
                 DocumentId = 1,
                 JobTypeId = 1,
+                Role = "User"
             };
             if (user.JobType == null)
             {
@@ -68,6 +69,12 @@ public class AuthenticationService : IAuthenticationService
                 user.PersonalDocument = isInDataBase ?? userDocument;
             }
 
+            if (string.IsNullOrWhiteSpace(user.Role)) 
+            {
+                user.Role = "User";
+                await _context.SaveChangesAsync();
+            }
+
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
         }
@@ -81,7 +88,8 @@ public class AuthenticationService : IAuthenticationService
             Earnings = user.Income,
             BirthDate = user.DateOfBirth,
             JobStartDate = user.JobStartDate,
-            JobEndDate = user.JobEndDate
+            JobEndDate = user.JobEndDate,
+            Role = user.Role
         };
     }
     private string GenerateJwtToken(UserEntity user)
@@ -96,7 +104,9 @@ public class AuthenticationService : IAuthenticationService
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()) 
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.Role, user.Role ?? "User"),
+                new Claim("role", user.Role ?? "User")
             }),
             Expires = DateTime.UtcNow.AddHours(1),
             Issuer = _configuration["Jwt:Issuer"],
@@ -106,6 +116,41 @@ public class AuthenticationService : IAuthenticationService
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
+    }
+
+    public async Task<LoginResponseDto> GetGoogleAdminTokenAsync(GoogleLoginRequestModel request) {
+        GoogleJsonWebSignature.Payload validPayload;
+        try {
+            validPayload = await GoogleJsonWebSignature.ValidateAsync(request.Token);
+        }
+        catch (InvalidJwtException) {
+            throw new UnauthorizedAccessException("Invalid Google Token");
+        }
+
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == validPayload.Email);
+
+        // adminów NIE tworzymy automatycznie
+        if (user == null) 
+        {
+            throw new UnauthorizedAccessException("Admin account does not exist");
+        }
+
+        if (!string.Equals(user.Role, "Admin", StringComparison.OrdinalIgnoreCase)) 
+        {
+            throw new UnauthorizedAccessException("User is not an admin");
+        }
+
+        var jwtToken = GenerateJwtToken(user);
+
+        return new LoginResponseDto {
+            Token = jwtToken,
+            Email = user.Email,
+            Earnings = user.Income,
+            BirthDate = user.DateOfBirth,
+            JobStartDate = user.JobStartDate,
+            JobEndDate = user.JobEndDate,
+            Role = user.Role
+        };
     }
 }
 
@@ -117,4 +162,5 @@ public class LoginResponseDto
     public DateTime? BirthDate { get; set; }
     public DateTime? JobStartDate { get; set; }
     public DateTime? JobEndDate { get; set; }
+    public string Role { get; set; }
 }
