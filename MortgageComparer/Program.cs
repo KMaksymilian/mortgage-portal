@@ -57,7 +57,9 @@ public class Program
         });
         builder.Services.AddHttpClient("OurBankApi", client =>
         {
-            client.BaseAddress = new Uri("http://localhost:5046/api/");
+            var baseUrl = builder.Configuration["ApiSettings:BaseUrl"] ?? "http://localhost:5046";
+
+            client.BaseAddress = new Uri($"{baseUrl.TrimEnd('/')}/api/");
         });
 
 
@@ -107,10 +109,14 @@ public class Program
             options.ApiKey = builder.Configuration["SendGrid:ApiKey"];
         });
         builder.Services.AddTransient<IEmailService, SendGridEmailService>();
-        builder.Services.AddTransient<IEmailTemplateService, MockEmailTemplateService>();
         builder.Services.AddHostedService<ReminderWorker>();
 
         var app = builder.Build();
+        using (var scope = app.Services.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            db.Database.Migrate();
+        }
 
         // Configure the HTTP request pipeline.
         if (!app.Environment.IsDevelopment())

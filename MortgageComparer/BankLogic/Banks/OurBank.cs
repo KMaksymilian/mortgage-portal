@@ -138,7 +138,8 @@ public class OurBank : IBank
         var response =  await _client.PostAsJsonAsync("Auth/x", data);
         if (!response.IsSuccessStatusCode)
         {
-            return null;
+            var errorContent = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Nie udało się pobrać tokenu z OurBank. Status: {response.StatusCode}. Szczegóły: {errorContent}");
         }
         var token = await response.Content.ReadFromJsonAsync<ApiLoginResponse>();
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
@@ -205,21 +206,5 @@ public class OurBank : IBank
         }
         
     }
-
-
-    /*public async Task<GetOfferByIdResponse?> GetOfferByIdAsync(OfferEntity offer)
-    {
-        var res = await _client.GetAsync($"/{offer.Id}");
-        
-    }*/
-    /*
-    public async Task<byte[]> GetDocumentByDocumentKeyAsync()
-    {
-        
-    }
-
-    public async Task UploadContractAsync(ContractDataDto contract)
-    {
-        
-    }*/
+    
 }

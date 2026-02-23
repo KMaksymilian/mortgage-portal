@@ -66,8 +66,8 @@ public class ExternalApiService : IExternalApiService
     public async Task<string?> GetTokenAsync()
     {
         var tokenUrl = "https://indentitymanager.snet.com.pl/connect/token";
-        var clientId = _configuration["ExternalApi:Login"];
-        var clientSecret = _configuration["ExternalApi:Secret"];
+        var clientId = "Team1c";
+        var clientSecret = "E7408464-E335-4BBC-B1C1-D0CA517BEDAD";
 
         var requestData = new Dictionary<string, string>
         {
