@@ -1,0 +1,91 @@
+name: Build and deploy - Multiple Projects
+
+permissions:
+  id-token: write
+  contents: read
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  BUILD_CONFIGURATION: 'Release'
+  OUTPUT_PATH: "${{ github.workspace }}/publish"
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.x'
+
+      # KROK 1: Publikacja PIERWSZEGO projektu do dedykowanego podfolderu
+      - name: Publish MortgageComparer
+        run: |
+          dotnet publish MortgageComparer/MortgageComparer.csproj `
+            -c Release `
+            -o "${{ github.workspace }}/out/mortgagecomparer" `
+            --no-self-contained
+
+      - name: Publish MortgageComparerAPI
+        run: |
+          dotnet publish MortgageComparerAPI/MortgageComparerAPI.csproj `
+            -c Release `
+            -o "${{ github.workspace }}/out/mortgagecomparer-api" `
+            --no-self-contained
+
+
+      - name: Build Frontend (React)
+        working-directory: ./Frontend/frontend
+        run: |
+          npm install
+          npm run build
+
+      # KROK 3: Połączenie wszystkiego w strukturę akceptowaną przez Azure
+      - name: Prepare Final Package
+        run: |
+          if (!(Test-Path "${{ github.workspace }}/out/mortgagecomparer/wwwroot")) {
+            New-Item -ItemType Directory -Force -Path "${{ github.workspace }}/out/mortgagecomparer/wwwroot"
+          }
+          Copy-Item -Path "./Frontend/frontend/dist/*" `
+          -Destination "${{ github.workspace }}/out/mortgagecomparer/wwwroot" `
+          -Recurse -Force
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: full-app-package
+          path: ${{ github.workspace }}/out
+  deploy:
+    runs-on: windows-latest
+    needs: build
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: full-app-package
+          path: ./publish
+      
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_40E8FE9BDDA94D08851377F114A4EF95 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_EC03E7EBCEB5465DB48F3535C191126B }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_7A704669530E4BEF84DB526FF2D2A327 }}
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'loanHub-wb'
+          package: ./publish/mortgagecomparer
+
+
+
+
+
+

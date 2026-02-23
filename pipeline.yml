@@ -1,0 +1,24 @@
+name: CI Pipeline
+
+trigger:
+  branches:
+    include:
+      - develop
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+  dotnetSdkVersion: '9.x'
+
+steps:
+  - task: UseDotNet@2
+    inputs:
+      packageType: 'sdk'
+      version: '$(dotnetSdkVersion)'
+
+  - script: pwsh ./scripts/test-unit.ps1
+    displayName: 'Run Unit Tests'
