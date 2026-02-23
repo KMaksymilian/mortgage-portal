@@ -211,8 +211,8 @@ public class LecturerBank : IBank
     public async Task<string?> GetTokenAsync()
     {
         var tokenUrl = "https://indentitymanager.snet.com.pl/connect/token";
-        var clientId = _configuration["ExternalApi:Login"];
-        var clientSecret = _configuration["ExternalApi:Secret"];
+        var clientId = "team1c";
+        var clientSecret = "E7408464-E335-4BBC-B1C1-D0CA517BEDAD";
 
         var requestData = new Dictionary<string, string>
         {
@@ -231,11 +231,5 @@ public class LecturerBank : IBank
         return token?.AccessToken;
     }
 
-    public Task CompleteOfferAsync(int offerId, string key)
-    {
-        throw new NotImplementedException();
-    }
-
     private record LecturerBankPostQuoteResponse(int QuoteId, MoneyDto InstalmentAmount, DateTime CreatedDate);
-    public record DocumentContent(string Payload, string FileName, string ContentType);
 }
