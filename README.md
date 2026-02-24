@@ -1,84 +1,38 @@
 # Introduction 
-Mortgage Comparer is a web application designed to help user find the most attractive mortgage taking into consideration required factors such as earnings or loan term. 
-
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-In order to run the app 
-
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+Mortgage Comparer is a web application designed to help users find the most attractive mortgage, taking into consideration required factors such as earnings or loan term. The system consists of a frontend application, a main backend service, and an internal banking API simulator, all communicating securely.
 
 # Technologies
-Backend : C# 12, .NET 9 (ASP .NET Core MVC)
-Frontend : React.js
-Data base : PostgreSQL, Entity Framework
-Testing : xUnit
+* Backend: C# 12, .NET 9 (ASP.NET Core Web API / MVC)
+* Frontend: React.js
+* Database: PostgreSQL, Entity Framework Core
+* Testing: xUnit
+* Infrastructure: Docker & Docker Compose
 
-# Naming conventions
-Throughout the project we use listed below naming conventions:
-1) Class/struct/enum names - PascalCase : 
-	`class ProductService`
-2) Interfaces - I + PascalCase : 
-	`interface IProductServce`
-3) Methods - PascalCase : 
-	`public void CalculateTotal()`
-4) Properties - PascalCase : 
-	`public string UserName {get; set;}`
-5) Consts - PascalCase : 
-	`public const int MaxSize = 100`
-6) Local variables - camelCase :  
-	`int counter = 0`
-7) Method parameters - camelCase : 
-	`void SetName(string newName)`
-8) Private class fields - _ + camelCase : 
-	`private string _connectionString`
-9) Asynchronous methods - PascalCase + Async : 
-	`async Task GetDataAsync()`
-10) Braces statements - Each statement must have braces, braces are always in new lines after statement/code to execute
-	```csharp 
-	if(statement)
-	{
-		// code to execute
-	}
+# Getting Started
 
-# Branching Conventions
+## 1. Clone the repository
+git clone https://github.com/KMaksymilian/mortgage-portal.git
+cd mortgage-portal
 
-In our project, we follow the Git branching conventions below to keep code organized and facilitate team collaboration:
+## 2. Set up Environment Variables (.env)
+For security reasons, sensitive data like database passwords and JWT keys are not stored in the source code. 
+Create a new file named `.env` in the root directory of the project (at the same level as `compose.yaml`) and populate it with the following structure. Make sure your JWT keys are at least 32 characters long.
 
-## 1. `main`
-- The main branch of the project.
-- Always contains stable, production-ready code.
-- Only merged via pull requests after review.
+DB_USER=postgres
+DB_PASSWORD=YourStrongPassword123!
+DB_NAME=TestDB
 
-## 2. `develop`
-- Integration branch for new features.
-- All feature branches are merged here before moving to `main`.
-- Code should be stable but may contain unfinished functionalities.
+JWT_KEY=YourSuperSecretJwtKeyForApp11111
+JWT_SECRET_KEY=YourAnotherSuperSecretJwtKeyForApp
 
-## 3. `feature/*`
-- Branches for new features or major changes.
-- Naming: `feature/feature-name`.
-- Created from `develop`.
-- Once done, merged back into `develop`.
+## 3. Build and Run the Application
+Open your terminal in the root directory and run the following command to build the images and start the containers:
 
-## 4. `bugfix/*`
-- Branches for fixing bugs during development.
-- Naming: `bugfix/short-bug-description`.
-- Created from `develop` and merged back into `develop` after the fix.
+docker-compose up --build
 
-## 5. `release/*` (Staging)
-- Branches for preparing a new release.
-- Naming: `release/vX.Y.Z`.
-- Created from `develop` when a release is near.
-- Used for final testing, bug fixes, and version updates.
-- After testing, merged into both `main` (production) and `develop` (to keep hotfixes).
+## 4. Access the Services
+Once the Docker containers are successfully built and running, you can access the application through your browser:
 
-## 6. `hotfix/*`
-- Branches for critical fixes on `main`.
-- Naming: `hotfix/short-description`.
-- Created from `main` and merged back into both `main` and `develop`.
+* Frontend : http://localhost:3000
 
-## Summary
-- **Create feature/bugfix/release/hotfix branches from the appropriate base branch.**
-- **Merge only via pull requests and after testing.**
-- This ensures every team member knows where to implement changes and where to find stable code.
+To remove the containers run `docker-compose down` to cleanly remove the containers.

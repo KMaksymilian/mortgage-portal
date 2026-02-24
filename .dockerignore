@@ -1,0 +1,8 @@
+# .dockerignore
+**/.git
+**/.vs
+**/.vscode
+**/bin
+**/obj
+node_modules/
+Frontend/node_modules/
