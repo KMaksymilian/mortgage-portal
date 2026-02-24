@@ -38,8 +38,7 @@ public class ApiAuthService : IApiAuthService
             await _dbContext.OurApiUsers.AddAsync(user);
             await _dbContext.SaveChangesAsync();
         }
-        var settings = _configuration.GetSection("JwtToken");
-        var stringKey = settings["SecretKey"];
+        var stringKey = _configuration["Jwt:SecretKey"];
         var key = Encoding.UTF8.GetBytes(stringKey);
 
         var claims = new List<Claim>

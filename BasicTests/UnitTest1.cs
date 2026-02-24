@@ -30,8 +30,8 @@ public class UnitTest1
     public async Task ExternalApiCallShouldReturnCode200Async()
     {
         var tokenUrl = "https://indentitymanager.snet.com.pl/connect/token";
-        var clientId = _configuration["ExternalApi:Login"];
-        var clientSecret = _configuration["ExternalApi:Secret"];
+        var clientId = "Team1c";
+        var clientSecret = "E7408464-E335-4BBC-B1C1-D0CA517BEDAD";
         
         var requestData = new Dictionary<string, string>
         {
