@@ -18,12 +18,12 @@ cd mortgage-portal
 For security reasons, sensitive data like database passwords and JWT keys are not stored in the source code. 
 Create a new file named `.env` in the root directory of the project (at the same level as `compose.yaml`) and populate it with the following structure. Make sure your JWT keys are at least 32 characters long.
 
-DB_USER=postgres
-DB_PASSWORD=YourStrongPassword123!
-DB_NAME=TestDB
+DB_USER=postgres  
+DB_PASSWORD=YourStrongPassword123!  
+DB_NAME=TestDB  
 
-JWT_KEY=YourSuperSecretJwtKeyForApp11111
-JWT_SECRET_KEY=YourAnotherSuperSecretJwtKeyForApp
+JWT_KEY=YourSuperSecretJwtKeyForApp11111  
+JWT_SECRET_KEY=YourAnotherSuperSecretJwtKeyForApp  
 
 ## 3. Build and Run the Application
 Open your terminal in the root directory and run the following command to build the images and start the containers:
