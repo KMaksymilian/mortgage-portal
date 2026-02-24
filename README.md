@@ -11,7 +11,7 @@ Mortgage Comparer is a web application designed to help users find the most attr
 # Getting Started
 
 ## 1. Clone the repository
-git clone https://github.com/KMaksymilian/mortgage-portal.git
+git clone https://github.com/KMaksymilian/mortgage-portal.git  
 cd mortgage-portal
 
 ## 2. Set up Environment Variables (.env)
