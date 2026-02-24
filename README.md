@@ -35,4 +35,4 @@ Once the Docker containers are successfully built and running, you can access th
 
 * Frontend : http://localhost:3000
 
-To remove the containers run `docker-compose down` to cleanly remove the containers.
+To remove the containers run `docker-compose down`.
